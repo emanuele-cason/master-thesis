@@ -1,0 +1,73 @@
+\documentclass[12pt, a4paper, twoside, openright]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[style=numeric-comp, backend=biber, sorting=none]{biblatex}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{parskip}
+
+\geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
+\setlength{\parindent}{0pt}
+
+\onehalfspacing
+
+\addbibresource{bibliography.bib}
+
+\begin{document}
+
+\frontmatter
+
+\begin{titlepage}
+
+	\begin{center}
+		\includegraphics[scale=0.15]{img/logo-unipd.png}\\
+
+		\vspace{1.6cm}
+		\textsc{\Huge Universit\`{a} degli Studi di Padova}\\
+		\vspace{0.4cm}
+		\textsc{\LARGE Department of Industrial Engineering}\\
+		\vspace{1.6cm}
+		\textsc{\LARGE Master's Degree In Aerospace Engineering}\\
+		\vspace{0.4cm}
+		\textsc{\Large Aeronautical Curriculum}\\
+		\vfill
+
+		{ \LARGE \bfseries [EXAMPLE] Adaptive wall modelling approach in Large Eddy Simulation with the Immersed Boundary Method.}\\
+
+		\vfill
+		\textit{\Large Thesis Advisor:} \hfill \textit{\Large Candidate:}\\
+		\vspace{0.2cm}
+		\textsc{\Large Ing. Federico Dalla Barba} \hfill \textsc{\Large Emanuele Cason}\\
+		\hfill \textsc{Student ID: 2122047}\\
+
+		\vfill
+		{\large Academic Year 2025/2026}
+	\end{center}
+
+\end{titlepage}
+
+\tableofcontents
+
+\mainmatter
+
+\chapter{Introduction}
+Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced have mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modelling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
+
+As all mathematical models, the definition of the level of approximation have a primary importance also for fluid simulation. This choice concern various aspects of the description of the phenomena. Firstly the scale of reality considered: the reality can be described at an atomic, particle or micro- and macroscopic level. The last one is that used by classical mechanics, in particular continuum mechanics, that is the case considered in CFD.
+
+The second aspect to be defined in term of level of approximation is the accuracy of dynamic description. It consist on the choice of which forces should be considered exerted on the system, based on their relevance. The most general case is represented by the Navier-Stokes equations complemented by constitutive laws (empirical laws characterizing the fluid and state laws). This case can be simplified, obtaining for example the Euler equations, for the description of inviscid flows.
+
+Another aspect regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed later, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows.
+
+% Spiegare turbulent flows: sono multiscala, K41, problema dei gradi di libertà ecc.
+
+\backmatter
+
+\printbibliography[heading=bibintoc, title={Bibliography}]
+
+\end{document}
