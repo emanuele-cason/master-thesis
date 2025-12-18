@@ -10,9 +10,11 @@
 \usepackage{setspace}
 \usepackage{microtype}
 \usepackage{parskip}
+\usepackage{bm}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
 \setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em plus 2pt minus 2pt}
 
 \onehalfspacing
 
@@ -56,6 +58,11 @@
 \mainmatter
 
 \chapter{Introduction}
+
+\section{Computational Fluid Dynamics}
+
+% Large eddy simulation for incompressible flows - an introduction (2006, Springer) - P. Sagaut
+
 Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced have mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modelling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
 
 As all mathematical models, the definition of the level of approximation have a primary importance also for fluid simulation. This choice concern various aspects of the description of the phenomena. Firstly the scale of reality considered: the reality can be described at an atomic, particle or micro- and macroscopic level. The last one is that used by classical mechanics, in particular continuum mechanics, that is the case considered in CFD.
@@ -64,7 +71,30 @@ The second aspect to be defined in term of level of approximation is the accurac
 
 Another aspect regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed later, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows.
 
-% Spiegare turbulent flows: sono multiscala, K41, problema dei gradi di libertà ecc.
+\section{Turbulent flows}
+
+In most of the engineering applications, flows are prevalently turbulent. Generally this is the case of fluid processed by pumps, compressors or flows around cars, trains, airplanes and many more situations in the everyday surrounding. 
+
+Such flows are characterized by some specific properties. A key feature is the multi-scale nature of the vortical structures, whose dimensions span 6 to 8 orders of magnitude. Despite the deterministic nature (they can be described accurately by the Navier-Stokes equations), the strong dependence and sensitivity to initial conditions make their behavior chaotic. Furthermore, turbulent flows are intrinsically three-dimensional and unsteady, they show an high diffusivity (mixing of momentum, energy and species) and also an increased wall friction when compared to laminar flows.
+
+The flow regime is described by the Reynolds number, a non-dimensional value representing the ratio between inertial and viscous forces, and defined as:
+\begin{equation}
+	Re = \frac{\rho \, U \, L}{\mu} = \frac{U \, L}{\nu}
+\end{equation}
+where $U$ and $L$ are the characteristic velocity and length scale of the flow. It is observed that, for higher values of $Re$, the magnitude of velocity gradients is progressively more intense, and the scale of smaller vortices decreases.
+
+Considering the chaotic nature of the turbulence, a deterministic and instantaneous description of the phenomena is not always the most efficient option. Consequently, the analysis is typically focused on a statistical approach, considering averaged fields. It can be observed how those averaged fields resemble qualitatively the laminar behavior, and their dependence on the Reynolds number diminishes significantly.
+
+To analytically formalize the idea of considering the average fields and the turbulent one separately, the Reynolds averaging operator and the Reynolds decomposition are here introduced. The former consist in a ensemble average over a number of realizations. In more practical terms this implies repeating the same experiment $N$ times, under identical conditions, and averaging the flow variables at the exact same location and time instant across all the independent measures. 
+Considering to apply the Reynolds operator for the velocity component $u$:
+\begin{equation}
+	\langle u(\bm{x}, t) \rangle = U(\bm{x}, t) = \frac{1}{N} \, \sum_{k=1}^{N >> 1} u_{(k)} (\bm{x}, t)
+\end{equation}
+Instead for what concerns the Reynolds decomposition, it can be defined as:
+\begin{equation}
+	u(\bm{x}, t) = U(\bm{x}, t) + u'(\bm{x}, t)
+\end{equation}
+where $u'$ is the fluctuation component and $U$ is the averaged quantity.
 
 \backmatter
 
