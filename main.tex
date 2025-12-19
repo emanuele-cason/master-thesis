@@ -96,6 +96,48 @@ Instead for what concerns the Reynolds decomposition, it can be defined as:
 \end{equation}
 where $u'$ is the fluctuation component and $U$ is the averaged quantity.
 
+By substituting in the Navier-Stokes equations the Reynolds decomposition and applying the Reynolds operator the Reynolds-Averaged Navier-Stokes (RANS) equations are obtained:
+\begin{equation}
+\left\{
+\begin{aligned}
+& \bm{\nabla} \cdot \bm{U} = 0 \\
+& \frac{D\bm{U}}{Dt} = -\frac{\bm{\nabla} P}{\rho} + \bm{\nabla} \cdot (2\nu \bm{E}) - \bm{\nabla} \cdot \langle \bm{u}' \bm{u}' \rangle
+\end{aligned}
+\right.
+\end{equation}
+
+where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, and its modelling represents the closure problem of the RANS equations.
+
+The RANS equations introduced above, allow to demonstrate some fundamental mechanisms governing the energy dynamics within turbulent flows. Omitting for brevity the detailed algebraic steps, the mean and turbulent flow kinetic energies can be defined respectively as:
+\begin{equation}
+    K = \frac{1}{2} \, \bm{U} \cdot \bm{U} = \frac{1}{2} \, U_i \, U_i  \quad \quad k = \frac{1}{2} \, \langle \bm{u}' \cdot \bm{u}' \rangle = \frac{1}{2} \, \langle u_i' \, u_i' \rangle
+\end{equation}
+By manipulating the momentum equation for the mean flow, it is possible to derive a formulation for the time derivative of the mean flow kinetic energy term:
+\begin{equation}
+    \frac{DK}{Dt} = 
+	%
+    % F_K
+    \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{P}{\rho} \, U_j + 2\nu \, E_{ij} \, U_i - \langle u_i' u_j' \rangle \, U_i \, \right] \rule[-15pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_K$}} 
+    % 
+    % D
+    - \underbrace{ 2\nu \, E_{ij} E_{ij} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-15pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\mathcal{D}$}} 
+    % 
+    % P
+    \underbrace{ + \, \langle u_i' \, u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-15pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{P}$}}
+\end{equation}
+where $\bm{F}_K$ is the flux of mean kinetic energy (a spatial transport term), $\mathcal{D}$ is mean flow dissipation and $\mathcal{P}$ is the turbulent energy production.
+\begin{equation}
+    \frac{DK}{Dt} = \bm{\nabla} \cdot \bm{F}_K - \mathcal{D} - \mathcal{P}
+\end{equation}
+Following the approach described by Pope \cite{turbulent-flows}, the equation can be integrated over a sufficiently large control volume $\Omega$, surrounding a free shear flow such as a turbulent jet, in stationary conditions. 
+\begin{equation}
+    \mathcal{C} = \mathcal{F} - \mathcal{D} - \mathcal{P}
+\end{equation}
+
+\begin{equation}
+    \mathcal{C} \approx - \mathcal{P}
+\end{equation}
+
 \backmatter
 
 \printbibliography[heading=bibintoc, title={Bibliography}]
