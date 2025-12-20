@@ -11,10 +11,19 @@
 \usepackage{microtype}
 \usepackage{parskip}
 \usepackage{bm}
+\usepackage{amssymb}
+\usepackage{pdfrender}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.8em plus 2pt minus 2pt}
+
+\newcommand{\mathbbcal}[1]{
+  \textpdfrender{
+    TextRenderingMode=Stroke,
+    LineWidth=0.40pt,
+  }{\mathcal{#1}}
+}
 
 \onehalfspacing
 
@@ -108,34 +117,42 @@ By substituting in the Navier-Stokes equations the Reynolds decomposition and ap
 
 where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, and its modelling represents the closure problem of the RANS equations.
 
-The RANS equations introduced above, allow to demonstrate some fundamental mechanisms governing the energy dynamics within turbulent flows. Omitting for brevity the detailed algebraic steps, the mean and turbulent flow kinetic energies can be defined respectively as:
+The RANS equations introduced above, allow demonstrating some fundamental mechanisms governing the energy dynamics within turbulent flows. Omitting for brevity the detailed algebraic steps, the mean and turbulent flow kinetic energies can be defined respectively as:
 \begin{equation}
-    K = \frac{1}{2} \, \bm{U} \cdot \bm{U} = \frac{1}{2} \, U_i \, U_i  \quad \quad k = \frac{1}{2} \, \langle \bm{u}' \cdot \bm{u}' \rangle = \frac{1}{2} \, \langle u_i' \, u_i' \rangle
+    \mathcal{K} = \frac{1}{2} \, \bm{U} \cdot \bm{U} = \frac{1}{2} \, U_i \, U_i  \qquad \quad k = \frac{1}{2} \, \langle \bm{u}' \cdot \bm{u}' \rangle = \frac{1}{2} \, \langle u_i' \, u_i' \rangle
 \end{equation}
-By manipulating the momentum equation for the mean flow, it is possible to derive a formulation for the time derivative of the mean flow kinetic energy term:
-\begin{equation}
-    \frac{DK}{Dt} = 
-	%
+By manipulating the momentum equation, it is possible to derive a formulation for both the time derivative of the mean kinetic energy and turbulent kinetic energy terms:
+\begin{align}
+	% Mean kinetic energy equation 
+    & \frac{D \mathcal{K}}{Dt} = 
     % F_K
-    \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{P}{\rho} \, U_j + 2\nu \, E_{ij} \, U_i - \langle u_i' u_j' \rangle \, U_i \, \right] \rule[-15pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_K$}} 
-    % 
-    % D
-    - \underbrace{ 2\nu \, E_{ij} E_{ij} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-15pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\mathcal{D}$}} 
-    % 
+    \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{P}{\rho} \, U_j + 2\nu \, E_{ij} \, U_i - \langle u_i' u_j' \rangle \, U_i \, \right] \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_{\mathcal{K}}$}} 
+    % D_K
+    \underbrace{ - 2\nu \, E_{ij} E_{ij} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{D}_{\mathcal{K}}$}} 
     % P
-    \underbrace{ + \, \langle u_i' \, u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-15pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{P}$}}
-\end{equation}
-where $\bm{F}_K$ is the flux of mean kinetic energy (a spatial transport term), $\mathcal{D}$ is mean flow dissipation and $\mathcal{P}$ is the turbulent energy production.
+    + \underbrace{ \left( \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{P}$}}\\[4ex]
+	%
+    % Turbulent kinetic energy equation
+    & \frac{D k}{D t} = 
+    % F_k
+    \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{\langle p' u_j' \rangle}{\rho} + 2\nu \, \langle e_{ij}' u_i' \rangle - \frac{\langle u_i' u_i' u_j' \rangle}{2} \, \right] \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_k$}} 
+    % Epsilon
+    \underbrace{ - 2\nu \, \langle e_{ij}' e_{ij}' \rangle \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{E}_k$}} 
+    % P (Grouping)
+    + \underbrace{ \left( - \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\mathcal{P}$}}
+\end{align}
+where $\bm{F}_{\mathcal{K}}$ and $\bm{F}_{k}$ are the fluxes of kinetic energy (a spatial transport term), $\mathcal{D}_{\mathcal{K}}$ and $\mathcal{E}_k$ are the dissipation terms respectively for the mean and turbulent flows and $\mathcal{P}$ is the turbulent energy production. In a more compact form, the two equation can be written as:
 \begin{equation}
-    \frac{DK}{Dt} = \bm{\nabla} \cdot \bm{F}_K - \mathcal{D} - \mathcal{P}
+    \frac{D \mathcal{K}}{Dt} = \bm{\nabla} \cdot \bm{F}_{\mathcal{K}} - \mathcal{D}_{\mathcal{K}} - \mathcal{P}
+	\qquad \quad
+	\frac{D k}{Dt} = \bm{\nabla} \cdot \bm{F}_{k} - \mathcal{E}_k + \mathcal{P} 
 \end{equation}
-Following the approach described by Pope \cite{turbulent-flows}, the equation can be integrated over a sufficiently large control volume $\Omega$, surrounding a free shear flow such as a turbulent jet, in stationary conditions. 
+Following the approach described by Pope \cite{turbulent-flows}, the equations can be integrated over a sufficiently large control volume $\Omega$, surrounding a free shear flow such as a turbulent jet ($Re >> 1$), in stationary conditions. This perspective, and what result from the integration, allows to identify which component are the dominant in the energy dynamics.
 \begin{equation}
-    \mathcal{C} = \mathcal{F} - \mathcal{D} - \mathcal{P}
+    0 = \mathbb{C}_{\mathcal{K}} + \mathbb{F}_{\mathcal{K}} - \mathbb{D}_{\mathcal{K}} - \mathbb{P} \implies \mathbb{C}_{\mathcal{K}} \approx \mathbb{P}
 \end{equation}
-
-\begin{equation}
-    \mathcal{C} \approx - \mathcal{P}
+\begin{equation} 
+	\frac{\partial k}{\partial t} = \mathbb{C}_{k} + \mathbb{F}_{k} - \mathbbcal{E}_{k} + \mathbb{P} \implies \mathbb{P} \approx \mathbbcal{E}_{k} 
 \end{equation}
 
 \backmatter
