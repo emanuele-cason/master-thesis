@@ -88,16 +88,18 @@ Such flows are characterized by some specific properties. A key feature is the m
 
 The flow regime is described by the Reynolds number, a non-dimensional value representing the ratio between inertial and viscous forces, and defined as:
 \begin{equation}
-	Re = \frac{\rho \, U \, L}{\mu} = \frac{U \, L}{\nu}
+	Re = \frac{\rho \, U_0 \, L_0}{\mu} = \frac{U_0 \, L_0}{\nu}
 \end{equation}
-where $U$ and $L$ are the characteristic velocity and length scale of the flow. It is observed that, for higher values of $Re$, the magnitude of velocity gradients is progressively more intense, and the scale of smaller vortices decreases.
+where $U_0$ and $L_0$ are the characteristic velocity and length scale of the flow. It is observed that, for higher values of $Re$, the magnitude of velocity gradients is progressively more intense, and the scale of smaller vortices decreases.
 
 Considering the chaotic nature of the turbulence, a deterministic and instantaneous description of the phenomena is not always the most efficient option. Consequently, the analysis is typically focused on a statistical approach, considering averaged fields. It can be observed how those averaged fields resemble qualitatively the laminar behavior, and their dependence on the Reynolds number diminishes significantly.
+
+\subsection{Reynolds-Averaged Navier-Stokes equations}
 
 To analytically formalize the idea of considering the average fields and the turbulent one separately, the Reynolds averaging operator and the Reynolds decomposition are here introduced. The former consist in a ensemble average over a number of realizations. In more practical terms this implies repeating the same experiment $N$ times, under identical conditions, and averaging the flow variables at the exact same location and time instant across all the independent measures. 
 Considering to apply the Reynolds operator for the velocity component $u$:
 \begin{equation}
-	\langle u(\bm{x}, t) \rangle = U(\bm{x}, t) = \frac{1}{N} \, \sum_{k=1}^{N >> 1} u_{(k)} (\bm{x}, t)
+	\langle u(\bm{x}, t) \rangle = U(\bm{x}, t) = \frac{1}{N} \, \sum_{k=1}^{N \gg 1} u_{(k)} (\bm{x}, t)
 \end{equation}
 Instead for what concerns the Reynolds decomposition, it can be defined as:
 \begin{equation}
@@ -116,6 +118,8 @@ By substituting in the Navier-Stokes equations the Reynolds decomposition and ap
 \end{equation}
 
 where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, and its modelling represents the closure problem of the RANS equations.
+
+\subsection{Energy cascade}
 
 The RANS equations introduced above, allow demonstrating some fundamental mechanisms governing the energy dynamics within turbulent flows. Omitting for brevity the detailed algebraic steps, the mean and turbulent flow kinetic energies can be defined respectively as:
 \begin{equation}
@@ -141,19 +145,37 @@ By manipulating the momentum equation, it is possible to derive a formulation fo
     % P (Grouping)
     + \underbrace{ \left( - \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\mathcal{P}$}}
 \end{align}
-where $\bm{F}_{\mathcal{K}}$ and $\bm{F}_{k}$ are the fluxes of kinetic energy (a spatial transport term), $\mathcal{D}_{\mathcal{K}}$ and $\mathcal{E}_k$ are the dissipation terms respectively for the mean and turbulent flows and $\mathcal{P}$ is the turbulent energy production. In a more compact form, the two equation can be written as:
+where $\bm{F}_{\mathcal{K}}$ and $\bm{F}_{k}$ are the fluxes of kinetic energy (spatial transport terms), $\mathcal{D}_{\mathcal{K}}$ and $\mathcal{E}_k$ are the dissipation terms respectively for the mean and turbulent flows and $\mathcal{P}$ is the turbulent energy production. In a more compact form, the two equation can be written as:
 \begin{equation}
     \frac{D \mathcal{K}}{Dt} = \bm{\nabla} \cdot \bm{F}_{\mathcal{K}} - \mathcal{D}_{\mathcal{K}} - \mathcal{P}
 	\qquad \quad
 	\frac{D k}{Dt} = \bm{\nabla} \cdot \bm{F}_{k} - \mathcal{E}_k + \mathcal{P} 
 \end{equation}
-Following the approach described by Pope \cite{turbulent-flows}, the equations can be integrated over a sufficiently large control volume $\Omega$, surrounding a free shear flow such as a turbulent jet ($Re >> 1$), in stationary conditions. This perspective, and what result from the integration, allows to identify which component are the dominant in the energy dynamics.
+Following the approach described by Pope \cite{turbulent-flows}, the equations can be integrated over a sufficiently large control volume $\Omega$, surrounding a free shear flow such as a turbulent jet ($Re \gg 1$), in stationary conditions. This perspective, and what result from the integration, allows to identify which component are the dominant in the energy dynamics.
 \begin{equation}
-    0 = \mathbb{C}_{\mathcal{K}} + \mathbb{F}_{\mathcal{K}} - \mathbb{D}_{\mathcal{K}} - \mathbb{P} \implies \mathbb{C}_{\mathcal{K}} \approx \mathbb{P}
+    \int_{\Omega} \frac{\partial \mathcal{K}}{\partial t} \, d\Omega = \mathbb{C}_{\mathcal{K}} + \mathbb{F}_{\mathcal{K}} - \mathbb{D}_{\mathcal{K}} - \mathbb{P} \implies \mathbb{C}_{\mathcal{K}} \approx \mathbb{P}
 \end{equation}
 \begin{equation} 
-	\frac{\partial k}{\partial t} = \mathbb{C}_{k} + \mathbb{F}_{k} - \mathbbcal{E}_{k} + \mathbb{P} \implies \mathbb{P} \approx \mathbbcal{E}_{k} 
+	\int_{\Omega} \frac{\partial k}{\partial t} \, d\Omega = \mathbb{C}_{k} + \mathbb{F}_{k} - \mathbbcal{E}_{k} + \mathbb{P} \implies \mathbb{P} \approx \mathbbcal{E}_{k} 
 \end{equation}
+The analysis of the dominant terms in the energy balance equations reveals how the input of energy, associated with convection ($\mathbb{C}_{\mathcal{K}}$) and its viscous dissipation ($\mathbbcal{E}_k$) occur at different scales. The apparent decoupling between energy input and output is better described by Richardson's theory.
+
+\subsubsection{Richardson's theory}
+The first concept in Richardson’s view of the energy cascade is that the turbulence can be considered to be composed of eddies of different sizes \cite{turbulent-flows}.
+
+Considering the eddies with the largest sizes, their characteristic dimensions can be evaluated as: $\ell \approx \ell_0 \approx L_0$ and $u \approx u_0 \approx u_{rms}' = \sqrt{(2/3) \cdot k} \approx (0.1 - 0.3) \, U_0$ (where the last relation comes from observation), thus their Reynolds number:
+\begin{equation}
+	Re_0 = \frac{u_0 \, \ell_0}{\nu} \approx \frac{U_0 \, L_0}{\nu} \gg 1
+\end{equation}
+this suggests how at these scales the direct effect of molecular viscosity is negligible.
+
+Thus, in order to achieve dissipation, unstable large eddies transfer energy to smaller ones. This process continues until the scale $\ell = \eta$ is reached, at this level the associated Reynolds number becomes sufficiently small, or in other words the molecular viscosity begins to be effective in energy dissipation.
+
+The energy transferred to smaller scales can be evaluated as:
+\begin{equation}
+	\frac{k_0}{\tau_0} \approx \frac{u_0^2}{\left( \ell_0 / u_0\right)} = \frac{u_0^3}{\ell_0} \propto \frac{U_0^3}{L_0} \propto \mathbbcal{E}_k
+\end{equation}
+the scaling of $\mathbbcal{E}_k$ with $U_0^3 / L_0$, independently from $\nu$ (at the high Reynolds numbers considered) proves to be consistent with the experimental results for free shear flows \cite{turbulent-flows}.
 
 \backmatter
 
