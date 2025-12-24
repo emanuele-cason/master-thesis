@@ -160,7 +160,7 @@ Following the approach described by Pope \cite{turbulent-flows}, the equations c
 \end{equation}
 The analysis of the dominant terms in the energy balance equations reveals how the input of energy, associated with convection ($\mathbb{C}_{\mathcal{K}}$) and its viscous dissipation ($\mathbbcal{E}$) occur at different scales. The apparent decoupling between energy input and output is better described by Richardson's theory.
 
-\subsubsection{Richardson's theory}
+\subsection{Richardson's theory}
 The first concept in Richardson’s view of the energy cascade is that the turbulence can be considered to be composed of eddies of different sizes \cite{turbulent-flows}.
 
 Considering the eddies with the largest sizes, their characteristic dimensions can be evaluated as: $\ell \approx \ell_0 \approx L_0$ and $u \approx u_0 \approx u_{rms}' = \sqrt{(2/3) \cdot k} \approx (0.1 - 0.3) \, U_0$ (where the last relation comes from observation), thus their Reynolds number:
@@ -183,6 +183,7 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 	\item \textbf{Local isotropy hypothesis:} \textit{At sufficiently high Reynolds numbers, the small-scales ($\ell \ll \ell_0$) turbulent motions are statistically isotropic.} 
 	
 	While larger eddies show an anisotropic behavior, as a result of flow geometry and boundary conditions, scales of motion under a certain length value (small-scales) have statistical properties that are independent of the large, anisotropic scales. Consequently, they exhibit a universal behavior, in the sense that they appear similar in every high-Reynolds number flow.
+
 	\item \textbf{First similarity hypothesis:} \textit{In every turbulent flow at sufficiently high Reynolds number, the statistics of the small-scale motions have a universal form that is uniquely determined by $\nu$ and $\mathcal{E}$.}
 	
 	As a consequence of this hypothesis, starting from the $\nu$ and $\mathcal{E}$ parameters, it is possible to identify a particular set of scales (Kolmogorov scales) with specific length, velocity and time characteristics. This result is obtained by dimensional analysis.
@@ -192,6 +193,15 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 		\tau_\eta = \left( \frac{\nu}{\mathcal{E}} \right)^{1/2}
 	\end{equation}
 	These scales are considered the smallest active scales in the turbulent motion. As a support for this assertion it is possible to observe that the related Reynolds number is unity ($Re_\eta = \eta \cdot u_\eta / \nu = 1$), meaning that viscous forces effectively dominate over inertial forces, allowing the dissipation phenomena.
+
+	It is possible to evaluate the entity of scales separation, considering the ratios of the smallest to largest scales. These ratios depend on the Reynolds number according to the following relations:
+	\begin{equation}
+		\frac{\ell_0}{\eta} \sim Re\,^{3/4} \, \qquad 
+		\frac{u_0}{u_\eta} \sim Re\,^{1/4} \, \qquad 
+		\frac{\tau_0}{\tau_\eta} \sim Re\,^{1/2}
+		\label{eq:k41-scale-ratios}
+	\end{equation}
+
 	\item \textbf{Second similarity hypothesis:} \textit{In every turbulent flow at sufficiently high Reynolds number, the statistics of the motions of scale $\ell$ in the range $\eta \ll \ell \ll \ell_0$  have a universal form that is uniquely determined by $\mathcal{E}$, independent of $\nu$.}
 	
 	This intermediate range of scales is known as the inertial subrange. In this region, the eddies are large enough that viscous effects are negligible (since $\ell \gg \eta$), but small enough that the large-scale anisotropic geometry is not felt (since $\ell \ll \ell_0$). Consequently, the energy cascade is dominated mainly by inertial forces. Again by dimensional analysis:
@@ -200,8 +210,20 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 		\tau(\ell \,) = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad 
 		Re(\ell \,) = \left( \frac{\ell}{\eta} \right)^{4/3}
 	\end{equation}
-	
 \end{itemize}
+
+In summary, the energy input associated with the mean velocity field (for example as a result of convection) is in part transferred from one point of the domain to another by the flux term, another part is transferred down to the inertial subrange by the production term. This transfer to smaller and smaller scales continues until the Kolmogorov scales are reached, the effects of viscosity become dominant and the energy can be dissipated as heat. 
+
+\newpage
+\section{Simulation techniques}
+The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
+
+\subsection{Direct Numerical Simulation}
+The most direct approach to perform a simulation, is choosing a space (grid) and time discretization able to represent all the space-time scales, included the smaller ones (Kolmogorov scales), in a non-stationary, three dimensional domain. 
+
+In term of accuracy and level of description provided it is unrivalled, however for the number of degrees of freedom involved its cost is extremely high and its applicability is limited to low or moderate Reynolds numbers \cite{turbulent-flows}. These numerical experiments can be considered directly analogous to actual laboratory experiments \cite{cfd-anderson}.
+
+The scale separation problem can be illustrated assuming to discretize a domain with dimensions $L \sim \ell_0$. To properly resolve the dissipative structures, the grid spacing $\Delta$ must be comparable to the Kolmogorov scale $\eta$. Applying the relations~\eqref{eq:k41-scale-ratios}, the number of grid points required along each axis is on the order of $Re\,^{3/4}$ and in term of time discretization, the required number of time-steps for a $\tau_0$ interval would be on the order of $Re\,^{1/2}$. Overall, the computational cost of the simulation scales with the Reynolds number, following a $Re\,^{11/4} \approx Re\,^3$ relation.
 
 \backmatter
 
