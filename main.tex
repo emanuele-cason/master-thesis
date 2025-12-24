@@ -132,7 +132,7 @@ By manipulating the momentum equation, it is possible to derive a formulation fo
     % F_K
     \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{P}{\rho} \, U_j + 2\nu \, E_{ij} \, U_i - \langle u_i' u_j' \rangle \, U_i \, \right] \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_{\mathcal{K}}$}} 
     % D_K
-    \underbrace{ - 2\nu \, E_{ij} E_{ij} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{D}_{\mathcal{K}}$}} 
+    \underbrace{ - 2\nu \, E_{ij} E_{ij} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{D}$}} 
     % P
     + \underbrace{ \left( \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{P}$}}\\[4ex]
 	%
@@ -141,24 +141,24 @@ By manipulating the momentum equation, it is possible to derive a formulation fo
     % F_k
     \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{\langle p' u_j' \rangle}{\rho} + 2\nu \, \langle e_{ij}' u_i' \rangle - \frac{\langle u_i' u_i' u_j' \rangle}{2} \, \right] \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_k$}} 
     % Epsilon
-    \underbrace{ - 2\nu \, \langle e_{ij}' e_{ij}' \rangle \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{E}_k$}} 
+    \underbrace{ - 2\nu \, \langle e_{ij}' e_{ij}' \rangle \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{E}$}} 
     % P (Grouping)
     + \underbrace{ \left( - \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\mathcal{P}$}}
 \end{align}
-where $\bm{F}_{\mathcal{K}}$ and $\bm{F}_{k}$ are the fluxes of kinetic energy (spatial transport terms), $\mathcal{D}_{\mathcal{K}}$ and $\mathcal{E}_k$ are the dissipation terms respectively for the mean and turbulent flows and $\mathcal{P}$ is the turbulent energy production. In a more compact form, the two equation can be written as:
+where $\bm{F}_{\mathcal{K}}$ and $\bm{F}_{k}$ are the fluxes of kinetic energy (spatial transport terms), $\mathcal{D}$ and $\mathcal{E}$ are the dissipation terms respectively for the mean and turbulent flows and $\mathcal{P}$ is the turbulent energy production. In a more compact form, the two equation can be written as:
 \begin{equation}
-    \frac{D \mathcal{K}}{Dt} = \bm{\nabla} \cdot \bm{F}_{\mathcal{K}} - \mathcal{D}_{\mathcal{K}} - \mathcal{P}
+    \frac{D \mathcal{K}}{Dt} = \bm{\nabla} \cdot \bm{F}_{\mathcal{K}} - \mathcal{D} - \mathcal{P}
 	\qquad \quad
-	\frac{D k}{Dt} = \bm{\nabla} \cdot \bm{F}_{k} - \mathcal{E}_k + \mathcal{P} 
+	\frac{D k}{Dt} = \bm{\nabla} \cdot \bm{F}_{k} - \mathcal{E} + \mathcal{P} 
 \end{equation}
 Following the approach described by Pope \cite{turbulent-flows}, the equations can be integrated over a sufficiently large control volume $\Omega$, surrounding a free shear flow such as a turbulent jet ($Re \gg 1$), in stationary conditions. This perspective, and what result from the integration, allows to identify which component are the dominant in the energy dynamics.
 \begin{equation}
     \int_{\Omega} \frac{\partial \mathcal{K}}{\partial t} \, d\Omega = \mathbb{C}_{\mathcal{K}} + \mathbb{F}_{\mathcal{K}} - \mathbb{D}_{\mathcal{K}} - \mathbb{P} \implies \mathbb{C}_{\mathcal{K}} \approx \mathbb{P}
 \end{equation}
 \begin{equation} 
-	\int_{\Omega} \frac{\partial k}{\partial t} \, d\Omega = \mathbb{C}_{k} + \mathbb{F}_{k} - \mathbbcal{E}_{k} + \mathbb{P} \implies \mathbb{P} \approx \mathbbcal{E}_{k} 
+	\int_{\Omega} \frac{\partial k}{\partial t} \, d\Omega = \mathbb{C}_{k} + \mathbb{F}_{k} - \mathbbcal{E} + \mathbb{P} \implies \mathbb{P} \approx \mathbbcal{E} 
 \end{equation}
-The analysis of the dominant terms in the energy balance equations reveals how the input of energy, associated with convection ($\mathbb{C}_{\mathcal{K}}$) and its viscous dissipation ($\mathbbcal{E}_k$) occur at different scales. The apparent decoupling between energy input and output is better described by Richardson's theory.
+The analysis of the dominant terms in the energy balance equations reveals how the input of energy, associated with convection ($\mathbb{C}_{\mathcal{K}}$) and its viscous dissipation ($\mathbbcal{E}$) occur at different scales. The apparent decoupling between energy input and output is better described by Richardson's theory.
 
 \subsubsection{Richardson's theory}
 The first concept in Richardson’s view of the energy cascade is that the turbulence can be considered to be composed of eddies of different sizes \cite{turbulent-flows}.
@@ -173,9 +173,35 @@ Thus, in order to achieve dissipation, unstable large eddies transfer energy to 
 
 The energy transferred to smaller scales can be evaluated as:
 \begin{equation}
-	\frac{k_0}{\tau_0} \approx \frac{u_0^2}{\left( \ell_0 / u_0\right)} = \frac{u_0^3}{\ell_0} \propto \frac{U_0^3}{L_0} \propto \mathbbcal{E}_k
+	\frac{k_0}{\tau_0} \approx \frac{u_0^2}{\left( \ell_0 / u_0\right)} = \frac{u_0^3}{\ell_0} \propto \frac{U_0^3}{L_0} \propto \mathcal{E}
 \end{equation}
-the scaling of $\mathbbcal{E}_k$ with $U_0^3 / L_0$, independently from $\nu$ (at the high Reynolds numbers considered) proves to be consistent with the experimental results for free shear flows \cite{turbulent-flows}.
+the scaling of $\mathcal{E}$ with $U_0^3 / L_0$, independently from $\nu$ (at the high Reynolds numbers considered) proves to be consistent with the experimental results for free shear flows \cite{turbulent-flows}.
+
+\subsection{Kolmogorov's theory}
+With the Kolmogorov theory, a better characterization of the involved scales in high-Reynolds flows was proposed. The theory was stated in three hypotheses:
+\begin{itemize}
+	\item \textbf{Local isotropy hypothesis:} \textit{At sufficiently high Reynolds numbers, the small-scales ($\ell \ll \ell_0$) turbulent motions are statistically isotropic.} 
+	
+	While larger eddies show an anisotropic behavior, as a result of flow geometry and boundary conditions, scales of motion under a certain length value (small-scales) have statistical properties that are independent of the large, anisotropic scales. Consequently, they exhibit a universal behavior, in the sense that they appear similar in every high-Reynolds number flow.
+	\item \textbf{First similarity hypothesis:} \textit{In every turbulent flow at sufficiently high Reynolds number, the statistics of the small-scale motions have a universal form that is uniquely determined by $\nu$ and $\mathcal{E}$.}
+	
+	As a consequence of this hypothesis, starting from the $\nu$ and $\mathcal{E}$ parameters, it is possible to identify a particular set of scales (Kolmogorov scales) with specific length, velocity and time characteristics. This result is obtained by dimensional analysis.
+	\begin{equation}
+		\eta = \left( \frac{\nu \, ^3}{\mathcal{E}} \right)^{1/4} \qquad 
+		u_\eta = (\nu \mathcal{E})^{1/4} \qquad \,\,\,
+		\tau_\eta = \left( \frac{\nu}{\mathcal{E}} \right)^{1/2}
+	\end{equation}
+	These scales are considered the smallest active scales in the turbulent motion. As a support for this assertion it is possible to observe that the related Reynolds number is unity ($Re_\eta = \eta \cdot u_\eta / \nu = 1$), meaning that viscous forces effectively dominate over inertial forces, allowing the dissipation phenomena.
+	\item \textbf{Second similarity hypothesis:} \textit{In every turbulent flow at sufficiently high Reynolds number, the statistics of the motions of scale $\ell$ in the range $\eta \ll \ell \ll \ell_0$  have a universal form that is uniquely determined by $\mathcal{E}$, independent of $\nu$.}
+	
+	This intermediate range of scales is known as the inertial subrange. In this region, the eddies are large enough that viscous effects are negligible (since $\ell \gg \eta$), but small enough that the large-scale anisotropic geometry is not felt (since $\ell \ll \ell_0$). Consequently, the energy cascade is dominated mainly by inertial forces. Again by dimensional analysis:
+	\begin{equation}
+		u(\ell) = (\mathcal{E} \, \ell \,)^{1/3} \qquad 
+		\tau(\ell \,) = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad 
+		Re(\ell \,) = \left( \frac{\ell}{\eta} \right)^{4/3}
+	\end{equation}
+	
+\end{itemize}
 
 \backmatter
 
