@@ -14,6 +14,7 @@
 \usepackage{amssymb}
 \usepackage{pdfrender}
 \usepackage{hyperref}
+\usepackage{enumitem}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
 \setlength{\parindent}{0pt}
@@ -231,7 +232,7 @@ The scale separation problem can be illustrated assuming to discretize a domain 
 As a consequence, this type of simulation for large Reynolds number, such as those related to application in the aeronautical field ($Re \sim 10^8$) requires computer resources very much greater than currently available super computer capacities, and is therefore not practicable \cite{les-sagaut}.
 
 \subsection{RANS-based simulation}
-An approach capable of reducing heavily the number of degrees of freedom to be computed is based on the Reynolds-Averaged Navier Stokes equations \eqref{eq:rans} previously described. In contrast to the direct resolution of all turbulent scales, such method focuses on the determination of the mean flow field. The contribution related to the fluctuation field (transfer of momentum due to turbulent fluctuations) appears in the equations as the Reynolds stress tensor $\langle \bm{u}' \bm{u}' \rangle$ and need to be modeled to close the system of equations.
+An approach capable of reducing heavily the number of degrees of freedom to be computed is based on the Reynolds-Averaged Navier Stokes equations \eqref{eq:rans} previously described. In contrast to the direct resolution of all turbulent scales, such method focuses on the determination of the mean flow field. The contribution related to the fluctuation field (transfer of momentum due to turbulent fluctuations) appears in the equations as the Reynolds stress tensor $\langle \bm{u}' \bm{u}' \rangle$ that needs to be determined to close the system of equations.
 
 The structure of the Reynolds stress tensor is:
 \begin{equation}
@@ -245,22 +246,48 @@ The structure of the Reynolds stress tensor is:
 \end{equation}
 it is constituted by nine components, but considering its symmetry, the independent terms are six. Recalling equation \eqref{eq:kinetic-energy} that defines the turbulent kinetic energy, it is possible to observe that the trace of the tensor corresponds to twice the turbulent kinetic energy $k$.
 
-Consequently, the modeling of the Reynolds stress tensor can be split in two contributions: a isotropic (spheric) one, related to $k$, and a deviatoric one. To model the latter, the Boussinesq hypothesis is introduced. This assumption relies on a direct analogy with a laminar velocity field, assuming that the turbulent shear stresses are linearly proportional to the mean strain rate tensor $E_{ij}$ through a scalar coefficient known as the eddy viscosity, $\nu_T$:
+From a computational perspective, the grid requirements for RANS simulations are significantly less stringent than for DNS. The mesh must only be fine enough to resolve the gradients of the mean flow and the geometry, rather than the smallest Kolmogorov scales. Consequently, the computational cost does not scale theoretically with the Reynolds number as strictly as in DNS, making RANS the industry standard for high-Reynolds number engineering applications \cite{cfd-blazek}, with best performances for attached flows.
+
+% Completare con problemi generali delle RANS: è tutto mediato!!!
+
+However, this reduction in computational effort comes at the cost of physical fidelity. By modeling the entire spectrum of turbulence, RANS simulations rely heavily on empirical constants and assumptions (e.g., isotropy of turbulence) that are not always accurate in complex flow regimes.
+
+While those characteristics are generally true, it should be noted that the advantages and limitations of RANS simulations are significantly dependent on the turbulence model of choice. To have an overall understanding of their range of applicability, the main properties of those models will be summarized below.
+
+To resolve the closure problem, varying levels of approximation can be adopted. Those approaches can be classified in the first place based on the order of resolved and modeled components (statistical moments). 
+
+\subsubsection{First-order closures}
+
+The most common and simple class of approaches is represented by first-order closures. In this case the Reynolds stress tensor (that is a second moment), is determined through a relation with the mean flow velocity gradients (first moment). First-order closures can be further classified in linear, mostly based on the Boussinesq hypothesis, and non-linear eddy-viscosity formulations.
+
+In linear formulations, the modeling of the Reynolds stress tensor can be split in two contributions: a isotropic one, related to $k$, and a deviatoric one. To model the latter, the Boussinesq hypothesis is introduced. This assumption relies on a direct analogy with a laminar velocity field, assuming that the turbulent shear stresses are linearly proportional to the mean strain rate tensor $E_{ij}$ through a scalar coefficient known as the eddy viscosity, $\nu_T$:
 \begin{equation}
     -\langle \, u_i' \, u_j' \, \rangle = - \frac{2}{3} \, k \, \delta_{ij} + 2 \, \nu_T \, E_{ij}
     \label{eq:boussinesq-model}
 \end{equation}
-The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a local property of the state of motion of the fluid. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for complex flows.
+The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a function of the fluid local state of motion. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek}.
 
-With the development of more complex non-linear eddy viscosity models, considering higher order terms to include contributions such as rotation tensors, the limitations discussed above are in part mitigated. 
+With the development of more complex non-linear eddy viscosity models, the limitations discussed above are in part mitigated. They extend the relation between the Reynolds stress tensor and $E_{ij}$, involving the mean flow rotation tensor $\Omega_{ij}$ and including also non-linear quadratic and cubic terms.
 
-% Inserire: limitazioni modelli ordine 1 -> modelli ordine 2 (RST e ARS) 
+First-order turbulence closures can be also classified by the number of governing equations used, those with a greater number of equation usually provide a fuller description of turbulence. 
+\begin{itemize}
+	\item Algebraic or zero-equations models such as the uniform turbulent viscosity one are characterized by extremely limited ranges of applicability.
+	\item One example of one-equation model is the Spalart-Allmaras, designed for aerodynamic flows but also in this case with clear limitations as a general model.
+	\item Two-equation models such as $k-\mathcal{E}$, $k-\omega$ and their blended implementations like Shear Stress Transfer (SST) are the most widely employed and for their importance will be further analyzed below.
+\end{itemize}
 
-From a computational perspective, the grid requirements for RANS simulations are significantly less stringent than for DNS. The mesh must only be fine enough to resolve the gradients of the mean flow and the geometry, rather than the smallest Kolmogorov scales. Consequently, the computational cost does not scale theoretically with the Reynolds number as strictly as in DNS, making RANS the industry standard for high-Reynolds number engineering applications \cite{cfd-blazek}.
+\paragraph{Model \boldmath$k - \mathcal{E}$} is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near wall behavior \cite{cfd-blazek}. 
+\begin{itemize}
+	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y+ \leq 1$) in order to stay valid and resolve the viscous sublayer.
+	\item By contrast, high Reynolds number turbulence models don't need damping functions, they are less stringent in term of grid resolution (first node inside $10 \leq y+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
+\end{itemize}
+Since the method is based on the Boussinesq assumption, it inherits all the limitations related to the linear eddy viscosity modeling already discussed previously.
+A third aspect regards the (non) universality: the model requires \textit{ad hoc} adjustments of its calibration constants based on the nature of the considered flow \cite{turbulent-flows}. It also degrade in performance with adverse pressure gradients.
 
-% Completare con problemi generali delle RANS
+\paragraph{Model \boldmath$k - \omega$} is the second most widely used two-equation model. The term $\omega$ is simply defined as: $\omega = \mathcal{E}/k$. It better performs for boundary layer flows and in presence of adverse pressure gradients. The main drawback instead, is related to its sensibility to the arbitrary choice of $\omega$ boundary condition value.
 
-However, this reduction in computational effort comes at the cost of physical fidelity. By modeling the entire spectrum of turbulence, RANS simulations rely heavily on empirical constants and assumptions (e.g., isotropy of turbulence) that are not always accurate in complex flow regimes. While RANS models generally perform well for attached flows, they often struggle to accurately predict flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek}. 
+\subsubsection{Second-order closures}
+%%%
 
 \backmatter
 
