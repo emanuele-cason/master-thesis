@@ -13,6 +13,7 @@
 \usepackage{bm}
 \usepackage{amssymb}
 \usepackage{pdfrender}
+\usepackage{hyperref}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
 \setlength{\parindent}{0pt}
@@ -76,7 +77,7 @@ Computational Fluid Dynamics (CFD) is the study of fluids through a numerical co
 
 As all mathematical models, the definition of the level of approximation have a primary importance also for fluid simulation. This choice concern various aspects of the description of the phenomena. Firstly the scale of reality considered: the reality can be described at an atomic, particle or micro- and macroscopic level. The last one is that used by classical mechanics, in particular continuum mechanics, that is the case considered in CFD.
 
-The second aspect to be defined in term of level of approximation is the accuracy of dynamic description. It consist on the choice of which forces should be considered exerted on the system, based on their relevance. The most general case is represented by the Navier-Stokes equations complemented by constitutive laws (empirical laws characterizing the fluid and state laws). This case can be simplified, obtaining for example the Euler equations, for the description of inviscid flows.
+The second aspect to be defined in terms of level of approximation is the accuracy of dynamic description. It consist on the choice of which forces should be considered exerted on the system, based on their relevance. The most general case is represented by the Navier-Stokes equations complemented by constitutive laws (empirical laws characterizing the fluid and state laws). This case can be simplified, obtaining for example the Euler equations, for the description of inviscid flows.
 
 Another aspect regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed later, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows.
 
@@ -109,12 +110,13 @@ where $u'$ is the fluctuation component and $U$ is the averaged quantity.
 
 By substituting in the Navier-Stokes equations the Reynolds decomposition and applying the Reynolds operator the Reynolds-Averaged Navier-Stokes (RANS) equations are obtained:
 \begin{equation}
-\left\{
-\begin{aligned}
-& \bm{\nabla} \cdot \bm{U} = 0 \\
-& \frac{D\bm{U}}{Dt} = -\frac{\bm{\nabla} P}{\rho} + \bm{\nabla} \cdot (2\nu \bm{E}) - \bm{\nabla} \cdot \langle \bm{u}' \bm{u}' \rangle
-\end{aligned}
-\right.
+	\left\{
+	\begin{aligned}
+	& \bm{\nabla} \cdot \bm{U} = 0 \\
+	& \frac{D\bm{U}}{Dt} = -\frac{\bm{\nabla} P}{\rho} + \bm{\nabla} \cdot (2\nu \bm{E}) - \bm{\nabla} \cdot \langle \bm{u}' \bm{u}' \rangle
+	\end{aligned}
+	\right.
+	\label{eq:rans}
 \end{equation}
 
 where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, and its modelling represents the closure problem of the RANS equations.
@@ -124,6 +126,7 @@ where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, 
 The RANS equations introduced above, allow demonstrating some fundamental mechanisms governing the energy dynamics within turbulent flows. Omitting for brevity the detailed algebraic steps, the mean and turbulent flow kinetic energies can be defined respectively as:
 \begin{equation}
     \mathcal{K} = \frac{1}{2} \, \bm{U} \cdot \bm{U} = \frac{1}{2} \, U_i \, U_i  \qquad \quad k = \frac{1}{2} \, \langle \bm{u}' \cdot \bm{u}' \rangle = \frac{1}{2} \, \langle u_i' \, u_i' \rangle
+	\label{eq:kinetic-energy}
 \end{equation}
 By manipulating the momentum equation, it is possible to derive a formulation for both the time derivative of the mean kinetic energy and turbulent kinetic energy terms:
 \begin{align}
@@ -221,9 +224,43 @@ The theoretical framework just introduced, highlights the wide range of scales o
 \subsection{Direct Numerical Simulation}
 The most direct approach to perform a simulation, is choosing a space (grid) and time discretization able to represent all the space-time scales, included the smaller ones (Kolmogorov scales), in a non-stationary, three dimensional domain. 
 
-In term of accuracy and level of description provided it is unrivalled, however for the number of degrees of freedom involved its cost is extremely high and its applicability is limited to low or moderate Reynolds numbers \cite{turbulent-flows}. These numerical experiments can be considered directly analogous to actual laboratory experiments \cite{cfd-anderson}.
+In terms of accuracy and level of description provided it is unrivalled at the point that these numerical experiments can be considered directly analogous to actual laboratory experiments \cite{cfd-anderson} and does not need validation. However for the number of degrees of freedom involved its cost is extremely high and its applicability is limited to low or moderate Reynolds numbers \cite{turbulent-flows}.
 
-The scale separation problem can be illustrated assuming to discretize a domain with dimensions $L \sim \ell_0$. To properly resolve the dissipative structures, the grid spacing $\Delta$ must be comparable to the Kolmogorov scale $\eta$. Applying the relations~\eqref{eq:k41-scale-ratios}, the number of grid points required along each axis is on the order of $Re\,^{3/4}$ and in term of time discretization, the required number of time-steps for a $\tau_0$ interval would be on the order of $Re\,^{1/2}$. Overall, the computational cost of the simulation scales with the Reynolds number, following a $Re\,^{11/4} \approx Re\,^3$ relation.
+The scale separation problem can be illustrated assuming to discretize a domain with dimensions $L \sim \ell_0$. To properly resolve the dissipative structures, the grid spacing $\Delta$ must be comparable to the Kolmogorov scale $\eta$. Applying the relations~\eqref{eq:k41-scale-ratios}, the number of grid points required along each axis is on the order of $Re\,^{3/4}$ and in terms of time discretization, the required number of time-steps for a $\tau_0$ interval would be on the order of $Re\,^{1/2}$. Overall, the computational cost of the simulation scales with the Reynolds number, following a $Re\,^{11/4} \approx Re\,^3$ relation.
+
+As a consequence, this type of simulation for large Reynolds number, such as those related to application in the aeronautical field ($Re \sim 10^8$) requires computer resources very much greater than currently available super computer capacities, and is therefore not practicable \cite{les-sagaut}.
+
+\subsection{RANS-based simulation}
+An approach capable of reducing heavily the number of degrees of freedom to be computed is based on the Reynolds-Averaged Navier Stokes equations \eqref{eq:rans} previously described. In contrast to the direct resolution of all turbulent scales, such method focuses on the determination of the mean flow field. The contribution related to the fluctuation field (transfer of momentum due to turbulent fluctuations) appears in the equations as the Reynolds stress tensor $\langle \bm{u}' \bm{u}' \rangle$ and need to be modeled to close the system of equations.
+
+The structure of the Reynolds stress tensor is:
+\begin{equation}
+    \langle \bm{u}' \bm{u}' \rangle = 
+    \begin{bmatrix}
+        \langle u'^2 \rangle & \langle u'v' \rangle & \langle u'w' \rangle \\
+        \langle v'u' \rangle & \langle v'^2 \rangle & \langle v'w' \rangle \\
+        \langle w'u' \rangle & \langle w'v' \rangle & \langle w'^2 \rangle
+    \end{bmatrix}
+    \label{eq:reynolds-stress-tensor}
+\end{equation}
+it is constituted by nine components, but considering its symmetry, the independent terms are six. Recalling equation \eqref{eq:kinetic-energy} that defines the turbulent kinetic energy, it is possible to observe that the trace of the tensor corresponds to twice the turbulent kinetic energy $k$.
+
+Consequently, the modeling of the Reynolds stress tensor can be split in two contributions: a isotropic (spheric) one, related to $k$, and a deviatoric one. To model the latter, the Boussinesq hypothesis is introduced. This assumption relies on a direct analogy with a laminar velocity field, assuming that the turbulent shear stresses are linearly proportional to the mean strain rate tensor $E_{ij}$ through a scalar coefficient known as the eddy viscosity, $\nu_T$:
+\begin{equation}
+    -\langle \, u_i' \, u_j' \, \rangle = - \frac{2}{3} \, k \, \delta_{ij} + 2 \, \nu_T \, E_{ij}
+    \label{eq:boussinesq-model}
+\end{equation}
+The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a local property of the state of motion of the fluid. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for complex flows.
+
+With the development of more complex non-linear eddy viscosity models, considering higher order terms to include contributions such as rotation tensors, the limitations discussed above are in part mitigated. 
+
+% Inserire: limitazioni modelli ordine 1 -> modelli ordine 2 (RST e ARS) 
+
+From a computational perspective, the grid requirements for RANS simulations are significantly less stringent than for DNS. The mesh must only be fine enough to resolve the gradients of the mean flow and the geometry, rather than the smallest Kolmogorov scales. Consequently, the computational cost does not scale theoretically with the Reynolds number as strictly as in DNS, making RANS the industry standard for high-Reynolds number engineering applications \cite{cfd-blazek}.
+
+% Completare con problemi generali delle RANS
+
+However, this reduction in computational effort comes at the cost of physical fidelity. By modeling the entire spectrum of turbulence, RANS simulations rely heavily on empirical constants and assumptions (e.g., isotropy of turbulence) that are not always accurate in complex flow regimes. While RANS models generally perform well for attached flows, they often struggle to accurately predict flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek}. 
 
 \backmatter
 
