@@ -265,14 +265,14 @@ In linear formulations, the modeling of the Reynolds stress tensor can be split 
     -\langle \, u_i' \, u_j' \, \rangle = - \frac{2}{3} \, k \, \delta_{ij} + 2 \, \nu_T \, E_{ij}
     \label{eq:boussinesq-model}
 \end{equation}
-The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a function of the fluid local state of motion. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek}.
+The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a function of the fluid local state of motion. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek} \cite{tubulence-wilcox}.
 
-With the development of more complex non-linear eddy viscosity models, the limitations discussed above are in part mitigated. They extend the relation between the Reynolds stress tensor and $E_{ij}$, involving the mean flow rotation tensor $\Omega_{ij}$ and including also non-linear quadratic and cubic terms.
+With the development of more complex non-linear eddy viscosity models, the limitations discussed above are in part mitigated. They extend the relation between the Reynolds stress tensor and $E_{ij}$, involving the mean flow rotation tensor $\Omega_{ij}$ and including also non-linear quadratic and cubic terms \cite{rans-nl-model-lumley}.
 
 First-order turbulence closures can be also classified by the number of governing equations used, those with a greater number of equation usually provide a fuller description of turbulence. 
 \begin{itemize}
 	\item Algebraic or zero-equations models such as the uniform turbulent viscosity one are characterized by extremely limited ranges of applicability.
-	\item One example of one-equation model is the Spalart-Allmaras, designed for aerodynamic flows but also in this case with clear limitations as a general model.
+	\item One-equation models are also very limited in possible application fields, an example is the Spalart-Allmaras model, designed for aerodynamic flows. The only real advantages of using one-equation model rather than a two-equation model are related with stability and simplicity of the numerical solution \cite{tubulence-wilcox}.
 	\item Two-equation models such as $k-\mathcal{E}$, $k-\omega$ and their blended implementations like Shear Stress Transfer (SST) are the most widely employed and for their importance will be further analyzed below.
 \end{itemize}
 
@@ -284,10 +284,12 @@ First-order turbulence closures can be also classified by the number of governin
 Since the method is based on the Boussinesq assumption, it inherits all the limitations related to the linear eddy viscosity modeling already discussed previously.
 A third aspect regards the (non) universality: the model requires \textit{ad hoc} adjustments of its calibration constants based on the nature of the considered flow \cite{turbulent-flows}. It also degrade in performance with adverse pressure gradients.
 
-\paragraph{Model \boldmath$k - \omega$} is the second most widely used two-equation model. The term $\omega$ is simply defined as: $\omega = \mathcal{E}/k$. It better performs for boundary layer flows and in presence of adverse pressure gradients. The main drawback instead, is related to its sensibility to the arbitrary choice of $\omega$ boundary condition value.
+\paragraph{Model \boldmath$k - \omega$} is the second most widely used two-equation model. The term $\omega$ is simply defined as: $\omega = \mathcal{E}/k$. It better performs for boundary layer flows and in presence of moderate adverse pressure gradients. The main drawback instead, is related to its sensibility to the arbitrary choice of $\omega$ boundary condition value \cite{turbulent-flows} \cite{tubulence-wilcox}.
+
+\paragraph{Model SST} (Shear Stress Transport) merges the $k-\omega$ model with a high Reynolds number $k-\mathcal{E}$ model, with the intent of combining the advantages of the two. The $k-\omega$ is used in the boundary layer since it doesn't require damping functions and it better performs in presence of adverse pressure gradients, instead $k-\mathcal{E}$ is employed in wake regions of the boundary layer. The switching between the models is ensured by a blending function, dependent on wall proximity.
 
 \subsubsection{Second-order closures}
-%%%
+Second-order closures, unlike first-order models that rely on the Boussinesq hypothesis represent a more complex and flexible class of approaches to determine the Reynolds stress tensor. Reynolds Stress Transport (RST) models allow to solve individual transport equations for the six independent component of the Reynolds stress tensor. This approach naturally include effects of streamline curvature, sudden changes in strain rate, secondary motions and the history effects \cite{tubulence-wilcox}. With a similar accuracy, but a slightly lower level of description and complexity, the Algebraic Reynolds Stress (ARS) models employ only two transport equations, generally for the turbulent kinetic energy and for the dissipation rate. Despite their increased accuracy both RST and ARS models suffer numerical issues and first-order models are more widely used in practice \cite{cfd-blazek}.
 
 \backmatter
 
