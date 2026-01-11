@@ -319,6 +319,19 @@ However, these advantages come with a substantial computational cost. In terms o
 % Postpone discussion
 Considering the central role of this methodology in the present work, and specifically the application of Wall-Modeled LES, this topic will be addressed in detail in the following chapter.
 
+\subsection{Hybrid RANS/LES Simulation}
+% Basic idea = main advantage
+Another possible approach to drastically reduce the computational cost of simulating turbulent flows is to is to couple LES with the RANS models. The fundamental idea behind this strategy is to perform LES only in those regions where it is strictly necessary, typically where the flow is dominated by large-scale structures or massive separation. Conversely, the RANS approach is employed in the remainder of the domain, such as in the boundary layer regions, where it is known to be reliable and computationally efficient.
+
+% Classification
+Following the classification proposed by Fröhlich and von Terzi \cite{urans-hybrid}, these techniques are categorized into \textit{unified} and \textit{segregated} modeling.
+
+% Unified = blending (pro/con) + interfacing (pro/con)
+Unified modeling utilizes the same velocity transport equation in the entire domain, while the transition between RANS and LES models is managed locally. The switching between different models can be performed with a \textit{blending} function approach or by using a pure LES model in one part of the domain and a pure RANS model in the other, with the so called \textit{interfacing} approach, this is the case for instance of Detached Eddy Simulations (DES). While this approach is user-friendly as it avoids explicit zonal boundaries, it suffers from the potential existence of a "gray area" at the interface.
+
+Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each subdomain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define subdomains and involves complex implementation for the coupling across interfaces.
+
+
 \backmatter
 
 \printbibliography[heading=bibintoc, title={Bibliography}]
