@@ -213,12 +213,13 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 		u(\ell) = (\mathcal{E} \, \ell \,)^{1/3} \qquad 
 		\tau(\ell \,) = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad 
 		Re(\ell \,) = \left( \frac{\ell}{\eta} \right)^{4/3}
+		\label{eq:k41-inertial-subrange}
 	\end{equation}
 \end{itemize}
 
 In summary, the energy input associated with the mean velocity field (for example as a result of convection) is in part transferred from one point of the domain to another by the flux term, another part is transferred down to the inertial subrange by the production term. This transfer to smaller and smaller scales continues until the Kolmogorov scales are reached, the effects of viscosity become dominant and the energy can be dissipated as heat. 
 
-\chapter{Simulation techniques}
+\chapter{Simulation techniques overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
 
 \section{Direct Numerical Simulation}
@@ -331,6 +332,59 @@ Unified modeling utilizes the same velocity transport equation in the entire dom
 % Segregated (pro/con)
 Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each subdomain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define subdomains and involves complex implementation for the coupling across interfaces.
 
+\chapter{Mathematical and numerical framework}
+The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modelling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical and numerical framework of the solver, which has been specifically customized and further developed for the purposes of this study. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, while the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) models. Furthermore, the chapter provides a description of the advanced methodologies implemented to handle high-Reynolds number flows and complex geometries, specifically focusing on the Wall-Modelling strategies and the Immersed Boundary Method (IBM).
+
+\section{Filtering operation}
+Filtering is the operation that allows to mathematically separate the turbulent scales of motion. This decomposition is determined by a characteristic arbitrary cutoff width $\Delta_F$. In the spectral domain, this procedure acts as a low-pass filter: it retains the low-frequency, large-scale contributions, while the high-frequency fluctuations associated with spatial scales smaller than $\Delta_F$ are cut off to be modeled. Considering a generic field, this decomposition can be mathematically represented as:
+\begin{equation}
+	\phi \, (\bm{x}, \, t) = \widetilde{\phi} \, (\bm{x}, \, t) + \phi'' \, (\bm{x}, \, t)
+\end{equation}
+Considering a homogeneous and isotropic case, where the filter acts independently of position and orientation, the general space-time filtering operation can be expressed as:
+\begin{equation}
+    \widetilde{\phi} \, (\bm{x}, \, t) = \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} \phi \, (\bm{r}, \, \tau) \; G \, (\bm{x} - \bm{r}, \, t - \tau) \, d\tau \, d^3 \, \bm{r} = G \ast \phi
+    \label{eq:les-filter-operation}
+\end{equation}
+where:
+\begin{itemize}
+	\item $\phi$ represents the generic flow variable.
+	\item $\widetilde{\phi}$ is the filtered generic flow variable.
+	\item $\phi''$ is the residual/subgrid component.
+	\item The double integral represent a temporal (one dimensional) and spatial (three dimensional) "scan" of the entire domain.
+	\item $G$ is the filter kernel, dependent on the choice of $\Delta_F$.
+\end{itemize}
+Formally, this expression represents a convolution product between the physical quantity and the filter function. In simpler terms, this is a sort of weighted average operation of the values assumed by the field in the proximity of the considered point.
+
+It should be noted that, despite the equation \eqref{eq:les-filter-operation} represents a filtering operation in the general case (for both space and time), the imposition of a spatial filtering automatically induces an implicit time filtering, according to the Kolmogorov's relations \eqref{eq:k41-inertial-subrange}, so it is possible to consider sufficient the spatial filtering alone \cite{les-sagaut}.
+
+\subsection{Properties of the filtering operator}
+
+In order to derive the equations for LES from Navier-Stokes equations, the filtering operator is required to satisfy three fundamental properties:
+
+\begin{enumerate}
+    \item \textbf{Conservation of constants:} The filter kernel must be normalized, such that the integral over the entire domain equals unity. This ensures that the filtering of a constant value returns the constant itself, preserving the global conservation of physical quantities.
+    \begin{equation}
+        \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} G(\bm{x}, \tau) \, d\tau \, d^3\bm{x} = 1
+    \end{equation}
+    
+    \item \textbf{Linearity:} The filtering operation is linear, meaning that the filter of a sum is equal to the sum of the filtered quantities.
+    \begin{equation}
+        \widetilde{\phi + \psi} = \widetilde{\phi} + \widetilde{\psi}
+    \end{equation}
+    
+    \item \textbf{Commutation with differentiation:} The result is independent of the sequence in which differentiation and filtering are performed.
+    \begin{equation}
+        \frac{\partial \widetilde{\phi}}{\partial s} = \widetilde{\frac{\partial \phi}{\partial s}}, \qquad s = \bm{x}, t
+    \end{equation}
+\end{enumerate}
+
+It is important to observe that a filter satisfying these properties differs substantially from the Reynolds averaging operator used in RANS. As a consequence:
+\begin{equation}
+    \widetilde{\widetilde{\phi}} \neq \widetilde{\phi} \qquad \widetilde{\phi''} \neq 0
+\end{equation}
+This implies that applying the filter twice produces a result different from a single application and the filtered fluctuation is not necessarily zero.
+
+\section{Governing equations}
 
 \backmatter
 
