@@ -424,6 +424,30 @@ Conversely, the implicit filtering approach relies on the computational grid and
 
 \section{Governing equations}
 
+Applying the filtering operation to the incompressible Navier-Stokes equations, the governing equations for LES are obtained:
+\begin{equation}
+\label{eq:les-equations}
+\left\{
+\hspace{0.15cm}
+\begin{aligned}
+    & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0 \\[12pt]
+    & \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial \, x_j} \left( 2 \, \nu \, \widetilde{e}_{ij} \right) - \frac{\partial}{\partial \, x_j} \left( \widetilde{u_i \, u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
+\end{aligned}
+\right.
+\end{equation}
+where $\widetilde{e}_{ij}$ represents the resolved rate-of-strain tensor and $\tau_{ij}^R$ is the residual (or subgrid-scale) stress tensor:
+\begin{equation}
+    \widetilde{e}_{ij} = \frac{1}{2} \left( \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} + \frac{\partial \, \widetilde{u}_j}{\partial \, x_i} \right) 
+    \qquad 
+    \tau_{ij}^R = \left( \widetilde{u_i u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
+\end{equation}
+The residual stress tensor $\tau_{ij}^R$ represents the effect of the unresolved scales on the resolved field and, being symmetric ($\tau_{ij}^R = \tau_{ji}^R \,$), it introduces six independent components.
+
+The system consists of only 4 equations (1 continuity and 3 momentum equations), while the dependent variables to be determined are 10: the three filtered velocity components $\widetilde{u}_i$, the filtered pressure $\widetilde{p}$, and the six independent components of the residual stress tensor. Since the number of unknowns (10) exceeds the number of available equations (4), the system is mathematically unclosed. Therefore, a closure model is required to express the unknown stresses $\tau_{ij}^R$ in terms of the resolved flow variables.
+
+\subsection{Sub-Grid Scales modelling}
+
+
 \backmatter
 
 \printbibliography[heading=bibintoc, title={Bibliography}]
