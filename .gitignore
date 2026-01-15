@@ -13,3 +13,5 @@
 *.lof
 *.lot
 .vscode/
+img/*.py
+img/les-filters/filter-functions.py

@@ -15,6 +15,7 @@
 \usepackage{pdfrender}
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{subcaption}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
 \setlength{\parindent}{0pt}
@@ -383,6 +384,43 @@ It is important to observe that a filter satisfying these properties differs sub
     \widetilde{\widetilde{\phi}} \neq \widetilde{\phi} \qquad \widetilde{\phi''} \neq 0
 \end{equation}
 This implies that applying the filter twice produces a result different from a single application and the filtered fluctuation is not necessarily zero.
+
+\subsection{Explicit and implicit filtering}
+
+It is important to distinguish between explicit and implicit filtering.
+
+The explicit filtering approach involves the application of a distinct mathematical operator to the flow field, with a defined characteristic length $\overline{\Delta}$, independent on the grid resolution $\Delta$. The three most common explicit filters are (Figure \ref{fig:les-filters}):
+\begin{itemize}
+    \item \textbf{Box or top-hat filter:} performs a local spatial average of the flow variables over a defined control volume. Its oscillating transfer function causes the introduction of high wavenumber noise.
+    
+    \item \textbf{Gaussian filter:} is based on a spatial Gaussian distribution. It has smooth characteristics in both physical and spectral spaces preventing the generation of numerical oscillations.
+    
+    \item \textbf{Sharp spectral cutoff filter:} eliminates all Fourier modes exceeding a specific cutoff wavenumber. Although it provides a definitive separation of scales, its non-locality in physical space can induce significant oscillations.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/les-filters/filter_physical.jpg}
+        \caption{Physical space representation}
+        \label{fig:les-filters-ph}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/les-filters/filter_spectral.jpg}
+        \caption{Spectral space representation}
+        \label{fig:les-filters-sp}
+    \end{subfigure}
+    
+    \caption{One-dimensional (for simplicity) comparison of the three primary filter kernels. \textbf{Blue} for the box (top-hat) filter, \textbf{red} for the Gaussian filter, and \textbf{yellow} for the sharp spectral cutoff filter.}
+    \label{fig:les-filters}
+\end{figure}
+
+This explicit approach allows decouple the filter length and the grid resolution obtaining a better control on which scales are resolved and which are modeled. This has important implications in term of stability control and allows to perform mesh convergence analysis varying the grid resolution alone.
+
+Conversely, the implicit filtering approach relies on the computational grid and the discretization scheme to act as the filter. In this case, the filter width is coupled with the local mesh resolution, assuming that the grid itself defines the cutoff frequency without the need for an external mathematical operator. This allows to save a relevant part of the computational cost.
 
 \section{Governing equations}
 
