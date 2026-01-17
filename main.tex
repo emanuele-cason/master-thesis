@@ -446,6 +446,11 @@ The residual stress tensor $\tau_{ij}^R$ represents the effect of the unresolved
 The system consists of only 4 equations (1 continuity and 3 momentum equations), while the dependent variables to be determined are 10: the three filtered velocity components $\widetilde{u}_i$, the filtered pressure $\widetilde{p}$, and the six independent components of the residual stress tensor. Since the number of unknowns (10) exceeds the number of available equations (4), the system is mathematically unclosed. Therefore, a closure model is required to express the unknown stresses $\tau_{ij}^R$ in terms of the resolved flow variables.
 
 \subsection{Sub-Grid Scales modelling}
+The modelling of the coupling term between resolved and sub-grid scales has to be performed on the basis of the resolved scales alone. As explained by Sagaut \cite{les-sagaut} this can be done with two approaches:
+\begin{itemize}
+	\item \textbf{Structural modelling:} Allows for the modelling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scales structures. This is feasible when small scales shows an universal structure or a clear correlation with the structure of the resolved field.
+ 	\item \textbf{Functional modelling:} Consist in the modelling of the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This require an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
+\end{itemize}
 
 
 \backmatter
