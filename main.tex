@@ -16,6 +16,10 @@
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
 \setlength{\parindent}{0pt}
@@ -66,6 +70,101 @@
 \end{titlepage}
 
 \tableofcontents
+
+\newpage
+\begingroup
+\let\cleardoublepage\clearpage
+\chapter*{Nomenclature}
+\endgroup
+\addcontentsline{toc}{chapter}{Nomenclature}
+
+
+\begin{longtable}{p{0.15\textwidth} p{0.80\textwidth}}
+
+    % First page header
+    \toprule
+    \textbf{Symbol} & \textbf{Description} \\
+    \midrule
+    \endfirsthead
+
+    % Following pages header
+    \caption[]{Nomenclature (continued)} \\
+    \toprule
+    \textbf{Symbol} & \textbf{Description} \\
+    \midrule
+    \endhead
+
+    % Footer
+    \midrule
+    \multicolumn{2}{r}{\textit{Continued on next page...}} \\
+    \endfoot
+
+    \bottomrule
+    \endlastfoot
+
+    % Navier-Stokes
+	$x_i$, $x$ & Spatial component \\
+	$t$ & Time \\
+	$p$ & Pressure \\
+	$e_{ij}$ & Strain rate tensor \\
+	$\omega_{ij}$ & Rotation rate tensor \\
+	$\mu$ & Dynamic viscosity \\
+    $\nu$ & Kinematic viscosity \\
+	$\rho$ & Fluid density \\
+	$Re$ & Reynolds number \\
+
+	% RANS/LES decompositions
+	\addlinespace
+	$u_i$, $u$ & Instantaneous velocity component \\
+    $U$, $\langle u \rangle$ & Mean flow velocity, Reynolds Averaged \\
+    $u'$ & Velocity fluctuation, Reynolds decomposition \\
+    $\widetilde{u}_i$, $\widetilde{u}$ & Filtered velocity, LES Resolved field \\
+    $u''$ & Residual component, LES Sub-Grid Scale \\
+
+	% Energy cascade
+	\addlinespace
+	$\bm{F}_{\mathcal{K}}$, $\bm{F}_{k}$ & Flux of kinetic energy for mean and turbulent flow \\
+	$\mathcal{K}$, $k$ & Kinetic energy of the mean and turbulent flow \\
+	$\mathcal{P}$ & Turbulent energy production \\
+	$\mathcal{D}$ & Dissipation for the mean flow\\
+    $\mathcal{E}$ & Dissipation for the turbulent flow \\
+	$\Omega$ & Generic large integration control volume \\
+	$\mathbb{C}_{\mathcal{K}}$, $\mathbb{C}_{k}$ & Convection terms for mean and turbulent flow, integrated over $\Omega$ \\
+	$\mathbb{F}_{\mathcal{K}}$, $\mathbb{F}_{k}$ & Flux of kinetic energy for mean and turbulent flow, integrated over $\Omega$ \\
+	$\mathbb{D}_{\mathcal{K}}$ & Dissipation for the mean flow, integrated over $\Omega$ \\
+	$\mathbb{P}$ & Turbulent energy production, integrated over $\Omega$ \\
+	$\mathbbcal{E}$ & Dissipation for the turbulent flow, integrated over $\Omega$ \\
+
+	% Richardson/Kolmogorov theories
+	\addlinespace
+	$L_0$, $U_0$ & Characteristic length and velocity scales of the domain\\
+    $\ell_0$, $u_0$, $\tau_0$ & Characteristic length, velocity and time of the large scales \\
+	$\eta$, $u_\eta$, $\tau_\eta$ & Characteristic length, velocity and time of the Kolmogorov scales \\
+	
+	% LES
+	\addlinespace    
+    $G$ & Spatial filter kernel function \\
+    $\Delta$ & Grid spatial resolution \\
+    $\Delta_F$ & Filter width \\
+    $\tau_{ij}^R$ & Residual (Sub-Grid Scale) stress tensor \\
+	$k_R$ & Residual (Sub-Grid Scale) flow kinetic energy \\
+	$\nu_R$ & Residual (Sub-Grid Scale) eddy viscosity \\
+	$C_S$ & Tuning constant for Smagorinsky model \\
+
+    % Acronyms
+    \addlinespace
+    CFD & Computational Fluid Dynamics \\
+    DNS & Direct Numerical Simulation \\
+    IBM & Immersed Boundary Method \\
+    LES & Large Eddy Simulation \\
+    RANS & Reynolds-Averaged Navier-Stokes \\
+    SGS & Sub-Grid Scale \\
+    SST & Shear Stress Transport \\
+    URANS & Unsteady RANS \\
+    WM-LES & Wall-Modeled LES \\
+    WR-LES & Wall-Resolved LES \\
+
+\end{longtable}
 
 \mainmatter
 
@@ -389,7 +488,7 @@ This implies that applying the filter twice produces a result different from a s
 
 It is important to distinguish between explicit and implicit filtering.
 
-The explicit filtering approach involves the application of a distinct mathematical operator to the flow field, with a defined characteristic length $\overline{\Delta}$, independent on the grid resolution $\Delta$. The three most common explicit filters are (Figure \ref{fig:les-filters}):
+The explicit filtering approach involves the application of a distinct mathematical operator to the flow field, with a defined characteristic length $\Delta_F$, independent on the grid resolution $\Delta$. The three most common explicit filters are (Figure \ref{fig:les-filters}):
 \begin{itemize}
     \item \textbf{Box or top-hat filter:} performs a local spatial average of the flow variables over a defined control volume. Its oscillating transfer function causes the introduction of high wavenumber noise.
     
@@ -420,7 +519,7 @@ The explicit filtering approach involves the application of a distinct mathemati
 
 This explicit approach allows decouple the filter length and the grid resolution obtaining a better control on which scales are resolved and which are modeled. This has important implications in term of stability control and allows to perform mesh convergence analysis varying the grid resolution alone.
 
-Conversely, the implicit filtering approach relies on the computational grid and the discretization scheme to act as the filter. In this case, the filter width is coupled with the local mesh resolution, assuming that the grid itself defines the cutoff frequency without the need for an external mathematical operator. This allows to save a relevant part of the computational cost.
+Conversely, the implicit filtering approach relies on the computational grid and the discretization scheme to act as the filter. In this case, the filter width is coupled with the local mesh resolution ($\Delta_F = \Delta$), assuming that the grid itself defines the cutoff frequency without the need for an external mathematical operator. This allows to save a relevant part of the computational cost.
 
 \section{Governing equations}
 
@@ -452,6 +551,38 @@ The modelling of the coupling term between resolved and sub-grid scales has to b
  	\item \textbf{Functional modelling:} Consist in the modelling of the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This require an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
 \end{itemize}
 
+\subsubsection{Smagorinsky model}
+As most of the strategies for functional modelling, the Smagorinsky approach models the sub-grid scale tensor $\tau_{ij}^R$, splitting it in a isotropic and a deviatoric contribution:
+\begin{equation}
+	- \, \tau_{ij}^R = - \, \frac{2}{3} \, k_R \, \delta_{ij} + 2 \, \nu_R \, \widetilde{e}_{ij}
+\end{equation}
+The first term is related to the sub-grid kinetic energy $k_R$, while the second one is modeled as a term linearly proportional to the deformation tensor of the resolved field $\widetilde{e}_{ij}$ through the sub-grid scale eddy viscosity coefficient $\nu_R$.
+
+In the Smagorinsky model the $\nu_R$ scalar is defined in turn as: 
+\begin{equation}
+	\nu_R = (C_S \, \Delta_F)^2 \, |\widetilde{e}_{ij}| \qquad |\widetilde{e}_{ij}| := \sqrt{2 \, \widetilde{e}_{ij} \, \widetilde{e}_{ij}}
+\end{equation}
+where $\Delta_F$ is the sub-grid characteristic length scale (or filter size), $|\widetilde{e}_{ij}|$ is a characteristic sub-grid velocity (defined above) and $C_S$ is a tuning constant.
+
+The idea behind the definition of the eddy viscosity $\nu_R$ is to emulate the energy transfer between resolved scales and sub-grid ones, by introducing an artificial dissipation at the $\Delta_F$ scale.
+
+To understand one of the main limitations of the Smagorinsky model, it is useful to recall the formulation of the velocity gradient tensor $\nabla \, \widetilde{\bm{u}}$:
+\begin{equation}
+    \nabla \, \widetilde{\mathbf{u}} = \frac{\partial \, \widetilde{u_i}}{\partial \, x_j} = 
+    \underbrace{ \frac{1}{2} \left( \frac{\partial \, \widetilde{u_i}}{\partial \, x_j} + \frac{\partial \, \widetilde{u_j}}{\partial \,x_i} \right) \rule[-15pt]{0pt}{0pt} }_{\text{\footnotesize $\widetilde{e_{ij}}$ (Strain rate)}} 
+    + 
+    \underbrace{ \frac{1}{2} \left( \frac{\partial \, \widetilde{u_i}}{\partial \, x_j} - \frac{\partial \, \widetilde{u_j}}{\partial \,x_i} \right) \rule[-15pt]{0pt}{0pt} }_{\text{\footnotesize $\widetilde{\omega_{ij}}$ (Rotation rate)}} 
+\end{equation}
+The studies of Wray and Hunt \cite{wray-hunt} of the properties of isotropic turbulence structures, based on DNS analyses, showed that while kinetic energy is concentrated in the streams, the dissipation phenomenon occurs in:
+\begin{itemize}
+	\item Eddies: where vorticity is dominant over irrotational strain ($|\bm{\widetilde{\omega}}| \gg |\bm{\widetilde{e}}|$).
+	\item Convergence zones: where the prevalent term is the irrotational strain ($|\bm{\widetilde{e}}| \gg |\bm{\widetilde{\omega}}|$).
+\end{itemize}
+Since the Smagorinsky formulation takes into account the $\widetilde{e_{ij}}$ term alone, it is sensitive only to convergence zones, and it fails to correctly model regions where vorticity is dominant.
+
+Another problem of the model is related to its near-wall behavior. By construction, the Smagorinsky formulation yields a non-zero eddy viscosity $\nu_t$ whenever a velocity gradient exists. However, turbulent fluctuations are naturally damped near solid boundaries, implying that $\nu_t$ should disappear at the wall. A common approach to correct this behavior is the use of Van Driest damping functions. While this approach allows to improve the results, this is an ad hoc modification that depends on the distance to the wall ($y$), making it difficult to implement for complex geometries. Furthermore, this damping leads to an eddy-viscosity scaling of $O(y^2)$, which is inconsistent with the correct theoretical behavior of $O(y^3)$ \cite{wale}.
+
+\subsubsection{WALE model}
 
 \backmatter
 
