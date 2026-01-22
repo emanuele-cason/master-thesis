@@ -78,91 +78,92 @@
 \endgroup
 \addcontentsline{toc}{chapter}{Nomenclature}
 
-
 \begin{longtable}{p{0.15\textwidth} p{0.80\textwidth}}
 
-    % First page header
-    \toprule
-    \textbf{Symbol} & \textbf{Description} \\
-    \midrule
-    \endfirsthead
+	% First page header
+	\toprule
+	\textbf{Symbol}                              & \textbf{Description}                                                         \\
+	\midrule
+	\endfirsthead
 
-    % Following pages header
-    \caption[]{Nomenclature (continued)} \\
-    \toprule
-    \textbf{Symbol} & \textbf{Description} \\
-    \midrule
-    \endhead
+	% Following pages header
+	\caption[]{Nomenclature (continued)}                                                                                        \\
+	\toprule
+	\textbf{Symbol}                              & \textbf{Description}                                                         \\
+	\midrule
+	\endhead
 
-    % Footer
-    \midrule
-    \multicolumn{2}{r}{\textit{Continued on next page...}} \\
-    \endfoot
+	% Footer
+	\midrule
+	\multicolumn{2}{r}{\textit{Continued on next page...}}                                                                      \\
+	\endfoot
 
-    \bottomrule
-    \endlastfoot
+	\bottomrule
+	\endlastfoot
 
-    % Navier-Stokes
-	$x_i$, $x$ & Spatial component \\
-	$t$ & Time \\
-	$p$ & Pressure \\
-	$e_{ij}$ & Strain rate tensor \\
-	$\omega_{ij}$ & Rotation rate tensor \\
-	$\mu$ & Dynamic viscosity \\
-    $\nu$ & Kinematic viscosity \\
-	$\rho$ & Fluid density \\
-	$Re$ & Reynolds number \\
+	% Navier-Stokes
+	$x_i$, $x$                                   & Spatial component                                                            \\
+	$t$                                          & Time                                                                         \\
+	$p$                                          & Pressure                                                                     \\
+	$e_{ij}$                                     & Strain rate tensor                                                           \\
+	$\omega_{ij}$                                & Rotation rate tensor                                                         \\
+	$\mu$                                        & Dynamic viscosity                                                            \\
+	$\nu$                                        & Kinematic viscosity                                                          \\
+	$\rho$                                       & Fluid density                                                                \\
+	$Re$                                         & Reynolds number                                                              \\
 
 	% RANS/LES decompositions
 	\addlinespace
-	$u_i$, $u$ & Instantaneous velocity component \\
-    $U$, $\langle u \rangle$ & Mean flow velocity, Reynolds Averaged \\
-    $u'$ & Velocity fluctuation, Reynolds decomposition \\
-    $\widetilde{u}_i$, $\widetilde{u}$ & Filtered velocity, LES Resolved field \\
-    $u''$ & Residual component, LES Sub-Grid Scale \\
+	$u_i$, $u$                                   & Instantaneous velocity component                                             \\
+	$U$, $\langle u \rangle$                     & Mean flow velocity, Reynolds Averaged                                        \\
+	$u'$                                         & Velocity fluctuation, Reynolds decomposition                                 \\
+	$\widetilde{u}_i$, $\widetilde{u}$           & Filtered velocity, LES Resolved field                                        \\
+	$u''$                                        & Residual component, LES Sub-Grid Scale                                       \\
 
 	% Energy cascade
 	\addlinespace
-	$\bm{F}_{\mathcal{K}}$, $\bm{F}_{k}$ & Flux of kinetic energy for mean and turbulent flow \\
-	$\mathcal{K}$, $k$ & Kinetic energy of the mean and turbulent flow \\
-	$\mathcal{P}$ & Turbulent energy production \\
-	$\mathcal{D}$ & Dissipation for the mean flow\\
-    $\mathcal{E}$ & Dissipation for the turbulent flow \\
-	$\Omega$ & Generic large integration control volume \\
-	$\mathbb{C}_{\mathcal{K}}$, $\mathbb{C}_{k}$ & Convection terms for mean and turbulent flow, integrated over $\Omega$ \\
+	$\bm{F}_{\mathcal{K}}$, $\bm{F}_{k}$         & Flux of kinetic energy for mean and turbulent flow                           \\
+	$\mathcal{K}$, $k$                           & Kinetic energy of the mean and turbulent flow                                \\
+	$\mathcal{P}$                                & Turbulent energy production                                                  \\
+	$\mathcal{D}$                                & Dissipation for the mean flow                                                \\
+	$\mathcal{E}$                                & Dissipation for the turbulent flow                                           \\
+	$\Omega$                                     & Generic large integration control volume                                     \\
+	$\mathbb{C}_{\mathcal{K}}$, $\mathbb{C}_{k}$ & Convection terms for mean and turbulent flow, integrated over $\Omega$       \\
 	$\mathbb{F}_{\mathcal{K}}$, $\mathbb{F}_{k}$ & Flux of kinetic energy for mean and turbulent flow, integrated over $\Omega$ \\
-	$\mathbb{D}_{\mathcal{K}}$ & Dissipation for the mean flow, integrated over $\Omega$ \\
-	$\mathbb{P}$ & Turbulent energy production, integrated over $\Omega$ \\
-	$\mathbbcal{E}$ & Dissipation for the turbulent flow, integrated over $\Omega$ \\
+	$\mathbb{D}_{\mathcal{K}}$                   & Dissipation for the mean flow, integrated over $\Omega$                      \\
+	$\mathbb{P}$                                 & Turbulent energy production, integrated over $\Omega$                        \\
+	$\mathbbcal{E}$                              & Dissipation for the turbulent flow, integrated over $\Omega$                 \\
 
 	% Richardson/Kolmogorov theories
 	\addlinespace
-	$L_0$, $U_0$ & Characteristic length and velocity scales of the domain\\
-    $\ell_0$, $u_0$, $\tau_0$ & Characteristic length, velocity and time of the large scales \\
-	$\eta$, $u_\eta$, $\tau_\eta$ & Characteristic length, velocity and time of the Kolmogorov scales \\
-	
-	% LES
-	\addlinespace    
-    $G$ & Spatial filter kernel function \\
-    $\Delta$ & Grid spatial resolution \\
-    $\Delta_F$ & Filter width \\
-    $\tau_{ij}^R$ & Residual (Sub-Grid Scale) stress tensor \\
-	$k_R$ & Residual (Sub-Grid Scale) flow kinetic energy \\
-	$\nu_R$ & Residual (Sub-Grid Scale) eddy viscosity \\
-	$C_S$ & Tuning constant for Smagorinsky model \\
+	$L_0$, $U_0$                                 & Characteristic length and velocity scales of the domain                      \\
+	$\ell_0$, $u_0$, $\tau_0$                    & Characteristic length, velocity and time of the large scales                 \\
+	$\eta$, $u_\eta$, $\tau_\eta$                & Characteristic length, velocity and time of the Kolmogorov scales            \\
 
-    % Acronyms
-    \addlinespace
-    CFD & Computational Fluid Dynamics \\
-    DNS & Direct Numerical Simulation \\
-    IBM & Immersed Boundary Method \\
-    LES & Large Eddy Simulation \\
-    RANS & Reynolds-Averaged Navier-Stokes \\
-    SGS & Sub-Grid Scale \\
-    SST & Shear Stress Transport \\
-    URANS & Unsteady RANS \\
-    WM-LES & Wall-Modeled LES \\
-    WR-LES & Wall-Resolved LES \\
+	% LES
+	\addlinespace
+	$G$                                          & Spatial filter kernel function                                               \\
+	$\Delta$                                     & Grid spatial resolution                                                      \\
+	$\Delta_F$                                   & Filter width                                                                 \\
+	$\tau_{ij}^R$                                & Residual (Sub-Grid Scale) stress tensor                                      \\
+	$k_R$                                        & Residual (Sub-Grid Scale) flow kinetic energy                                \\
+	$\nu_R$                                      & Residual (Sub-Grid Scale) eddy viscosity                                     \\
+	$C_S$                                        & Tuning constant for Smagorinsky model                                        \\
+    $\mathcal{S}_{ij}$ & Traceless symmetric part of the square of the velocity gradient tensor \\
+    $C_W$ & Tuning constant for WALE model \\
+
+	% Acronyms
+	\addlinespace
+	CFD                                          & Computational Fluid Dynamics                                                 \\
+	DNS                                          & Direct Numerical Simulation                                                  \\
+	IBM                                          & Immersed Boundary Method                                                     \\
+	LES                                          & Large Eddy Simulation                                                        \\
+	RANS                                         & Reynolds-Averaged Navier-Stokes                                              \\
+	SGS                                          & Sub-Grid Scale                                                               \\
+	SST                                          & Shear Stress Transport                                                       \\
+	URANS                                        & Unsteady RANS                                                                \\
+	WM-LES                                       & Wall-Modeled LES                                                             \\
+	WR-LES                                       & Wall-Resolved LES                                                            \\
 
 \end{longtable}
 
@@ -184,7 +185,7 @@ Another aspect regards the scale separation problem, in particular the spatial a
 
 \section{Turbulent flows}
 
-In most of the engineering applications, flows are prevalently turbulent. Generally this is the case of fluid processed by pumps, compressors or flows around cars, trains, airplanes and many more situations in the everyday surrounding. 
+In most of the engineering applications, flows are prevalently turbulent. Generally this is the case of fluid processed by pumps, compressors or flows around cars, trains, airplanes and many more situations in the everyday surrounding.
 
 Such flows are characterized by some specific properties. A key feature is the multi-scale nature of the vortical structures, whose dimensions span 6 to 8 orders of magnitude. Despite the deterministic nature (they can be described accurately by the Navier-Stokes equations), the strong dependence and sensitivity to initial conditions make their behavior chaotic. Furthermore, turbulent flows are intrinsically three-dimensional and unsteady, they show an high diffusivity (mixing of momentum, energy and species) and also an increased wall friction when compared to laminar flows.
 
@@ -198,7 +199,7 @@ Considering the chaotic nature of the turbulence, a deterministic and instantane
 
 \subsection{Reynolds-Averaged Navier-Stokes equations}
 
-To analytically formalize the idea of considering the average fields and the turbulent one separately, the Reynolds averaging operator and the Reynolds decomposition are here introduced. The former consist in a ensemble average over a number of realizations. In more practical terms this implies repeating the same experiment $N$ times, under identical conditions, and averaging the flow variables at the exact same location and time instant across all the independent measures. 
+To analytically formalize the idea of considering the average fields and the turbulent one separately, the Reynolds averaging operator and the Reynolds decomposition are here introduced. The former consists of an ensemble average over a number of realizations. In more practical terms this implies repeating the same experiment $N$ times, under identical conditions, and averaging the flow variables at the exact same location and time instant across all the independent measures.
 Considering to apply the Reynolds operator for the velocity component $u$:
 \begin{equation}
 	\langle u(\bm{x}, t) \rangle = U(\bm{x}, t) = \frac{1}{N} \, \sum_{k=1}^{N \gg 1} u_{(k)} (\bm{x}, t)
@@ -213,8 +214,8 @@ By substituting in the Navier-Stokes equations the Reynolds decomposition and ap
 \begin{equation}
 	\left\{
 	\begin{aligned}
-	& \bm{\nabla} \cdot \bm{U} = 0 \\
-	& \frac{D\bm{U}}{Dt} = -\frac{\bm{\nabla} P}{\rho} + \bm{\nabla} \cdot (2\nu \bm{E}) - \bm{\nabla} \cdot \langle \bm{u}' \bm{u}' \rangle
+		 & \bm{\nabla} \cdot \bm{U} = 0                                                                                                           \\
+		 & \frac{D\bm{U}}{Dt} = -\frac{\bm{\nabla} P}{\rho} + \bm{\nabla} \cdot (2\nu \bm{E}) - \bm{\nabla} \cdot \langle \bm{u}' \bm{u}' \rangle
 	\end{aligned}
 	\right.
 	\label{eq:rans}
@@ -226,41 +227,41 @@ where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, 
 
 The RANS equations introduced above, allow demonstrating some fundamental mechanisms governing the energy dynamics within turbulent flows. Omitting for brevity the detailed algebraic steps, the mean and turbulent flow kinetic energies can be defined respectively as:
 \begin{equation}
-    \mathcal{K} = \frac{1}{2} \, \bm{U} \cdot \bm{U} = \frac{1}{2} \, U_i \, U_i  \qquad \quad k = \frac{1}{2} \, \langle \bm{u}' \cdot \bm{u}' \rangle = \frac{1}{2} \, \langle u_i' \, u_i' \rangle
+	\mathcal{K} = \frac{1}{2} \, \bm{U} \cdot \bm{U} = \frac{1}{2} \, U_i \, U_i  \qquad \quad k = \frac{1}{2} \, \langle \bm{u}' \cdot \bm{u}' \rangle = \frac{1}{2} \, \langle u_i' \, u_i' \rangle
 	\label{eq:kinetic-energy}
 \end{equation}
 By manipulating the momentum equation, it is possible to derive a formulation for both the time derivative of the mean kinetic energy and turbulent kinetic energy terms:
 \begin{align}
 	% Mean kinetic energy equation 
-    & \frac{D \mathcal{K}}{Dt} = 
-    % F_K
-    \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{P}{\rho} \, U_j + 2\nu \, E_{ij} \, U_i - \langle u_i' u_j' \rangle \, U_i \, \right] \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_{\mathcal{K}}$}} 
-    % D_K
-    \underbrace{ - 2\nu \, E_{ij} E_{ij} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{D}$}} 
-    % P
-    + \underbrace{ \left( \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{P}$}}\\[4ex]
+	 & \frac{D \mathcal{K}}{Dt} =
+	% F_K
+	\underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{P}{\rho} \, U_j + 2\nu \, E_{ij} \, U_i - \langle u_i' u_j' \rangle \, U_i \, \right] \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_{\mathcal{K}}$}}
+	% D_K
+	\underbrace{ - 2\nu \, E_{ij} E_{ij} \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{D}$}}
+	% P
+	+ \underbrace{ \left( \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{P}$}} \\[4ex]
 	%
-    % Turbulent kinetic energy equation
-    & \frac{D k}{D t} = 
-    % F_k
-    \underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{\langle p' u_j' \rangle}{\rho} + 2\nu \, \langle e_{ij}' u_i' \rangle - \frac{\langle u_i' u_i' u_j' \rangle}{2} \, \right] \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_k$}} 
-    % Epsilon
-    \underbrace{ - 2\nu \, \langle e_{ij}' e_{ij}' \rangle \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{E}$}} 
-    % P (Grouping)
-    + \underbrace{ \left( - \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\mathcal{P}$}}
+	% Turbulent kinetic energy equation
+	 & \frac{D k}{D t} =
+	% F_k
+	\underbrace{ \frac{\partial}{\partial x_j} \left[ \, -\frac{\langle p' u_j' \rangle}{\rho} + 2\nu \, \langle e_{ij}' u_i' \rangle - \frac{\langle u_i' u_i' u_j' \rangle}{2} \, \right] \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\bm{\nabla} \cdot \bm{F}_k$}}
+	% Epsilon
+	\underbrace{ - 2\nu \, \langle e_{ij}' e_{ij}' \rangle \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$-\mathcal{E}$}}
+	% P (Grouping)
+	+ \underbrace{ \left( - \langle u_i' u_j' \rangle \, \frac{\partial U_i}{\partial x_j} \right) \vphantom{\frac{\partial}{\partial x_j} \left[ \frac{P}{\rho} \right]} \rule[-18pt]{0pt}{0pt} }_{\raisebox{-6pt}{$\mathcal{P}$}}
 \end{align}
 where $\bm{F}_{\mathcal{K}}$ and $\bm{F}_{k}$ are the fluxes of kinetic energy (spatial transport terms), $\mathcal{D}$ and $\mathcal{E}$ are the dissipation terms respectively for the mean and turbulent flows and $\mathcal{P}$ is the turbulent energy production. In a more compact form, the two equation can be written as:
 \begin{equation}
-    \frac{D \mathcal{K}}{Dt} = \bm{\nabla} \cdot \bm{F}_{\mathcal{K}} - \mathcal{D} - \mathcal{P}
+	\frac{D \mathcal{K}}{Dt} = \bm{\nabla} \cdot \bm{F}_{\mathcal{K}} - \mathcal{D} - \mathcal{P}
 	\qquad \quad
-	\frac{D k}{Dt} = \bm{\nabla} \cdot \bm{F}_{k} - \mathcal{E} + \mathcal{P} 
+	\frac{D k}{Dt} = \bm{\nabla} \cdot \bm{F}_{k} - \mathcal{E} + \mathcal{P}
 \end{equation}
 Following the approach described by Pope \cite{turbulent-flows}, the equations can be integrated over a sufficiently large control volume $\Omega$, surrounding a free shear flow such as a turbulent jet ($Re \gg 1$), in stationary conditions. This perspective, and what result from the integration, allows to identify which component are the dominant in the energy dynamics.
 \begin{equation}
-    \int_{\Omega} \frac{\partial \mathcal{K}}{\partial t} \, d\Omega = \mathbb{C}_{\mathcal{K}} + \mathbb{F}_{\mathcal{K}} - \mathbb{D}_{\mathcal{K}} - \mathbb{P} \implies \mathbb{C}_{\mathcal{K}} \approx \mathbb{P}
+	\int_{\Omega} \frac{\partial \mathcal{K}}{\partial t} \, d\Omega = \mathbb{C}_{\mathcal{K}} + \mathbb{F}_{\mathcal{K}} - \mathbb{D}_{\mathcal{K}} - \mathbb{P} \implies \mathbb{C}_{\mathcal{K}} \approx \mathbb{P}
 \end{equation}
-\begin{equation} 
-	\int_{\Omega} \frac{\partial k}{\partial t} \, d\Omega = \mathbb{C}_{k} + \mathbb{F}_{k} - \mathbbcal{E} + \mathbb{P} \implies \mathbb{P} \approx \mathbbcal{E} 
+\begin{equation}
+	\int_{\Omega} \frac{\partial k}{\partial t} \, d\Omega = \mathbb{C}_{k} + \mathbb{F}_{k} - \mathbbcal{E} + \mathbb{P} \implies \mathbb{P} \approx \mathbbcal{E}
 \end{equation}
 The analysis of the dominant terms in the energy balance equations reveals how the input of energy, associated with convection ($\mathbb{C}_{\mathcal{K}}$) and its viscous dissipation ($\mathbbcal{E}$) occur at different scales. The apparent decoupling between energy input and output is better described by Richardson's theory.
 
@@ -284,46 +285,46 @@ the scaling of $\mathcal{E}$ with $U_0^3 / L_0$, independently from $\nu$ (at th
 \subsection{Kolmogorov's theory}
 With the Kolmogorov theory, a better characterization of the involved scales in high-Reynolds flows was proposed. The theory was stated in three hypotheses:
 \begin{itemize}
-	\item \textbf{Local isotropy hypothesis:} \textit{At sufficiently high Reynolds numbers, the small-scales ($\ell \ll \ell_0$) turbulent motions are statistically isotropic.} 
-	
-	While larger eddies show an anisotropic behavior, as a result of flow geometry and boundary conditions, scales of motion under a certain length value (small-scales) have statistical properties that are independent of the large, anisotropic scales. Consequently, they exhibit a universal behavior, in the sense that they appear similar in every high-Reynolds number flow.
+	\item \textbf{Local isotropy hypothesis:} \textit{At sufficiently high Reynolds numbers, the small-scales ($\ell \ll \ell_0$) turbulent motions are statistically isotropic.}
+
+	      While larger eddies show an anisotropic behavior, as a result of flow geometry and boundary conditions, scales of motion under a certain length value (small-scales) have statistical properties that are independent of the large, anisotropic scales. Consequently, they exhibit a universal behavior, in the sense that they appear similar in every high-Reynolds number flow.
 
 	\item \textbf{First similarity hypothesis:} \textit{In every turbulent flow at sufficiently high Reynolds number, the statistics of the small-scale motions have a universal form that is uniquely determined by $\nu$ and $\mathcal{E}$.}
-	
-	As a consequence of this hypothesis, starting from the $\nu$ and $\mathcal{E}$ parameters, it is possible to identify a particular set of scales (Kolmogorov scales) with specific length, velocity and time characteristics. This result is obtained by dimensional analysis.
-	\begin{equation}
-		\eta = \left( \frac{\nu \, ^3}{\mathcal{E}} \right)^{1/4} \qquad 
-		u_\eta = (\nu \mathcal{E})^{1/4} \qquad \,\,\,
-		\tau_\eta = \left( \frac{\nu}{\mathcal{E}} \right)^{1/2}
-	\end{equation}
-	These scales are considered the smallest active scales in the turbulent motion. As a support for this assertion it is possible to observe that the related Reynolds number is unity ($Re_\eta = \eta \cdot u_\eta / \nu = 1$), meaning that viscous forces effectively dominate over inertial forces, allowing the dissipation phenomena.
 
-	It is possible to evaluate the entity of scales separation, considering the ratios of the smallest to largest scales. These ratios depend on the Reynolds number according to the following relations:
-	\begin{equation}
-		\frac{\ell_0}{\eta} \sim Re\,^{3/4} \, \qquad 
-		\frac{u_0}{u_\eta} \sim Re\,^{1/4} \, \qquad 
-		\frac{\tau_0}{\tau_\eta} \sim Re\,^{1/2}
-		\label{eq:k41-scale-ratios}
-	\end{equation}
+	      As a consequence of this hypothesis, starting from the $\nu$ and $\mathcal{E}$ parameters, it is possible to identify a particular set of scales (Kolmogorov scales) with specific length, velocity and time characteristics. This result is obtained by dimensional analysis.
+	      \begin{equation}
+		      \eta = \left( \frac{\nu \, ^3}{\mathcal{E}} \right)^{1/4} \qquad
+		      u_\eta = (\nu \mathcal{E})^{1/4} \qquad \,\,\,
+		      \tau_\eta = \left( \frac{\nu}{\mathcal{E}} \right)^{1/2}
+	      \end{equation}
+	      These scales are considered the smallest active scales in the turbulent motion. As a support for this assertion it is possible to observe that the related Reynolds number is unity ($Re_\eta = \eta \cdot u_\eta / \nu = 1$), meaning that viscous forces effectively dominate over inertial forces, allowing the dissipation phenomena.
+
+	      It is possible to evaluate the entity of scales separation, considering the ratios of the smallest to largest scales. These ratios depend on the Reynolds number according to the following relations:
+	      \begin{equation}
+		      \frac{\ell_0}{\eta} \sim Re\,^{3/4} \, \qquad
+		      \frac{u_0}{u_\eta} \sim Re\,^{1/4} \, \qquad
+		      \frac{\tau_0}{\tau_\eta} \sim Re\,^{1/2}
+		      \label{eq:k41-scale-ratios}
+	      \end{equation}
 
 	\item \textbf{Second similarity hypothesis:} \textit{In every turbulent flow at sufficiently high Reynolds number, the statistics of the motions of scale $\ell$ in the range $\eta \ll \ell \ll \ell_0$  have a universal form that is uniquely determined by $\mathcal{E}$, independent of $\nu$.}
-	
-	This intermediate range of scales is known as the inertial subrange. In this region, the eddies are large enough that viscous effects are negligible (since $\ell \gg \eta$), but small enough that the large-scale anisotropic geometry is not felt (since $\ell \ll \ell_0$). Consequently, the energy cascade is dominated mainly by inertial forces. Again by dimensional analysis:
-	\begin{equation}
-		u(\ell) = (\mathcal{E} \, \ell \,)^{1/3} \qquad 
-		\tau(\ell \,) = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad 
-		Re(\ell \,) = \left( \frac{\ell}{\eta} \right)^{4/3}
-		\label{eq:k41-inertial-subrange}
-	\end{equation}
+
+	      This intermediate range of scales is known as the inertial subrange. In this region, the eddies are large enough that viscous effects are negligible (since $\ell \gg \eta$), but small enough that the large-scale anisotropic geometry is not felt (since $\ell \ll \ell_0$). Consequently, the energy cascade is dominated mainly by inertial forces. Again by dimensional analysis:
+	      \begin{equation}
+		      u(\ell) = (\mathcal{E} \, \ell \,)^{1/3} \qquad
+		      \tau(\ell \,) = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad
+		      Re(\ell \,) = \left( \frac{\ell}{\eta} \right)^{4/3}
+		      \label{eq:k41-inertial-subrange}
+	      \end{equation}
 \end{itemize}
 
-In summary, the energy input associated with the mean velocity field (for example as a result of convection) is in part transferred from one point of the domain to another by the flux term, another part is transferred down to the inertial subrange by the production term. This transfer to smaller and smaller scales continues until the Kolmogorov scales are reached, the effects of viscosity become dominant and the energy can be dissipated as heat. 
+In summary, the energy input associated with the mean velocity field (for example as a result of convection) is in part transferred from one point of the domain to another by the flux term, another part is transferred down to the inertial subrange by the production term. This transfer to smaller and smaller scales continues until the Kolmogorov scales are reached, the effects of viscosity become dominant and the energy can be dissipated as heat.
 
 \chapter{Simulation techniques overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
 
 \section{Direct Numerical Simulation}
-The most direct approach to perform a simulation, is choosing a space (grid) and time discretization able to represent all the space-time scales, included the smaller ones (Kolmogorov scales), in a non-stationary, three dimensional domain. 
+The most direct approach to perform a simulation, is choosing a space (grid) and time discretization able to represent all the space-time scales, included the smaller ones (Kolmogorov scales), in a non-stationary, three dimensional domain.
 
 In terms of accuracy and level of description provided it is unrivalled at the point that these numerical experiments can be considered directly analogous to actual laboratory experiments \cite{cfd-anderson} and does not need validation. However for the number of degrees of freedom involved its cost is extremely high and its applicability is limited to low or moderate Reynolds numbers \cite{turbulent-flows}.
 
@@ -338,13 +339,13 @@ An approach capable of reducing heavily the number of degrees of freedom to be c
 
 The structure of the Reynolds stress tensor is:
 \begin{equation}
-    \langle \bm{u}' \bm{u}' \rangle = 
-    \begin{bmatrix}
-        \langle u'^2 \rangle & \langle u'v' \rangle & \langle u'w' \rangle \\
-        \langle v'u' \rangle & \langle v'^2 \rangle & \langle v'w' \rangle \\
-        \langle w'u' \rangle & \langle w'v' \rangle & \langle w'^2 \rangle
-    \end{bmatrix}
-    \label{eq:reynolds-stress-tensor}
+	\langle \bm{u}' \bm{u}' \rangle =
+	\begin{bmatrix}
+		\langle u'^2 \rangle & \langle u'v' \rangle & \langle u'w' \rangle \\
+		\langle v'u' \rangle & \langle v'^2 \rangle & \langle v'w' \rangle \\
+		\langle w'u' \rangle & \langle w'v' \rangle & \langle w'^2 \rangle
+	\end{bmatrix}
+	\label{eq:reynolds-stress-tensor}
 \end{equation}
 it is constituted by nine components, but considering its symmetry, the independent terms are six. Recalling equation \eqref{eq:kinetic-energy} that defines the turbulent kinetic energy, it is possible to observe that the trace of the tensor corresponds to twice the turbulent kinetic energy $k$.
 
@@ -357,7 +358,7 @@ However, this reduction in computational effort comes at the cost of physical fi
 % Pro vs cons largely depend on the model
 While those characteristics are generally true, it should be noted that the advantages and limitations of RANS simulations are significantly dependent on the turbulence model of choice. To have an overall understanding of their range of applicability, the main properties of those models will be summarized below.
 
-To resolve the closure problem, varying levels of approximation can be adopted. Those approaches can be classified in the first place based on the order of resolved and modeled components (statistical moments). 
+To resolve the closure problem, varying levels of approximation can be adopted. Those approaches can be classified in the first place based on the order of resolved and modeled components (statistical moments).
 
 \subsection{First-order closures}
 
@@ -367,8 +368,8 @@ The most common and simple class of approaches is represented by first-order clo
 % Linear models <-> Bousinnesq hp
 In linear formulations, the modeling of the Reynolds stress tensor can be split in two contributions: a isotropic one, related to $k$, and a deviatoric one. To model the latter, the Boussinesq hypothesis is introduced. This assumption relies on a direct analogy with a laminar velocity field, assuming that the turbulent shear stresses are linearly proportional to the mean strain rate tensor $E_{ij}$ through a scalar coefficient known as the eddy viscosity, $\nu_T$:
 \begin{equation}
-    -\langle \, u_i' \, u_j' \, \rangle = - \frac{2}{3} \, k \, \delta_{ij} + 2 \, \nu_T \, E_{ij}
-    \label{eq:boussinesq-model}
+	-\langle \, u_i' \, u_j' \, \rangle = - \frac{2}{3} \, k \, \delta_{ij} + 2 \, \nu_T \, E_{ij}
+	\label{eq:boussinesq-model}
 \end{equation}
 The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a function of the fluid local state of motion. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek} \cite{tubulence-wilcox}.
 
@@ -376,14 +377,14 @@ The fundamental advantage of this hypothesis is the significant reduction in the
 With the development of more complex non-linear eddy viscosity models, the limitations discussed above are in part mitigated. They extend the relation between the Reynolds stress tensor and $E_{ij}$, involving the mean flow rotation tensor $\Omega_{ij}$ and including also non-linear quadratic and cubic terms \cite{rans-nl-model-lumley}.
 
 % Number of governing equations
-First-order turbulence closures can be also classified by the number of governing equations used, those with a greater number of equation usually provide a fuller description of turbulence. 
+First-order turbulence closures can be also classified by the number of governing equations used, those with a greater number of equation usually provide a fuller description of turbulence.
 \begin{itemize}
 	\item Algebraic or zero-equations models such as the uniform turbulent viscosity one are characterized by extremely limited ranges of applicability.
 	\item One-equation models are also very limited in possible application fields, an example is the Spalart-Allmaras model, designed for aerodynamic flows. The only real advantages of using one-equation model rather than a two-equation model are related with stability and simplicity of the numerical solution \cite{tubulence-wilcox}.
 	\item Two-equation models such as $k-\mathcal{E}$, $k-\omega$ and their blended implementations like Shear Stress Transfer (SST) are the most widely employed and for their importance will be further analyzed below.
 \end{itemize}
 
-\subsubsection{Model \boldmath$k - \mathcal{E}$} The $k - \mathcal{E}$ model is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near wall behavior \cite{cfd-blazek}. 
+\subsubsection{Model \boldmath$k - \mathcal{E}$} The $k - \mathcal{E}$ model is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near wall behavior \cite{cfd-blazek}.
 \begin{itemize}
 	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y+ \leq 1$) in order to stay valid and resolve the viscous sublayer.
 	\item By contrast, high Reynolds number turbulence models don't need damping functions, they are less stringent in term of grid resolution (first node inside $10 \leq y+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
@@ -399,9 +400,9 @@ A third aspect regards the (non) universality: the model requires \textit{ad hoc
 Second-order closures, unlike first-order models that rely on the Boussinesq hypothesis represent a more complex and flexible class of approaches to determine the Reynolds stress tensor. Reynolds Stress Transport (RST) models allow to solve individual transport equations for the six independent component of the Reynolds stress tensor. This approach naturally include effects of streamline curvature, sudden changes in strain rate, secondary motions and the history effects \cite{tubulence-wilcox}. With a similar accuracy, but a slightly lower level of description and complexity, the Algebraic Reynolds Stress (ARS) models employ only two transport equations, generally for the turbulent kinetic energy and for the dissipation rate. Despite their increased accuracy both RST and ARS models suffer numerical issues and they are more computationally demanding, so first-order models are more widely used in practice \cite{cfd-blazek}.
 
 \subsection{Unsteady RANS (URANS)}
-While in the stationary case the mean value can be considered as a time average, in the non-stationary case the ensemble average is used, more similarly to the theoretical description. Also, in such cases, the approach is to apply a RANS model in order to resolve some of the unsteady dynamics of the flow. 
+While in the stationary case the mean value can be considered as a time average, in the non-stationary case the ensemble average is used, more similarly to the theoretical description. Also, in such cases, the approach is to apply a RANS model in order to resolve some of the unsteady dynamics of the flow.
 
-In the case of unsteady flows, this method can be substantially more successful in determining the mean flow than a steady RANS computation. By contrast, for the model assumption to be valid, a clear separation of scales is necessary, condition that is not always verified, so it is useful to distinguish between two cases. When unsteadiness is triggered by boundary conditions, scale separation generally holds and modeling assumptions remain valid. Instead, in presence of internal instabilities (e.g., bluff body flows), scale separation usually does not hold. Consequently, especially in this case the confidence in the result is limited without experimental validation \cite{urans-hybrid}. 
+In the case of unsteady flows, this method can be substantially more successful in determining the mean flow than a steady RANS computation. By contrast, for the model assumption to be valid, a clear separation of scales is necessary, condition that is not always verified, so it is useful to distinguish between two cases. When unsteadiness is triggered by boundary conditions, scale separation generally holds and modeling assumptions remain valid. Instead, in presence of internal instabilities (e.g., bluff body flows), scale separation usually does not hold. Consequently, especially in this case the confidence in the result is limited without experimental validation \cite{urans-hybrid}.
 
 \section{Large Eddy Simulation}
 % Introduction
@@ -442,8 +443,8 @@ Filtering is the operation that allows to mathematically separate the turbulent 
 \end{equation}
 Considering a homogeneous and isotropic case, where the filter acts independently of position and orientation, the general space-time filtering operation can be expressed as:
 \begin{equation}
-    \widetilde{\phi} \, (\bm{x}, \, t) = \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} \phi \, (\bm{r}, \, \tau) \; G \, (\bm{x} - \bm{r}, \, t - \tau) \, d\tau \, d^3 \, \bm{r} = G \ast \phi
-    \label{eq:les-filter-operation}
+	\widetilde{\phi} \, (\bm{x}, \, t) = \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} \phi \, (\bm{r}, \, \tau) \; G \, (\bm{x} - \bm{r}, \, t - \tau) \, d\tau \, d^3 \, \bm{r} = G \ast \phi
+	\label{eq:les-filter-operation}
 \end{equation}
 where:
 \begin{itemize}
@@ -462,25 +463,25 @@ It should be noted that, despite the equation \eqref{eq:les-filter-operation} re
 In order to derive the equations for LES from Navier-Stokes equations, the filtering operator is required to satisfy three fundamental properties:
 
 \begin{enumerate}
-    \item \textbf{Conservation of constants:} The filter kernel must be normalized, such that the integral over the entire domain equals unity. This ensures that the filtering of a constant value returns the constant itself, preserving the global conservation of physical quantities.
-    \begin{equation}
-        \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} G(\bm{x}, \tau) \, d\tau \, d^3\bm{x} = 1
-    \end{equation}
-    
-    \item \textbf{Linearity:} The filtering operation is linear, meaning that the filter of a sum is equal to the sum of the filtered quantities.
-    \begin{equation}
-        \widetilde{\phi + \psi} = \widetilde{\phi} + \widetilde{\psi}
-    \end{equation}
-    
-    \item \textbf{Commutation with differentiation:} The result is independent of the sequence in which differentiation and filtering are performed.
-    \begin{equation}
-        \frac{\partial \widetilde{\phi}}{\partial s} = \widetilde{\frac{\partial \phi}{\partial s}}, \qquad s = \bm{x}, t
-    \end{equation}
+	\item \textbf{Conservation of constants:} The filter kernel must be normalized, such that the integral over the entire domain equals unity. This ensures that the filtering of a constant value returns the constant itself, preserving the global conservation of physical quantities.
+	      \begin{equation}
+		      \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} G(\bm{x}, \tau) \, d\tau \, d^3\bm{x} = 1
+	      \end{equation}
+
+	\item \textbf{Linearity:} The filtering operation is linear, meaning that the filter of a sum is equal to the sum of the filtered quantities.
+	      \begin{equation}
+		      \widetilde{\phi + \psi} = \widetilde{\phi} + \widetilde{\psi}
+	      \end{equation}
+
+	\item \textbf{Commutation with differentiation:} The result is independent of the sequence in which differentiation and filtering are performed.
+	      \begin{equation}
+		      \frac{\partial \widetilde{\phi}}{\partial s} = \widetilde{\frac{\partial \phi}{\partial s}}, \qquad s = \bm{x}, t
+	      \end{equation}
 \end{enumerate}
 
 It is important to observe that a filter satisfying these properties differs substantially from the Reynolds averaging operator used in RANS. As a consequence:
 \begin{equation}
-    \widetilde{\widetilde{\phi}} \neq \widetilde{\phi} \qquad \widetilde{\phi''} \neq 0
+	\widetilde{\widetilde{\phi}} \neq \widetilde{\phi} \qquad \widetilde{\phi''} \neq 0
 \end{equation}
 This implies that applying the filter twice produces a result different from a single application and the filtered fluctuation is not necessarily zero.
 
@@ -490,31 +491,31 @@ It is important to distinguish between explicit and implicit filtering.
 
 The explicit filtering approach involves the application of a distinct mathematical operator to the flow field, with a defined characteristic length $\Delta_F$, independent on the grid resolution $\Delta$. The three most common explicit filters are (Figure \ref{fig:les-filters}):
 \begin{itemize}
-    \item \textbf{Box or top-hat filter:} performs a local spatial average of the flow variables over a defined control volume. Its oscillating transfer function causes the introduction of high wavenumber noise.
-    
-    \item \textbf{Gaussian filter:} is based on a spatial Gaussian distribution. It has smooth characteristics in both physical and spectral spaces preventing the generation of numerical oscillations.
-    
-    \item \textbf{Sharp spectral cutoff filter:} eliminates all Fourier modes exceeding a specific cutoff wavenumber. Although it provides a definitive separation of scales, its non-locality in physical space can induce significant oscillations.
+	\item \textbf{Box or top-hat filter:} performs a local spatial average of the flow variables over a defined control volume. Its oscillating transfer function causes the introduction of high wavenumber noise.
+
+	\item \textbf{Gaussian filter:} is based on a spatial Gaussian distribution. It has smooth characteristics in both physical and spectral spaces preventing the generation of numerical oscillations.
+
+	\item \textbf{Sharp spectral cutoff filter:} eliminates all Fourier modes exceeding a specific cutoff wavenumber. Although it provides a definitive separation of scales, its non-locality in physical space can induce significant oscillations.
 \end{itemize}
 
 \begin{figure}[htbp]
-    \centering
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/les-filters/filter_physical.jpg}
-        \caption{Physical space representation}
-        \label{fig:les-filters-ph}
-    \end{subfigure}
-    \hfill 
-    \begin{subfigure}[b]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{img/les-filters/filter_spectral.jpg}
-        \caption{Spectral space representation}
-        \label{fig:les-filters-sp}
-    \end{subfigure}
-    
-    \caption{One-dimensional (for simplicity) comparison of the three primary filter kernels. \textbf{Blue} for the box (top-hat) filter, \textbf{red} for the Gaussian filter, and \textbf{yellow} for the sharp spectral cutoff filter.}
-    \label{fig:les-filters}
+	\centering
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/les-filters/filter_physical.jpg}
+		\caption{Physical space representation}
+		\label{fig:les-filters-ph}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/les-filters/filter_spectral.jpg}
+		\caption{Spectral space representation}
+		\label{fig:les-filters-sp}
+	\end{subfigure}
+
+	\caption{One-dimensional (for simplicity) comparison of the three primary filter kernels. \textbf{Blue} for the box (top-hat) filter, \textbf{red} for the Gaussian filter, and \textbf{yellow} for the sharp spectral cutoff filter.}
+	\label{fig:les-filters}
 \end{figure}
 
 This explicit approach allows decouple the filter length and the grid resolution obtaining a better control on which scales are resolved and which are modeled. This has important implications in term of stability control and allows to perform mesh convergence analysis varying the grid resolution alone.
@@ -525,20 +526,20 @@ Conversely, the implicit filtering approach relies on the computational grid and
 
 Applying the filtering operation to the incompressible Navier-Stokes equations, the governing equations for LES are obtained:
 \begin{equation}
-\label{eq:les-equations}
-\left\{
-\hspace{0.15cm}
-\begin{aligned}
-    & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0 \\[12pt]
-    & \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial \, x_j} \left( 2 \, \nu \, \widetilde{e}_{ij} \right) - \frac{\partial}{\partial \, x_j} \left( \widetilde{u_i \, u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
-\end{aligned}
-\right.
+	\label{eq:les-equations}
+	\left\{
+	\hspace{0.15cm}
+	\begin{aligned}
+		 & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0                                                                                                                                                                                                                                                                                                                                              \\[12pt]
+		 & \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial \, x_j} \left( 2 \, \nu \, \widetilde{e}_{ij} \right) - \frac{\partial}{\partial \, x_j} \left( \widetilde{u_i \, u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
+	\end{aligned}
+	\right.
 \end{equation}
 where $\widetilde{e}_{ij}$ represents the resolved rate-of-strain tensor and $\tau_{ij}^R$ is the residual (or subgrid-scale) stress tensor:
 \begin{equation}
-    \widetilde{e}_{ij} = \frac{1}{2} \left( \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} + \frac{\partial \, \widetilde{u}_j}{\partial \, x_i} \right) 
-    \qquad 
-    \tau_{ij}^R = \left( \widetilde{u_i u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
+	\widetilde{e}_{ij} = \frac{1}{2} \left( \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} + \frac{\partial \, \widetilde{u}_j}{\partial \, x_i} \right)
+	\qquad
+	\tau_{ij}^R = \left( \widetilde{u_i u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
 \end{equation}
 The residual stress tensor $\tau_{ij}^R$ represents the effect of the unresolved scales on the resolved field and, being symmetric ($\tau_{ij}^R = \tau_{ji}^R \,$), it introduces six independent components.
 
@@ -548,7 +549,7 @@ The system consists of only 4 equations (1 continuity and 3 momentum equations),
 The modelling of the coupling term between resolved and sub-grid scales has to be performed on the basis of the resolved scales alone. As explained by Sagaut \cite{les-sagaut} this can be done with two approaches:
 \begin{itemize}
 	\item \textbf{Structural modelling:} Allows for the modelling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scales structures. This is feasible when small scales shows an universal structure or a clear correlation with the structure of the resolved field.
- 	\item \textbf{Functional modelling:} Consist in the modelling of the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This require an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
+	\item \textbf{Functional modelling:} Consist in the modelling of the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This require an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
 \end{itemize}
 
 \subsubsection{Smagorinsky model}
@@ -558,31 +559,71 @@ As most of the strategies for functional modelling, the Smagorinsky approach mod
 \end{equation}
 The first term is related to the sub-grid kinetic energy $k_R$, while the second one is modeled as a term linearly proportional to the deformation tensor of the resolved field $\widetilde{e}_{ij}$ through the sub-grid scale eddy viscosity coefficient $\nu_R$.
 
-In the Smagorinsky model the $\nu_R$ scalar is defined in turn as: 
+In the Smagorinsky model the $\nu_R$ scalar is defined in turn as:
 \begin{equation}
-	\nu_R = (C_S \, \Delta_F)^2 \, |\widetilde{e}_{ij}| \qquad |\widetilde{e}_{ij}| := \sqrt{2 \, \widetilde{e}_{ij} \, \widetilde{e}_{ij}}
+	\nu_R = (C_S \, \Delta_F)^2 \, |\widetilde{e}_{ij}| \qquad \quad |\widetilde{e}_{ij}| := \sqrt{2 \, \widetilde{e}_{ij} \, \widetilde{e}_{ij}}
 \end{equation}
 where $\Delta_F$ is the sub-grid characteristic length scale (or filter size), $|\widetilde{e}_{ij}|$ is a characteristic sub-grid velocity (defined above) and $C_S$ is a tuning constant.
 
 The idea behind the definition of the eddy viscosity $\nu_R$ is to emulate the energy transfer between resolved scales and sub-grid ones, by introducing an artificial dissipation at the $\Delta_F$ scale.
 
-To understand one of the main limitations of the Smagorinsky model, it is useful to recall the formulation of the velocity gradient tensor $\nabla \, \widetilde{\bm{u}}$:
-\begin{equation}
-    \nabla \, \widetilde{\mathbf{u}} = \frac{\partial \, \widetilde{u_i}}{\partial \, x_j} = 
-    \underbrace{ \frac{1}{2} \left( \frac{\partial \, \widetilde{u_i}}{\partial \, x_j} + \frac{\partial \, \widetilde{u_j}}{\partial \,x_i} \right) \rule[-15pt]{0pt}{0pt} }_{\text{\footnotesize $\widetilde{e_{ij}}$ (Strain rate)}} 
-    + 
-    \underbrace{ \frac{1}{2} \left( \frac{\partial \, \widetilde{u_i}}{\partial \, x_j} - \frac{\partial \, \widetilde{u_j}}{\partial \,x_i} \right) \rule[-15pt]{0pt}{0pt} }_{\text{\footnotesize $\widetilde{\omega_{ij}}$ (Rotation rate)}} 
-\end{equation}
-The studies of Wray and Hunt \cite{wray-hunt} of the properties of isotropic turbulence structures, based on DNS analyses, showed that while kinetic energy is concentrated in the streams, the dissipation phenomenon occurs in:
-\begin{itemize}
-	\item Eddies: where vorticity is dominant over irrotational strain ($|\bm{\widetilde{\omega}}| \gg |\bm{\widetilde{e}}|$).
-	\item Convergence zones: where the prevalent term is the irrotational strain ($|\bm{\widetilde{e}}| \gg |\bm{\widetilde{\omega}}|$).
-\end{itemize}
-Since the Smagorinsky formulation takes into account the $\widetilde{e_{ij}}$ term alone, it is sensitive only to convergence zones, and it fails to correctly model regions where vorticity is dominant.
+\paragraph{Model limitations}
 
-Another problem of the model is related to its near-wall behavior. By construction, the Smagorinsky formulation yields a non-zero eddy viscosity $\nu_t$ whenever a velocity gradient exists. However, turbulent fluctuations are naturally damped near solid boundaries, implying that $\nu_t$ should disappear at the wall. A common approach to correct this behavior is the use of Van Driest damping functions. While this approach allows to improve the results, this is an ad hoc modification that depends on the distance to the wall ($y$), making it difficult to implement for complex geometries. Furthermore, this damping leads to an eddy-viscosity scaling of $O(y^2)$, which is inconsistent with the correct theoretical behavior of $O(y^3)$ \cite{wale}.
+While the model satisfies some useful properties, like its independence on coordinate translation and rotation and its easy implementation on any kind of computational grid, its predictions suffer from several aspects:
+
+\begin{enumerate}
+	\item \textbf{Insensitivity to rotational flow structures:} To understand the main limitations of the Smagorinsky model, it is useful to recall the formulation of the velocity gradient tensor $\nabla \, \widetilde{\bm{u}}$:
+	      \begin{equation}
+		      \nabla \, \widetilde{\mathbf{u}} = \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} =
+		      \underbrace{ \frac{1}{2} \left( \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} + \frac{\partial \, \widetilde{u}_j}{\partial \,x_i} \right) \rule[-15pt]{0pt}{0pt} }_{\text{\footnotesize $\widetilde{e}_{ij}$ (Strain rate)}}
+		      +
+		      \underbrace{ \frac{1}{2} \left( \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} - \frac{\partial \, \widetilde{u}_j}{\partial \,x_i} \right) \rule[-15pt]{0pt}{0pt} }_{\text{\footnotesize $\widetilde{\omega}_{ij}$ (Rotation rate)}}
+	      \end{equation}
+	      The studies of Wray and Hunt \cite{wray-hunt} of the properties of isotropic turbulence structures, based on DNS analyses, showed that while kinetic energy is concentrated in the streams, the dissipation phenomenon occurs in:
+	      \begin{itemize}
+		      \item Eddies: where vorticity is dominant over irrotational strain ($|\bm{\widetilde{\omega}}| \gg |\bm{\widetilde{e}}|$).
+		      \item Convergence zones: where the prevalent term is the irrotational strain ($|\bm{\widetilde{e}}| \gg |\bm{\widetilde{\omega}}|$).
+	      \end{itemize}
+	      Since the Smagorinsky formulation takes into account the $\widetilde{e_{ij}}$ term alone, it is sensitive only to convergence zones, and it fails to correctly model regions where vorticity is dominant.
+
+	\item \textbf{Inadequacy for pure shear and transitional flows: } In the case of pure shear flows, the large values of the $|\widetilde{e}_{ij}|$ invariant causes an overestimation of the energy to be virtually dissipated, preventing the growth of instabilities and consequently failing to reproduce the laminar-to-turbulent transition.
+
+	\item \textbf{Incorrect near wall behavior:} By construction, the Smagorinsky formulation yields a non-zero eddy viscosity $\nu_t$ whenever a velocity gradient exists. However, turbulent fluctuations are naturally damped near solid boundaries, implying that $\nu_t$ should disappear at the wall. A common approach to correct this behavior is the use of Van Driest damping functions. While this approach can improve the results, this is an ad hoc modification that depends on the distance to the wall ($y$), making it difficult to implement for complex geometries. Furthermore, this damping leads to an eddy-viscosity scaling of $O(y^2)$, which is inconsistent with the correct theoretical behavior of $O(y^3)$ \cite{wale}.
+\end{enumerate}
 
 \subsubsection{WALE model}
+
+The WALE model addresses the limitations of Smagorinsky one, while maintaining its advantageous properties of independence of coordinate transformations and grid topology choice.
+
+Considering the traceless symmetric part of the square of the velocity gradient tensor:
+\begin{equation}
+    \mathcal{S}_{ij} = \frac{1}{2} (\,\widetilde{g}_{ij}^{\,2} + \widetilde{g}_{ji}^{\,2}\,) - \frac{1}{3} \, \delta_{ij} \, \widetilde{g}_{kk}^{\,2}
+    \label{eq:wale-s-tensor}
+\end{equation}
+where the terms:
+\begin{equation}
+    \widetilde{g}_{ij} = \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = \widetilde{e}_{ij} + \widetilde{\omega}_{ij}
+    \qquad \quad
+    \widetilde{g}_{ij}^{\,2} = \frac{\partial \, \widetilde{u}_i}{\partial \, x_k} \, \frac{\partial \, \widetilde{u}_k}{\partial \, x_j} = (\widetilde{e}_{ik} + \widetilde{\omega}_{ik})(\widetilde{e}_{kj} + \widetilde{\omega}_{kj})
+\end{equation}
+Developing the square of the tensor defined in equation \eqref{eq:wale-s-tensor}, the scalar $\mathcal{S}_{ij} \, \mathcal{S}_{ij}$ is obtained:
+\begin{equation}
+    \mathcal{S}_{ij} \, \mathcal{S}_{ij} = \frac{1}{6} \, (\widetilde{e}^{\,2} \, \widetilde{e}^{\,2} + \widetilde{\omega}^{\,2} \, \widetilde{\omega}^{\,2}) + \frac{2}{3} \, \widetilde{e}^{\,2} \, \widetilde{\omega}^{\,2} + 2 \, IV_{e\omega}
+    \label{eq:wale-invariant}
+\end{equation}
+In which the participating components are:
+\begin{itemize}
+    \item The squared magnitude of the resolved strain rate: $\widetilde{e}^{\,2} = \widetilde{e}_{ij} \, \widetilde{e}_{ij}$ 
+    \item The squared magnitude of the resolved rotation rate: $\widetilde{\omega}^{\,2} = \widetilde{\omega}_{ij} \, \widetilde{\omega}_{ij}$ 
+    \item A strain-rotation interaction term: $IV_{e\omega} = \widetilde{e}_{ik} \, \widetilde{e}_{kj} \, \widetilde{\omega}_{jl} \,\widetilde{\omega}_{li}$ .
+\end{itemize}
+The formulated invariant \eqref{eq:wale-invariant}, is capable of detecting turbulent structures dominated by either strain, rotation, or both. Moreover, in the case of pure shear (e.g., laminar Poiseuille flow), the strain and rotation magnitudes balance each other ($\widetilde{e}^{\,2} \approx \widetilde{\omega}^{\,2}$), causing the invariant to vanish. This property ensures that the subgrid dissipation is naturally zero in laminar wall-bounded regions, allowing the development of instabilities and thus enabling the correct prediction of the laminar-to-turbulent transition.
+
+At this point some corrections are implemented to ensure the correct  $O(y^3)$ near wall scaling, dimensional coherency and to avoid numerical instabilities related to the cancellation of the denominator. Finally, the expression for the WALE model is the following:
+\begin{equation}
+    \nu_R = (C_W \Delta_F)^2 \, \frac{(\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,3/2}}{(\widetilde{e}_{ij} \, \widetilde{e}_{ij})^{\, 5/2} + (\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,5/4}}
+    \label{eq:wale_viscosity}
+\end{equation}
 
 \backmatter
 
