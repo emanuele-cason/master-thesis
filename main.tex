@@ -183,7 +183,7 @@ The second aspect to be defined in terms of level of approximation is the accura
 
 Another aspect regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed later, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows.
 
-\section{Turbulent flows}
+\chapter{Turbulent flows}
 
 In most of the engineering applications, flows are prevalently turbulent. Generally this is the case of fluid processed by pumps, compressors or flows around cars, trains, airplanes and many more situations in the everyday surrounding.
 
@@ -197,7 +197,7 @@ where $U_0$ and $L_0$ are the characteristic velocity and length scale of the fl
 
 Considering the chaotic nature of the turbulence, a deterministic and instantaneous description of the phenomena is not always the most efficient option. Consequently, the analysis is typically focused on a statistical approach, considering averaged fields. It can be observed how those averaged fields resemble qualitatively the laminar behavior, and their dependence on the Reynolds number diminishes significantly.
 
-\subsection{Reynolds-Averaged Navier-Stokes equations}
+\section{Reynolds-Averaged Navier-Stokes equations}
 
 To analytically formalize the idea of considering the average fields and the turbulent one separately, the Reynolds averaging operator and the Reynolds decomposition are here introduced. The former consists of an ensemble average over a number of realizations. In more practical terms this implies repeating the same experiment $N$ times, under identical conditions, and averaging the flow variables at the exact same location and time instant across all the independent measures.
 Considering to apply the Reynolds operator for the velocity component $u$:
@@ -220,10 +220,9 @@ By substituting in the Navier-Stokes equations the Reynolds decomposition and ap
 	\right.
 	\label{eq:rans}
 \end{equation}
-
 where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, and its modelling represents the closure problem of the RANS equations.
 
-\subsection{Energy cascade}
+\section{Energy cascade}
 
 The RANS equations introduced above, allow demonstrating some fundamental mechanisms governing the energy dynamics within turbulent flows. Omitting for brevity the detailed algebraic steps, the mean and turbulent flow kinetic energies can be defined respectively as:
 \begin{equation}
@@ -265,10 +264,10 @@ Following the approach described by Pope \cite{turbulent-flows}, the equations c
 \end{equation}
 The analysis of the dominant terms in the energy balance equations reveals how the input of energy, associated with convection ($\mathbb{C}_{\mathcal{K}}$) and its viscous dissipation ($\mathbbcal{E}$) occur at different scales. The apparent decoupling between energy input and output is better described by Richardson's theory.
 
-\subsection{Richardson's theory}
+\section{Richardson's theory}
 The first concept in Richardson’s view of the energy cascade is that the turbulence can be considered to be composed of eddies of different sizes \cite{turbulent-flows}.
 
-Considering the eddies with the largest sizes, their characteristic dimensions can be evaluated as: $\ell \approx \ell_0 \approx L_0$ and $u \approx u_0 \approx u_{rms}' = \sqrt{(2/3) \cdot k} \approx (0.1 - 0.3) \, U_0$ (where the last relation comes from observation), thus their Reynolds number:
+Considering the eddies with the largest sizes, their characteristic dimensions can be evaluated as: $\ell_0 \approx L_0$ and $u_0 \approx u_{rms}' = \sqrt{(2/3) \cdot k} \approx (0.1 - 0.3) \, U_0$ (where the last relation comes from observation), thus their Reynolds number:
 \begin{equation}
 	Re_0 = \frac{u_0 \, \ell_0}{\nu} \approx \frac{U_0 \, L_0}{\nu} \gg 1
 \end{equation}
@@ -282,7 +281,7 @@ The energy transferred to smaller scales can be evaluated as:
 \end{equation}
 the scaling of $\mathcal{E}$ with $U_0^3 / L_0$, independently from $\nu$ (at the high Reynolds numbers considered) proves to be consistent with the experimental results for free shear flows \cite{turbulent-flows}.
 
-\subsection{Kolmogorov's theory}
+\section{Kolmogorov's theory}
 With the Kolmogorov theory, a better characterization of the involved scales in high-Reynolds flows was proposed. The theory was stated in three hypotheses:
 \begin{itemize}
 	\item \textbf{Local isotropy hypothesis:} \textit{At sufficiently high Reynolds numbers, the small-scales ($\ell \ll \ell_0$) turbulent motions are statistically isotropic.}
@@ -311,14 +310,74 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 
 	      This intermediate range of scales is known as the inertial subrange. In this region, the eddies are large enough that viscous effects are negligible (since $\ell \gg \eta$), but small enough that the large-scale anisotropic geometry is not felt (since $\ell \ll \ell_0$). Consequently, the energy cascade is dominated mainly by inertial forces. Again by dimensional analysis:
 	      \begin{equation}
-		      u(\ell) = (\mathcal{E} \, \ell \,)^{1/3} \qquad
-		      \tau(\ell \,) = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad
-		      Re(\ell \,) = \left( \frac{\ell}{\eta} \right)^{4/3}
+		      u_{\ell} = (\mathcal{E} \, \ell \,)^{1/3} \qquad
+		      \tau_{\ell} = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad
+		      Re_{\ell} = \left( \frac{\ell}{\eta} \right)^{4/3}
 		      \label{eq:k41-inertial-subrange}
 	      \end{equation}
 \end{itemize}
 
 In summary, the energy input associated with the mean velocity field (for example as a result of convection) is in part transferred from one point of the domain to another by the flux term, another part is transferred down to the inertial subrange by the production term. This transfer to smaller and smaller scales continues until the Kolmogorov scales are reached, the effects of viscosity become dominant and the energy can be dissipated as heat.
+
+\section{Wall bounded flows}
+In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction. Since the incompressible case is considered, the Bernoulli principle relate the mean free-stream pressure $P_E(x)$ with the mean velocity $U_E(x)$ so that:
+\begin{equation}
+	P_E \, (x) + \frac{1}{2} \, \rho \, U_E(x)^2 = \textit{const} 
+	\qquad \quad
+	- \frac{d \, P_E}{dx} = \rho \, U_E \, \frac{d \, U_E}{dx}
+\end{equation} 
+Considering the definition of $Re_x = U_E \, x / \nu$, after a critical value on the order of $Re_x \approx 10^6$, the transition to turbulent flow starts.
+
+At this point it is useful to recall the RANS equations \eqref{eq:rans}, developing their momentum $x$ and $y$ component, and neglecting the statistics variations in the $z$ direction: 
+\begin{equation}
+    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
+    -\frac{1}{\rho} \frac{\partial P}{\partial x} 
+    + \nu \left( \frac{\partial^2 U}{\partial x^2} + \frac{\partial^2 U}{\partial y^2} \right) 
+    - \left( \frac{\partial \langle u'u' \rangle}{\partial x} + \frac{\partial \langle u'v' \rangle}{\partial y} \right)
+	\label{eq:rans-wall-x}
+\end{equation}
+\begin{equation}
+    \frac{\partial V}{\partial t} + U \frac{\partial V}{\partial x} + V \frac{\partial V}{\partial y} = 
+    -\frac{1}{\rho} \frac{\partial P}{\partial y} 
+    + \nu \left( \frac{\partial^2 V}{\partial x^2} + \frac{\partial^2 V}{\partial y^2} \right) 
+    - \left( \frac{\partial \langle u'v' \rangle}{\partial x} + \frac{\partial \langle v'v' \rangle}{\partial y} \right)
+	\label{eq:rans-wall-y}
+\end{equation}
+By applying the classical order of magnitude analysis originally proposed by Prandtl~\cite{prandtl-dimensional-analysis}, based on the assumption that the boundary layer thickness is much smaller than the streamwise length scale, the streamwise gradients of viscous and turbulent stresses can also be neglected.
+
+Integrating equation \eqref{eq:rans-wall-y}, considering the boundary layer approximation:
+\begin{equation}
+	P + \rho \, \langle v'^{\, 2} \rangle = P_E \, (x)
+	\quad
+	\implies
+	\quad
+	P \, \raisebox{-0.4ex}{$\big|_{y=0}$} = P_W \, (x) = P_E \, (x)
+\end{equation}
+implying that the mean wall pressure $P_W \, (x)$ equals the free-stream pressure $P_E \, (x)$.
+
+Instead equation \eqref{eq:rans-wall-x} becomes:
+\begin{equation}
+    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
+    -\frac{1}{\rho} \frac{\partial P_E}{\partial x} 
+    + \nu \frac{\partial^2 U}{\partial y^2}
+    - \frac{\partial \langle u'v' \rangle}{\partial y}
+	\label{eq:tble}
+\end{equation}
+Equation \eqref{eq:tble} highlights that the mean velocity field evolution is driven by the pressure gradient and the combined effect of molecular diffusion and turbulent transport. 
+
+As will be discussed in detail in section \ref{sec:rans}, the term $-\langle u'v' \rangle$, representing the Reynolds shear stress, introduces a closure problem, and can be modeled employing the Bousinnesq hypothesis, in equation \eqref{eq:boussinesq-model}.
+\begin{equation}
+    -\langle u'v' \rangle = 2 \, \nu_T \, E_{12} = \nu_T \, \frac{\partial U}{\partial y}
+    \label{eq:TBLE-viscosity}
+\end{equation}
+By substituting relation \eqref{eq:TBLE-viscosity} into equation \eqref{eq:tble} and grouping the diffusive terms, the momentum equation can be rewritten on the form:
+\begin{equation}
+    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
+    -\frac{1}{\rho} \frac{\partial P_E}{\partial x} 
+    + \frac{\partial}{\partial y} \left[ (\nu + \nu_T) \frac{\partial U}{\partial y} \right]
+    \label{eq:rans-final-viscosity}
+\end{equation}
+The determination of $\nu_T$ is then delegated to specific turbulence models, such as the mixing length theory.
 
 \chapter{Simulation techniques overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
@@ -333,6 +392,7 @@ The scale separation problem can be illustrated assuming to discretize a domain 
 As a consequence, this type of simulation for large Reynolds number, such as those related to application in the aeronautical field ($Re \sim 10^8$) requires computer resources very much greater than currently available super computer capacities, and is therefore not practicable \cite{les-sagaut}.
 
 \section{RANS-based simulation}
+\label{sec:rans}
 
 % How it works 
 An approach capable of reducing heavily the number of degrees of freedom to be computed is based on the Reynolds-Averaged Navier Stokes equations \eqref{eq:rans} previously described. In contrast to the direct resolution of all turbulent scales, such method focuses on the determination of the mean flow field. The contribution related to the fluctuation field (transfer of momentum due to turbulent fluctuations) appears in the equations as the Reynolds stress tensor $\langle \bm{u}' \bm{u}' \rangle$ that needs to be determined to close the system of equations.
@@ -361,7 +421,7 @@ While those characteristics are generally true, it should be noted that the adva
 To resolve the closure problem, varying levels of approximation can be adopted. Those approaches can be classified in the first place based on the order of resolved and modeled components (statistical moments).
 
 \subsection{First-order closures}
-
+\label{sec:first-order-closures}
 % How it works
 The most common and simple class of approaches is represented by first-order closures. In this case the Reynolds stress tensor (that is a second moment), is determined through a relation with the mean flow velocity gradients (first moment). First-order closures can be further classified in linear, mostly based on the Boussinesq hypothesis, and non-linear eddy-viscosity formulations.
 
