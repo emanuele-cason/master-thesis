@@ -320,13 +320,17 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 In summary, the energy input associated with the mean velocity field (for example as a result of convection) is in part transferred from one point of the domain to another by the flux term, another part is transferred down to the inertial subrange by the production term. This transfer to smaller and smaller scales continues until the Kolmogorov scales are reached, the effects of viscosity become dominant and the energy can be dissipated as heat.
 
 \section{Wall bounded flows}
-In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction. Since the incompressible case is considered, the Bernoulli principle relate the mean free-stream pressure $P_E(x)$ with the mean velocity $U_E(x)$ so that:
-\begin{equation}
-	P_E \, (x) + \frac{1}{2} \, \rho \, U_E(x)^2 = \textit{const} 
-	\qquad \quad
-	- \frac{d \, P_E}{dx} = \rho \, U_E \, \frac{d \, U_E}{dx}
-\end{equation} 
-Considering the definition of $Re_x = U_E \, x / \nu$, after a critical value on the order of $Re_x \approx 10^6$, the transition to turbulent flow starts.
+
+\subsection{Inertial momentum balance}
+In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction. 
+% Removed because non general for the channel case and unused.
+% Since the incompressible case is considered, the Bernoulli principle relate the mean free-stream pressure $P_E(x)$ with the mean velocity $U_E(x)$ so that:
+% \begin{equation}
+% 	P_E \, (x) + \frac{1}{2} \, \rho \, U_E(x)^2 = \textit{const} 
+% 	\qquad \quad
+% 	- \frac{d \, P_E}{dx} = \rho \, U_E \, \frac{d \, U_E}{dx}
+% \end{equation} 
+% Considering the definition of $Re_x = U_E \, x / \nu$, after a critical value on the order of $Re_x \approx 10^6$, the transition to turbulent flow starts.
 
 At this point it is useful to recall the RANS equations \eqref{eq:rans}, developing their momentum $x$ and $y$ component, and neglecting the statistics variations in the $z$ direction: 
 \begin{equation}
@@ -343,41 +347,120 @@ At this point it is useful to recall the RANS equations \eqref{eq:rans}, develop
     - \left( \frac{\partial \langle u'v' \rangle}{\partial x} + \frac{\partial \langle v'v' \rangle}{\partial y} \right)
 	\label{eq:rans-wall-y}
 \end{equation}
-By applying the classical order of magnitude analysis originally proposed by Prandtl~\cite{prandtl-dimensional-analysis}, based on the assumption that the boundary layer thickness is much smaller than the streamwise length scale, the streamwise gradients of viscous and turbulent stresses can also be neglected.
+By applying the classical order of magnitude analysis originally proposed by Prandtl~\cite{prandtl-dimensional-analysis}, based on the assumption that the boundary layer thickness is much smaller than the streamwise length scale, the equations above are further simplified. Moreover it is also possible to neglect the axial derivatives of the Reynolds stresses, that are small compared with lateral gradients \cite{turbulent-flows}. % See p. 148 Pope
 
-Integrating equation \eqref{eq:rans-wall-y}, considering the boundary layer approximation:
+For the cited assumptions, equation \eqref{eq:rans-wall-x} becomes:
 \begin{equation}
-	P + \rho \, \langle v'^{\, 2} \rangle = P_E \, (x)
+    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
+    -\frac{1}{\rho} \frac{\partial P}{\partial x} 
+    + \nu \frac{\partial^2 U}{\partial y^2}
+    - \frac{\partial \langle u'v' \rangle}{\partial y}
+	\label{eq:rans-tble}
+\end{equation}
+And can be rewritten as:
+\begin{equation}
+    \underbrace{
+        \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} 
+        \vphantom{\frac{\partial}{\partial y} \left[ \frac{\partial U}{\partial y} \right]}
+        \rule[-18pt]{0pt}{0pt} 
+    }_{\raisebox{-6pt}{\text{\footnotesize Inertial terms}}} 
+    = 
+    -\frac{1}{\rho} \frac{\partial P}{\partial x} 
+    +  
+    \frac{1}{\rho} \, \frac{\partial}{\partial y} \, \underbrace{ \left[ \mu \, \frac{\partial U}{\partial y} - \rho \langle u'v' \rangle \right] 
+        \rule[-18pt]{0pt}{0pt}
+    }_{\raisebox{-6pt}{\text{\footnotesize Total stress $\tau(y)$}}}
+    \label{eq:tble}
+\end{equation}
+The total shear stress $\tau(y)$ enclosed by brackets is composed by two contributions with different physical natures:
+\begin{itemize}
+	\item \textbf{Viscous stress:} arises from the mean velocity gradients and is dominant in the immediate vicinity of the wall (inner region). It represents the molecular diffusion of momentum and is the only stress present in the laminar case.
+	\item \textbf{Turbulent stress:} derives from the correlation of velocity fluctuations and represents the momentum transfer due to turbulent mixing. It prevails in the outer region, far from the wall, and vanishes in laminar conditions.
+\end{itemize} 
+% To be moved in the WM section
+% Attenzione, è una RANS quindi la viscosita nu_T è turbolenta non SGS.
+% Equation \eqref{eq:rans-tble} highlights that the mean velocity field evolution is driven by the pressure gradient and the combined effect of molecular diffusion and turbulent transport. 
+
+% As will be discussed in detail in section \ref{sec:rans}, the term $-\langle u'v' \rangle$, representing the Reynolds shear stress, introduces a closure problem, and can be modeled employing the Bousinnesq hypothesis, in equation \eqref{eq:boussinesq-model}.
+% \begin{equation}
+%     -\langle u'v' \rangle = 2 \, \nu_T \, E_{12} = \nu_T \, \frac{\partial U}{\partial y}
+%     \label{eq:tble-viscosity}
+% \end{equation}
+% By substituting relation \eqref{eq:tble-viscosity} into equation \eqref{eq:tble} and grouping the diffusive terms, the momentum equation can be rewritten on the form:
+% \begin{equation}
+%     \underbrace{\frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y}}_{\text{Inertial terms}} = 
+%     -\frac{1}{\rho} \frac{\partial P_W}{\partial x} 
+%     + \frac{\partial}{\partial y} \left[ (\nu + \nu_T) \frac{\partial U}{\partial y} \right]
+%     \label{eq:tble}
+% \end{equation}
+% The determination of $\nu_T$ is then delegated to specific turbulence models, such as the mixing length theory.
+Under the same assumptions, equation \eqref{eq:rans-wall-y} can be simplified and integrated  as:
+\begin{equation}
+    0 = 
+    - \frac{\partial P}{\partial y} 
+    - \rho \, \frac{\partial}{\partial y} \langle v'^{\, 2} \rangle
 	\quad
 	\implies
 	\quad
-	P \, \raisebox{-0.4ex}{$\big|_{y=0}$} = P_W \, (x) = P_E \, (x)
+	0 = 
+    \frac{\partial}{\partial y} \left(
+    P + \rho \, \langle v'^{\, 2} \rangle \right)
+	\label{eq:pressure-tble}
 \end{equation}
-implying that the mean wall pressure $P_W \, (x)$ equals the free-stream pressure $P_E \, (x)$.
+In the particular case of flow over a flat plate considered, since at the wall and in the far free-stream region the term $\langle v'^{\, 2} \rangle$ cancels out, it results that the mean wall pressure $P_W \, (x)$ equals the free-stream pressure $P_E \, (x)$. 
+\begin{equation}
+	\left(
+    P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x) = P_E \, (x)
+\end{equation}
+Equation \eqref{eq:tble} represents the \textit{Inertial Momentum Balance}. The terms on the left-hand side account for the fluid inertia. These terms include both the unsteady acceleration and the spatial convection.
+Their presence indicates a non-equilibrium state: the pressure gradient and the total shear stress do not simply balance each other, and the local velocity profile is not determined uniquely by the instantaneous force balance, but depends on the flow evolution.
+\subsection{Equilibrium momentum balance}
+The previous case can be further simplified considering the example of a fully developed channel flow, characterized by more restrictive assumptions. The geometry consists of two infinite flat plates placed at a distance $2h$, with the flow driven by a constant mean pressure gradient along the streamwise direction $x$. In this configuration, the statistics are assumed to be independent of the streamwise coordinate $x$ (except for the pressure), the spanwise coordinate $z$ and the time $t$:
+\begin{equation}
+	\frac{\partial}{\partial \, x} \, \langle ... \rangle = 0 \qquad \frac{\partial}{\partial \, z} \, \langle ... \rangle = 0 \qquad
+	\frac{\partial}{\partial \, t} \, \langle ... \rangle = 0
+\end{equation}
+Due to the homogeneity in the $x$ direction, the mass balance equation simplifies to $\partial V / \partial y = 0$. Considering the impermeability condition at the wall ($V|_{y=0} = 0$), it follows that the wall-normal mean velocity component $V$ is null everywhere in the channel.
+Consequently, in equation \eqref{eq:tble}, the inertial terms on the left-hand side vanish, and the $x$-momentum balance reduces to an equilibrium between the pressure forces and the gradient of the total stress:
+\begin{equation}
+    0 = -\frac{1}{\rho} \frac{\partial P}{\partial x} + \frac{1}{\rho} \, \frac{\partial}{\partial y} \left[ \mu \frac{\partial U}{\partial y} - \rho \, \langle u'v' \rangle \right]
+	\label{eq:eq-tble-1}
+\end{equation}
+Similarly with what already seen for equation \eqref{eq:pressure-tble}, the term $P + \rho \, \langle v'^{\, 2} \rangle$ is constant along $y$, the term $\langle v'^{\, 2} \rangle$ cancels out at the wall, and its derivative in $x$ is zero for the homogeneity assumptions. Consequently:
+\begin{equation}
+	\left(
+    P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x) 
+	\quad
+	\implies
+	\quad
+	\frac{\partial}{\partial x} \left(
+    P + \rho \, \langle v'^{\, 2} \rangle \right) = \frac{\partial P}{\partial x} = \frac{\partial P_W}{\partial x}
+\end{equation}
+And substituting the pressure gradient in equation \eqref{eq:eq-tble-1}:
+\begin{equation}
+    \frac{d P_W}{dx} = \frac{d}{dy} \left[ \mu \frac{dU}{dy} - \rho \langle u'v' \rangle \right] = \frac{d \tau}{dy} = \textit{const}
+	\label{eq:eq-tble-2}
+\end{equation}
+While the pressure is a function of $x$, $\tau$ is a function of $y$ so, in order for the equation \eqref{eq:eq-tble-2} to be verified, their derivatives above must be equal to a constant value. This imply a linear behavior of the total shear stress along the $y$ direction, described by:
+\begin{equation}
+	\tau(y) = \tau_W \left( 1 - \frac{y}{h} \right)
+	\quad \implies \quad
+	\left\{ \, \,
+	\begin{aligned}
+		&\tau(y=0)   = \tau_W \\
+		&\tau(y=2h)  = -\tau_W
+	\end{aligned}
+	\right.
+\end{equation}
+The data from DNS allows to evaluate the evolution of the two stress contributions, their plot over the half channel width is shown in Figure \ref{fig:channel-stresses}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/channel-stresses.jpg}
+	\caption{Contributions of normalized shear stress along half channel width, evaluated from DNS data \cite{turbulent-flows} \cite{channel-stresses}. Dashed (solid) lines indicate lower (higher) Reynolds numbers.}
+	\label{fig:channel-stresses}
+\end{figure}
 
-Instead equation \eqref{eq:rans-wall-x} becomes:
-\begin{equation}
-    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
-    -\frac{1}{\rho} \frac{\partial P_E}{\partial x} 
-    + \nu \frac{\partial^2 U}{\partial y^2}
-    - \frac{\partial \langle u'v' \rangle}{\partial y}
-	\label{eq:tble}
-\end{equation}
-Equation \eqref{eq:tble} highlights that the mean velocity field evolution is driven by the pressure gradient and the combined effect of molecular diffusion and turbulent transport. 
 
-As will be discussed in detail in section \ref{sec:rans}, the term $-\langle u'v' \rangle$, representing the Reynolds shear stress, introduces a closure problem, and can be modeled employing the Bousinnesq hypothesis, in equation \eqref{eq:boussinesq-model}.
-\begin{equation}
-    -\langle u'v' \rangle = 2 \, \nu_T \, E_{12} = \nu_T \, \frac{\partial U}{\partial y}
-    \label{eq:TBLE-viscosity}
-\end{equation}
-By substituting relation \eqref{eq:TBLE-viscosity} into equation \eqref{eq:tble} and grouping the diffusive terms, the momentum equation can be rewritten on the form:
-\begin{equation}
-    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
-    -\frac{1}{\rho} \frac{\partial P_E}{\partial x} 
-    + \frac{\partial}{\partial y} \left[ (\nu + \nu_T) \frac{\partial U}{\partial y} \right]
-    \label{eq:rans-final-viscosity}
-\end{equation}
-The determination of $\nu_T$ is then delegated to specific turbulence models, such as the mixing length theory.
 
 \chapter{Simulation techniques overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
@@ -590,7 +673,7 @@ Applying the filtering operation to the incompressible Navier-Stokes equations, 
 	\left\{
 	\hspace{0.15cm}
 	\begin{aligned}
-		 & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0                                                                                                                                                                                                                                                                                                                                              \\[12pt]
+		 & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0                                                       \\[12pt]
 		 & \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial \, x_j} \left( 2 \, \nu \, \widetilde{e}_{ij} \right) - \frac{\partial}{\partial \, x_j} \left( \widetilde{u_i \, u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
 	\end{aligned}
 	\right.
