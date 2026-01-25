@@ -460,7 +460,24 @@ The data from DNS allows to evaluate the evolution of the two stress contributio
 	\label{fig:channel-stresses}
 \end{figure}
 
-
+Observing the data of the contributions, it is possible to identify two regions, and define for each one some important parameters:
+\begin{itemize}
+    \item \textbf{Inner layer:} near the wall with a prevalence of the viscous effects. At increasing Reynolds number this region becomes progressively thinner. Its characteristic wall friction velocity and viscous length scale are defined as:
+    \begin{equation}
+        \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{\frac{\tau_W}{\rho}}$}
+        \makebox[5.0cm][c]{$\displaystyle \delta_{\nu} = \frac{\nu}{u_\tau}$}
+    \end{equation} 
+    Using these scales, the wall-normal coordinate and the mean velocity can be expressed in inner variables as:
+    \begin{equation}
+        \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{U}{u_\tau}$}
+        \makebox[5.0cm][c]{$\displaystyle y^+ = \frac{y}{\delta_\nu} = \frac{y \, u_\tau}{\nu}$}       
+    \end{equation}
+    \item \textbf{Outer layer:} where the turbulent stress component is dominant. The characteristic velocity and length scales are:
+    \begin{equation}
+        \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{-\frac{h}{\rho}\, \frac{\partial P}{\partial x}}$}
+        \makebox[5.0cm][c]{{\Large $h$}}
+    \end{equation}
+\end{itemize}
 
 \chapter{Simulation techniques overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
