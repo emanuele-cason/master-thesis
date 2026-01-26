@@ -55,7 +55,10 @@
 		\textsc{\Large Aeronautical Curriculum}\\
 		\vfill
 
-		{ \LARGE \bfseries [EXAMPLE] Adaptive wall modelling approach in Large Eddy Simulation with the Immersed Boundary Method.}\\
+		{ \LARGE \bfseries
+			Large Eddy Simulation with the Immersed Boundary Method: Implementation of an adaptive wall-modeling approach for complex turbulent flows
+			\par
+		}
 
 		\vfill
 		\textit{\Large Thesis Advisor:} \hfill \textit{\Large Candidate:}\\
@@ -70,6 +73,14 @@
 \end{titlepage}
 
 \tableofcontents
+
+\newpage
+\chapter*{Abstract}
+High-Reynolds number turbulent flows dominate critical engineering applications, ranging from aircraft and other vehicles to wind turbines and turbomachinery. However, their simulation remains an open challenge: such flows are characterized by a multi-scale nature, resulting in an enormous number of degrees of freedom; consequently, the computational cost of resolving all scales via Direct Numerical Simulation (DNS) becomes prohibitive. Large Eddy Simulation (LES) addresses this problem by resolving the largest scales of the motion while modeling the smaller ones. Furthermore, when dealing with complex geometries, the Immersed Boundary Method (IBM) provides a flexible framework that avoids the complexity of body-fitted meshes. However, the need to resolve the boundary layer still imposes strict grid requirements, driving the adoption of Wall-Modeled LES (WM-LES).
+
+Standard wall models typically rely on the equilibrium boundary layer assumption, which neglects the pressure gradient and convective terms and employs an equilibrium formulation for the turbulent viscosity. While computationally efficient, these models often fail to predict complex phenomena such as flow separation and reattachment. Conversely, with a higher computational effort, non-equilibrium models based on Ordinary or Partial Differential Equations (ODEs/PDEs) offer greater accuracy.
+
+In the current work, the implementation of an adaptive wall modeling approach is proposed. The aim is to optimize the trade-off between cost and accuracy by dynamically selecting the governing equations for the wall stress, enabling a more accurate ODE model only in regions where the flow complexity requires it, while maintaining the efficiency of standard approaches in the regions where the equilibrium boundary layer conditions can be considered valid.
 
 \newpage
 \begingroup
@@ -149,8 +160,8 @@
 	$k_R$                                        & Residual (Sub-Grid Scale) flow kinetic energy                                \\
 	$\nu_R$                                      & Residual (Sub-Grid Scale) eddy viscosity                                     \\
 	$C_S$                                        & Tuning constant for Smagorinsky model                                        \\
-    $\mathcal{S}_{ij}$ & Traceless symmetric part of the square of the velocity gradient tensor \\
-    $C_W$ & Tuning constant for WALE model \\
+	$\mathcal{S}_{ij}$                           & Traceless symmetric part of the square of the velocity gradient tensor       \\
+	$C_W$                                        & Tuning constant for WALE model                                               \\
 
 	% Acronyms
 	\addlinespace
@@ -322,7 +333,7 @@ In summary, the energy input associated with the mean velocity field (for exampl
 \section{Wall bounded flows}
 
 \subsection{Inertial momentum balance}
-In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction. 
+In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction.
 % Removed because non general for the channel case and unused.
 % Since the incompressible case is considered, the Bernoulli principle relate the mean free-stream pressure $P_E(x)$ with the mean velocity $U_E(x)$ so that:
 % \begin{equation}
@@ -332,51 +343,51 @@ In the simple case of a uniform laminar flow above a smooth flat plate, the boun
 % \end{equation} 
 % Considering the definition of $Re_x = U_E \, x / \nu$, after a critical value on the order of $Re_x \approx 10^6$, the transition to turbulent flow starts.
 
-At this point it is useful to recall the RANS equations \eqref{eq:rans}, developing their momentum $x$ and $y$ component, and neglecting the statistics variations in the $z$ direction: 
+At this point it is useful to recall the RANS equations \eqref{eq:rans}, developing their momentum $x$ and $y$ component, and neglecting the statistics variations in the $z$ direction:
 \begin{equation}
-    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
-    -\frac{1}{\rho} \frac{\partial P}{\partial x} 
-    + \nu \left( \frac{\partial^2 U}{\partial x^2} + \frac{\partial^2 U}{\partial y^2} \right) 
-    - \left( \frac{\partial \langle u'u' \rangle}{\partial x} + \frac{\partial \langle u'v' \rangle}{\partial y} \right)
+	\frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} =
+	-\frac{1}{\rho} \frac{\partial P}{\partial x}
+	+ \nu \left( \frac{\partial^2 U}{\partial x^2} + \frac{\partial^2 U}{\partial y^2} \right)
+	- \left( \frac{\partial \langle u'u' \rangle}{\partial x} + \frac{\partial \langle u'v' \rangle}{\partial y} \right)
 	\label{eq:rans-wall-x}
 \end{equation}
 \begin{equation}
-    \frac{\partial V}{\partial t} + U \frac{\partial V}{\partial x} + V \frac{\partial V}{\partial y} = 
-    -\frac{1}{\rho} \frac{\partial P}{\partial y} 
-    + \nu \left( \frac{\partial^2 V}{\partial x^2} + \frac{\partial^2 V}{\partial y^2} \right) 
-    - \left( \frac{\partial \langle u'v' \rangle}{\partial x} + \frac{\partial \langle v'v' \rangle}{\partial y} \right)
+	\frac{\partial V}{\partial t} + U \frac{\partial V}{\partial x} + V \frac{\partial V}{\partial y} =
+	-\frac{1}{\rho} \frac{\partial P}{\partial y}
+	+ \nu \left( \frac{\partial^2 V}{\partial x^2} + \frac{\partial^2 V}{\partial y^2} \right)
+	- \left( \frac{\partial \langle u'v' \rangle}{\partial x} + \frac{\partial \langle v'v' \rangle}{\partial y} \right)
 	\label{eq:rans-wall-y}
 \end{equation}
 By applying the classical order of magnitude analysis originally proposed by Prandtl~\cite{prandtl-dimensional-analysis}, based on the assumption that the boundary layer thickness is much smaller than the streamwise length scale, the equations above are further simplified. Moreover it is also possible to neglect the axial derivatives of the Reynolds stresses, that are small compared with lateral gradients \cite{turbulent-flows}. % See p. 148 Pope
 
 For the cited assumptions, equation \eqref{eq:rans-wall-x} becomes:
 \begin{equation}
-    \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} = 
-    -\frac{1}{\rho} \frac{\partial P}{\partial x} 
-    + \nu \frac{\partial^2 U}{\partial y^2}
-    - \frac{\partial \langle u'v' \rangle}{\partial y}
+	\frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} =
+	-\frac{1}{\rho} \frac{\partial P}{\partial x}
+	+ \nu \frac{\partial^2 U}{\partial y^2}
+	- \frac{\partial \langle u'v' \rangle}{\partial y}
 	\label{eq:rans-tble}
 \end{equation}
 And can be rewritten as:
 \begin{equation}
-    \underbrace{
-        \frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y} 
-        \vphantom{\frac{\partial}{\partial y} \left[ \frac{\partial U}{\partial y} \right]}
-        \rule[-18pt]{0pt}{0pt} 
-    }_{\raisebox{-6pt}{\text{\footnotesize Inertial terms}}} 
-    = 
-    -\frac{1}{\rho} \frac{\partial P}{\partial x} 
-    +  
-    \frac{1}{\rho} \, \frac{\partial}{\partial y} \, \underbrace{ \left[ \mu \, \frac{\partial U}{\partial y} - \rho \langle u'v' \rangle \right] 
-        \rule[-18pt]{0pt}{0pt}
-    }_{\raisebox{-6pt}{\text{\footnotesize Total stress $\tau(y)$}}}
-    \label{eq:tble}
+	\underbrace{
+		\frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y}
+		\vphantom{\frac{\partial}{\partial y} \left[ \frac{\partial U}{\partial y} \right]}
+		\rule[-18pt]{0pt}{0pt}
+	}_{\raisebox{-6pt}{\text{\footnotesize Inertial terms}}}
+	=
+	-\frac{1}{\rho} \frac{\partial P}{\partial x}
+	+
+	\frac{1}{\rho} \, \frac{\partial}{\partial y} \, \underbrace{ \left[ \mu \, \frac{\partial U}{\partial y} - \rho \langle u'v' \rangle \right]
+		\rule[-18pt]{0pt}{0pt}
+	}_{\raisebox{-6pt}{\text{\footnotesize Total stress $\tau(y)$}}}
+	\label{eq:tble}
 \end{equation}
 The total shear stress $\tau(y)$ enclosed by brackets is composed by two contributions with different physical natures:
 \begin{itemize}
 	\item \textbf{Viscous stress:} arises from the mean velocity gradients and is dominant in the immediate vicinity of the wall (inner region). It represents the molecular diffusion of momentum and is the only stress present in the laminar case.
 	\item \textbf{Turbulent stress:} derives from the correlation of velocity fluctuations and represents the momentum transfer due to turbulent mixing. It prevails in the outer region, far from the wall, and vanishes in laminar conditions.
-\end{itemize} 
+\end{itemize}
 % To be moved in the WM section
 % Attenzione, è una RANS quindi la viscosita nu_T è turbolenta non SGS.
 % Equation \eqref{eq:rans-tble} highlights that the mean velocity field evolution is driven by the pressure gradient and the combined effect of molecular diffusion and turbulent transport. 
@@ -396,21 +407,21 @@ The total shear stress $\tau(y)$ enclosed by brackets is composed by two contrib
 % The determination of $\nu_T$ is then delegated to specific turbulence models, such as the mixing length theory.
 Under the same assumptions, equation \eqref{eq:rans-wall-y} can be simplified and integrated  as:
 \begin{equation}
-    0 = 
-    - \frac{\partial P}{\partial y} 
-    - \rho \, \frac{\partial}{\partial y} \langle v'^{\, 2} \rangle
+	0 =
+	- \frac{\partial P}{\partial y}
+	- \rho \, \frac{\partial}{\partial y} \langle v'^{\, 2} \rangle
 	\quad
 	\implies
 	\quad
-	0 = 
-    \frac{\partial}{\partial y} \left(
-    P + \rho \, \langle v'^{\, 2} \rangle \right)
+	0 =
+	\frac{\partial}{\partial y} \left(
+	P + \rho \, \langle v'^{\, 2} \rangle \right)
 	\label{eq:pressure-tble}
 \end{equation}
-In the particular case of flow over a flat plate considered, since at the wall and in the far free-stream region the term $\langle v'^{\, 2} \rangle$ cancels out, it results that the mean wall pressure $P_W \, (x)$ equals the free-stream pressure $P_E \, (x)$. 
+In the particular case of flow over a flat plate considered, since at the wall and in the far free-stream region the term $\langle v'^{\, 2} \rangle$ cancels out, it results that the mean wall pressure $P_W \, (x)$ equals the free-stream pressure $P_E \, (x)$.
 \begin{equation}
 	\left(
-    P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x) = P_E \, (x)
+	P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x) = P_E \, (x)
 \end{equation}
 Equation \eqref{eq:tble} represents the \textit{Inertial Momentum Balance}. The terms on the left-hand side account for the fluid inertia. These terms include both the unsteady acceleration and the spatial convection.
 Their presence indicates a non-equilibrium state: the pressure gradient and the total shear stress do not simply balance each other, and the local velocity profile is not determined uniquely by the instantaneous force balance, but depends on the flow evolution.
@@ -423,22 +434,22 @@ The previous case can be further simplified considering the example of a fully d
 Due to the homogeneity in the $x$ direction, the mass balance equation simplifies to $\partial V / \partial y = 0$. Considering the impermeability condition at the wall ($V|_{y=0} = 0$), it follows that the wall-normal mean velocity component $V$ is null everywhere in the channel.
 Consequently, in equation \eqref{eq:tble}, the inertial terms on the left-hand side vanish, and the $x$-momentum balance reduces to an equilibrium between the pressure forces and the gradient of the total stress:
 \begin{equation}
-    0 = -\frac{1}{\rho} \frac{\partial P}{\partial x} + \frac{1}{\rho} \, \frac{\partial}{\partial y} \left[ \mu \frac{\partial U}{\partial y} - \rho \, \langle u'v' \rangle \right]
+	0 = -\frac{1}{\rho} \frac{\partial P}{\partial x} + \frac{1}{\rho} \, \frac{\partial}{\partial y} \left[ \mu \frac{\partial U}{\partial y} - \rho \, \langle u'v' \rangle \right]
 	\label{eq:eq-tble-1}
 \end{equation}
 Similarly with what already seen for equation \eqref{eq:pressure-tble}, the term $P + \rho \, \langle v'^{\, 2} \rangle$ is constant along $y$, the term $\langle v'^{\, 2} \rangle$ cancels out at the wall, and its derivative in $x$ is zero for the homogeneity assumptions. Consequently:
 \begin{equation}
 	\left(
-    P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x) 
+	P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x)
 	\quad
 	\implies
 	\quad
 	\frac{\partial}{\partial x} \left(
-    P + \rho \, \langle v'^{\, 2} \rangle \right) = \frac{\partial P}{\partial x} = \frac{\partial P_W}{\partial x}
+	P + \rho \, \langle v'^{\, 2} \rangle \right) = \frac{\partial P}{\partial x} = \frac{\partial P_W}{\partial x}
 \end{equation}
 And substituting the pressure gradient in equation \eqref{eq:eq-tble-1}:
 \begin{equation}
-    \frac{d P_W}{dx} = \frac{d}{dy} \left[ \mu \frac{dU}{dy} - \rho \langle u'v' \rangle \right] = \frac{d \tau}{dy} = \textit{const}
+	\frac{d P_W}{dx} = \frac{d}{dy} \left[ \mu \frac{dU}{dy} - \rho \langle u'v' \rangle \right] = \frac{d \tau}{dy} = \textit{const}
 	\label{eq:eq-tble-2}
 \end{equation}
 While the pressure is a function of $x$, $\tau$ is a function of $y$ so, in order for the equation \eqref{eq:eq-tble-2} to be verified, their derivatives above must be equal to a constant value. This imply a linear behavior of the total shear stress along the $y$ direction, described by:
@@ -447,8 +458,8 @@ While the pressure is a function of $x$, $\tau$ is a function of $y$ so, in orde
 	\quad \implies \quad
 	\left\{ \, \,
 	\begin{aligned}
-		&\tau(y=0)   = \tau_W \\
-		&\tau(y=2h)  = -\tau_W
+		 & \tau(y=0)   = \tau_W  \\
+		 & \tau(y=2h)  = -\tau_W
 	\end{aligned}
 	\right.
 \end{equation}
@@ -462,21 +473,21 @@ The data from DNS allows to evaluate the evolution of the two stress contributio
 
 Observing the data of the contributions, it is possible to identify two regions, and define for each one some important parameters:
 \begin{itemize}
-    \item \textbf{Inner layer:} near the wall with a prevalence of the viscous effects. At increasing Reynolds number this region becomes progressively thinner. Its characteristic wall friction velocity and viscous length scale are defined as:
-    \begin{equation}
-        \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{\frac{\tau_W}{\rho}}$}
-        \makebox[5.0cm][c]{$\displaystyle \delta_{\nu} = \frac{\nu}{u_\tau}$}
-    \end{equation} 
-    Using these scales, the wall-normal coordinate and the mean velocity can be expressed in inner variables as:
-    \begin{equation}
-        \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{U}{u_\tau}$}
-        \makebox[5.0cm][c]{$\displaystyle y^+ = \frac{y}{\delta_\nu} = \frac{y \, u_\tau}{\nu}$}       
-    \end{equation}
-    \item \textbf{Outer layer:} where the turbulent stress component is dominant. The characteristic velocity and length scales are:
-    \begin{equation}
-        \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{-\frac{h}{\rho}\, \frac{\partial P}{\partial x}}$}
-        \makebox[5.0cm][c]{{\Large $h$}}
-    \end{equation}
+	\item \textbf{Inner layer:} near the wall with a prevalence of the viscous effects. At increasing Reynolds number this region becomes progressively thinner. Its characteristic wall friction velocity and viscous length scale are defined as:
+	      \begin{equation}
+		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{\frac{\tau_W}{\rho}}$}
+		      \makebox[5.0cm][c]{$\displaystyle \delta_{\nu} = \frac{\nu}{u_\tau}$}
+	      \end{equation}
+	      Using these scales, the wall-normal coordinate and the mean velocity can be expressed in inner variables as:
+	      \begin{equation}
+		      \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{U}{u_\tau}$}
+		      \makebox[5.0cm][c]{$\displaystyle y^+ = \frac{y}{\delta_\nu} = \frac{y \, u_\tau}{\nu}$}
+	      \end{equation}
+	\item \textbf{Outer layer:} where the turbulent stress component is dominant. The characteristic velocity and length scales are:
+	      \begin{equation}
+		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{-\frac{h}{\rho}\, \frac{\partial P}{\partial x}}$}
+		      \makebox[5.0cm][c]{{\Large $h$}}
+	      \end{equation}
 \end{itemize}
 
 \chapter{Simulation techniques overview}
@@ -690,7 +701,7 @@ Applying the filtering operation to the incompressible Navier-Stokes equations, 
 	\left\{
 	\hspace{0.15cm}
 	\begin{aligned}
-		 & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0                                                       \\[12pt]
+		 & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0                                                                                                                                                                                                                                                                                                                                              \\[12pt]
 		 & \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial \, x_j} \left( 2 \, \nu \, \widetilde{e}_{ij} \right) - \frac{\partial}{\partial \, x_j} \left( \widetilde{u_i \, u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
 	\end{aligned}
 	\right.
@@ -757,32 +768,32 @@ The WALE model addresses the limitations of Smagorinsky one, while maintaining i
 
 Considering the traceless symmetric part of the square of the velocity gradient tensor:
 \begin{equation}
-    \mathcal{S}_{ij} = \frac{1}{2} (\,\widetilde{g}_{ij}^{\,2} + \widetilde{g}_{ji}^{\,2}\,) - \frac{1}{3} \, \delta_{ij} \, \widetilde{g}_{kk}^{\,2}
-    \label{eq:wale-s-tensor}
+	\mathcal{S}_{ij} = \frac{1}{2} (\,\widetilde{g}_{ij}^{\,2} + \widetilde{g}_{ji}^{\,2}\,) - \frac{1}{3} \, \delta_{ij} \, \widetilde{g}_{kk}^{\,2}
+	\label{eq:wale-s-tensor}
 \end{equation}
 where the terms:
 \begin{equation}
-    \widetilde{g}_{ij} = \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = \widetilde{e}_{ij} + \widetilde{\omega}_{ij}
-    \qquad \quad
-    \widetilde{g}_{ij}^{\,2} = \frac{\partial \, \widetilde{u}_i}{\partial \, x_k} \, \frac{\partial \, \widetilde{u}_k}{\partial \, x_j} = (\widetilde{e}_{ik} + \widetilde{\omega}_{ik})(\widetilde{e}_{kj} + \widetilde{\omega}_{kj})
+	\widetilde{g}_{ij} = \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = \widetilde{e}_{ij} + \widetilde{\omega}_{ij}
+	\qquad \quad
+	\widetilde{g}_{ij}^{\,2} = \frac{\partial \, \widetilde{u}_i}{\partial \, x_k} \, \frac{\partial \, \widetilde{u}_k}{\partial \, x_j} = (\widetilde{e}_{ik} + \widetilde{\omega}_{ik})(\widetilde{e}_{kj} + \widetilde{\omega}_{kj})
 \end{equation}
 Developing the square of the tensor defined in equation \eqref{eq:wale-s-tensor}, the scalar $\mathcal{S}_{ij} \, \mathcal{S}_{ij}$ is obtained:
 \begin{equation}
-    \mathcal{S}_{ij} \, \mathcal{S}_{ij} = \frac{1}{6} \, (\widetilde{e}^{\,2} \, \widetilde{e}^{\,2} + \widetilde{\omega}^{\,2} \, \widetilde{\omega}^{\,2}) + \frac{2}{3} \, \widetilde{e}^{\,2} \, \widetilde{\omega}^{\,2} + 2 \, IV_{e\omega}
-    \label{eq:wale-invariant}
+	\mathcal{S}_{ij} \, \mathcal{S}_{ij} = \frac{1}{6} \, (\widetilde{e}^{\,2} \, \widetilde{e}^{\,2} + \widetilde{\omega}^{\,2} \, \widetilde{\omega}^{\,2}) + \frac{2}{3} \, \widetilde{e}^{\,2} \, \widetilde{\omega}^{\,2} + 2 \, IV_{e\omega}
+	\label{eq:wale-invariant}
 \end{equation}
 In which the participating components are:
 \begin{itemize}
-    \item The squared magnitude of the resolved strain rate: $\widetilde{e}^{\,2} = \widetilde{e}_{ij} \, \widetilde{e}_{ij}$ 
-    \item The squared magnitude of the resolved rotation rate: $\widetilde{\omega}^{\,2} = \widetilde{\omega}_{ij} \, \widetilde{\omega}_{ij}$ 
-    \item A strain-rotation interaction term: $IV_{e\omega} = \widetilde{e}_{ik} \, \widetilde{e}_{kj} \, \widetilde{\omega}_{jl} \,\widetilde{\omega}_{li}$ .
+	\item The squared magnitude of the resolved strain rate: $\widetilde{e}^{\,2} = \widetilde{e}_{ij} \, \widetilde{e}_{ij}$
+	\item The squared magnitude of the resolved rotation rate: $\widetilde{\omega}^{\,2} = \widetilde{\omega}_{ij} \, \widetilde{\omega}_{ij}$
+	\item A strain-rotation interaction term: $IV_{e\omega} = \widetilde{e}_{ik} \, \widetilde{e}_{kj} \, \widetilde{\omega}_{jl} \,\widetilde{\omega}_{li}$ .
 \end{itemize}
 The formulated invariant \eqref{eq:wale-invariant}, is capable of detecting turbulent structures dominated by either strain, rotation, or both. Moreover, in the case of pure shear (e.g., laminar Poiseuille flow), the strain and rotation magnitudes balance each other ($\widetilde{e}^{\,2} \approx \widetilde{\omega}^{\,2}$), causing the invariant to vanish. This property ensures that the subgrid dissipation is naturally zero in laminar wall-bounded regions, allowing the development of instabilities and thus enabling the correct prediction of the laminar-to-turbulent transition.
 
 At this point some corrections are implemented to ensure the correct  $O(y^3)$ near wall scaling, dimensional coherency and to avoid numerical instabilities related to the cancellation of the denominator. Finally, the expression for the WALE model is the following:
 \begin{equation}
-    \nu_R = (C_W \Delta_F)^2 \, \frac{(\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,3/2}}{(\widetilde{e}_{ij} \, \widetilde{e}_{ij})^{\, 5/2} + (\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,5/4}}
-    \label{eq:wale_viscosity}
+	\nu_R = (C_W \Delta_F)^2 \, \frac{(\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,3/2}}{(\widetilde{e}_{ij} \, \widetilde{e}_{ij})^{\, 5/2} + (\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,5/4}}
+	\label{eq:wale_viscosity}
 \end{equation}
 
 \backmatter
