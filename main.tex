@@ -462,6 +462,7 @@ While the pressure is a function of $x$, $\tau$ is a function of $y$ so, in orde
 		 & \tau(y=2h)  = -\tau_W
 	\end{aligned}
 	\right.
+	\label{eq:linear-total-shear-stress}
 \end{equation}
 The data from DNS allows to evaluate the evolution of the two stress contributions, their plot over the half channel width is shown in Figure \ref{fig:channel-stresses}.
 \begin{figure}[htbp]
@@ -483,6 +484,7 @@ Observing the data of the contributions, it is possible to identify two regions,
 		      \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{U}{u_\tau}$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ = \frac{y}{\delta_\nu} = \frac{y \, u_\tau}{\nu}$}
 	      \end{equation}
+	      It can be noticed that, to assume $(y/h \ll 1)$ imply $\tau(y) \approx \tau_W$ and thus $d P_W / d x = d \tau / dy \approx 0$ (see equations \eqref{eq:linear-total-shear-stress} and \eqref{eq:eq-tble-2}). This means that the gradients involved cannot be excessive in order for the formulation to be valid.
 	\item \textbf{Outer layer $(y/\delta_{\nu} \gg 1)$:} where the turbulent stress component is dominant. The characteristic velocity and length scales are:
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{-\frac{h}{\rho}\, \frac{\partial P}{\partial x}}$}
@@ -497,31 +499,39 @@ The ratio between the two characteristic length scales can be defined as the fri
 \subsubsection{Wall laws}
 Despite the previous separate definition of the two regions, the mean behavior of the flow varies with continuity moving away from the wall and so do the mathematical laws that describe the velocity profile:
 \begin{itemize}
-	\item \textbf{Viscous sublayer:} Inside the inner layer, in the close proximity of the wall, the linear relation is considered well verified:
+	\item \textbf{Viscous sublayer:} Inside the inner layer, in the close proximity of the wall, the flow is dominated by viscous effects. The linear relation is considered well verified:
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle u^+ = y^+$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ < 5$}
 	      \end{equation}
-	\item \textbf{Inner overlap region:} Moving towards the outer layer, the mean flow is described by the logarithmic law, still dependent on: the $y^+$ coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant ($B \approx 5.2$).
+	\item \textbf{Buffer layer:} In the transition region ($5 < y^+ < 30$), neither the linear or the logarithmic law provides an accurate description, as viscous and turbulent stresses are of comparable magnitude. Consequently, the velocity profile is described by semi-empirical functions (such as Van Driest damping or Spalding's law) that smoothly connect the viscous sublayer to the logarithmic region.
+	\item \textbf{Overlap region:} Moving towards the outer layer, the mean flow is described by the logarithmic law, still dependent on: the $y^+$ coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant ($B \approx 5.2$).
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle u^+ = \frac{1}{\kappa} \, \text{ln} \, y^+ + B$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ > 30$}
 	      \end{equation}
-	      It can be demonstrated that this law asymptotically transition to the defect law while approaching the outer overlap region.
-	\item \textbf{Outer overlap region:} In this sublayer, the flow description is provided as a velocity defect with respect to the centerline velocity $U_C$. The defect law is dependent on: the $y/h$ normalized coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant $B_1$, dependent on the type of flow.
+	      It can be demonstrated that this law asymptotically transition to the defect law while approaching the outer layer. Then, the flow description is provided as a velocity defect with respect to the centerline velocity $U_C$. The defect law is dependent on: the $y/h$ normalized coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant $B_1$, specific for the type of flow.
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle \frac{U_C - U}{u_\tau} = - \, \frac{1}{\kappa} \, \text{ln} \, \frac{y}{h} + B_1$}
 		      \makebox[5.0cm][c]{$\displaystyle y/h < 0.3$}
 	      \end{equation}
 \end{itemize}
 The various layer just introduced are resumed in Figure \ref{fig:inner-outer-layers}.
+
+Despite the previous relations have been derived with the assumption of a developed channel flow, multiple experiments verified the universality of such laws also for pipe flows and other equilibrium boundary layers, and as shown in Figure \ref{fig:wall-laws-vs-experiment} they recover very accurately the experimental data
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.8\textwidth]{img/inner-outer-layers.jpg}
+	\includegraphics[width=0.85\textwidth]{img/inner-outer-layers.jpg}
 	\caption{Wall regions for a turbulent channel flow \cite{turbulent-flows}.}
 	\label{fig:inner-outer-layers}
 \end{figure}
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{img/wall-laws-vs-experiment.jpg}
+	\caption{Solid line: linear and log laws (connected with the Van Driest function) \cite{turbulent-flows}; Circles and dashed line: boundary layer above a flat plate, zero pressure gradient, data respectively from a hot-wire anemometer \cite{wall-laws-experiment} and from DNS \cite{wall-laws-DNS}.}
+	\label{fig:wall-laws-vs-experiment}
+\end{figure}
 
 \chapter{Simulation techniques overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
