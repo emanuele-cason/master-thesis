@@ -473,7 +473,7 @@ The data from DNS allows to evaluate the evolution of the two stress contributio
 
 Observing the data of the contributions, it is possible to identify two regions, and define for each one some important parameters:
 \begin{itemize}
-	\item \textbf{Inner layer:} near the wall with a prevalence of the viscous effects. At increasing Reynolds number this region becomes progressively thinner. Its characteristic wall friction velocity and viscous length scale are defined as:
+	\item \textbf{Inner layer $(y/h \ll 1)$:} near the wall with a prevalence of the viscous effects. At increasing Reynolds number this region becomes progressively thinner. Its characteristic wall friction velocity and viscous length scale are defined as:
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{\frac{\tau_W}{\rho}}$}
 		      \makebox[5.0cm][c]{$\displaystyle \delta_{\nu} = \frac{\nu}{u_\tau}$}
@@ -483,12 +483,45 @@ Observing the data of the contributions, it is possible to identify two regions,
 		      \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{U}{u_\tau}$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ = \frac{y}{\delta_\nu} = \frac{y \, u_\tau}{\nu}$}
 	      \end{equation}
-	\item \textbf{Outer layer:} where the turbulent stress component is dominant. The characteristic velocity and length scales are:
+	\item \textbf{Outer layer $(y/\delta_{\nu} \gg 1)$:} where the turbulent stress component is dominant. The characteristic velocity and length scales are:
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{-\frac{h}{\rho}\, \frac{\partial P}{\partial x}}$}
 		      \makebox[5.0cm][c]{{\Large $h$}}
 	      \end{equation}
 \end{itemize}
+The ratio between the two characteristic length scales can be defined as the friction Reynolds number:
+\begin{equation}
+	\frac{h}{\delta_{\nu}} = \frac{u_{\tau}}{\nu} = Re_{\tau}
+\end{equation}
+
+\subsubsection{Wall laws}
+Despite the previous separate definition of the two regions, the mean behavior of the flow varies with continuity moving away from the wall and so do the mathematical laws that describe the velocity profile:
+\begin{itemize}
+	\item \textbf{Viscous sublayer:} Inside the inner layer, in the close proximity of the wall, the linear relation is considered well verified:
+	      \begin{equation}
+		      \makebox[5.0cm][c]{$\displaystyle u^+ = y^+$}
+		      \makebox[5.0cm][c]{$\displaystyle y^+ < 5$}
+	      \end{equation}
+	\item \textbf{Inner overlap region:} Moving towards the outer layer, the mean flow is described by the logarithmic law, still dependent on: the $y^+$ coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant ($B \approx 5.2$).
+	      \begin{equation}
+		      \makebox[5.0cm][c]{$\displaystyle u^+ = \frac{1}{\kappa} \, \text{ln} \, y^+ + B$}
+		      \makebox[5.0cm][c]{$\displaystyle y^+ > 30$}
+	      \end{equation}
+	      It can be demonstrated that this law asymptotically transition to the defect law while approaching the outer overlap region.
+	\item \textbf{Outer overlap region:} In this sublayer, the flow description is provided as a velocity defect with respect to the centerline velocity $U_C$. The defect law is dependent on: the $y/h$ normalized coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant $B_1$, dependent on the type of flow.
+	      \begin{equation}
+		      \makebox[5.0cm][c]{$\displaystyle \frac{U_C - U}{u_\tau} = - \, \frac{1}{\kappa} \, \text{ln} \, \frac{y}{h} + B_1$}
+		      \makebox[5.0cm][c]{$\displaystyle y/h < 0.3$}
+	      \end{equation}
+\end{itemize}
+The various layer just introduced are resumed in Figure \ref{fig:inner-outer-layers}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\textwidth]{img/inner-outer-layers.jpg}
+	\caption{Wall regions for a turbulent channel flow \cite{turbulent-flows}.}
+	\label{fig:inner-outer-layers}
+\end{figure}
+
 
 \chapter{Simulation techniques overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
