@@ -200,6 +200,24 @@ In most of the engineering applications, flows are prevalently turbulent. Genera
 
 Such flows are characterized by some specific properties. A key feature is the multi-scale nature of the vortical structures, whose dimensions span 6 to 8 orders of magnitude. Despite the deterministic nature (they can be described accurately by the Navier-Stokes equations), the strong dependence and sensitivity to initial conditions make their behavior chaotic. Furthermore, turbulent flows are intrinsically three-dimensional and unsteady, they show an high diffusivity (mixing of momentum, energy and species) and also an increased wall friction when compared to laminar flows.
 
+The Navier-Stokes equations express the principles of mass and momentum conservation, governing the evolution of the flow field. In the current work, the fluid is assumed to be incompressible and Newtonian, with constant viscosity. Under these hypotheses, the governing equations can be formulated in their \textit{convective form} as:
+\begin{equation}
+\label{eq:NS-conv}
+\begin{cases}
+    \nabla \cdot \bm{u} = 0 \\[1.5ex]
+    \dfrac{\partial \bm{u}}{\partial t} + \bm{u} \cdot \nabla \bm{u} = -\dfrac{\nabla p}{\rho} + \nu \nabla^2 \bm{u} + \bm{f}
+\end{cases}
+\end{equation}
+or recasting the system in its \textit{conservative form}:
+\begin{equation}
+\label{eq:NS-cons}
+\begin{cases}
+    \nabla \cdot \bm{u} = 0 \\[1.5ex]
+    \dfrac{\partial \bm{u}}{\partial t} + \nabla \cdot (\bm{u} \otimes \bm{u}) = -\dfrac{\nabla p}{\rho} + \nu \nabla^2 \bm{u} + \bm{f}
+\end{cases}
+\end{equation}
+where $\bm{f}$ represents the body forces.
+
 The flow regime is described by the Reynolds number, a non-dimensional value representing the ratio between inertial and viscous forces, and defined as:
 \begin{equation}
 	Re = \frac{\rho \, U_0 \, L_0}{\mu} = \frac{U_0 \, L_0}{\nu}
@@ -221,7 +239,7 @@ Instead for what concerns the Reynolds decomposition, it can be defined as:
 \end{equation}
 where $u'$ is the fluctuation component and $U$ is the averaged quantity.
 
-By substituting in the Navier-Stokes equations the Reynolds decomposition and applying the Reynolds operator the Reynolds-Averaged Navier-Stokes (RANS) equations are obtained:
+By substituting in the Navier-Stokes equations \eqref{eq:NS-cons}, neglecting body forces for simplicity, the Reynolds decomposition and applying the Reynolds operator the Reynolds-Averaged Navier-Stokes (RANS) equations are obtained:
 \begin{equation}
 	\left\{
 	\begin{aligned}
@@ -521,15 +539,15 @@ The various layer just introduced are resumed in Figure \ref{fig:inner-outer-lay
 Despite the previous relations have been derived with the assumption of a developed channel flow, multiple experiments verified the universality of such laws also for pipe flows and other equilibrium boundary layers, and as shown in Figure \ref{fig:wall-laws-vs-experiment} they recover very accurately the experimental data
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.85\textwidth]{img/inner-outer-layers.jpg}
+	\includegraphics[width=0.75\textwidth]{img/inner-outer-layers.jpg}
 	\caption{Wall regions for a turbulent channel flow \cite{turbulent-flows}.}
 	\label{fig:inner-outer-layers}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.85\textwidth]{img/wall-laws-vs-experiment.jpg}
-	\caption{Solid line: linear and log laws (connected with the Van Driest function) \cite{turbulent-flows}; Circles and dashed line: boundary layer above a flat plate, zero pressure gradient, data respectively from a hot-wire anemometer \cite{wall-laws-experiment} and from DNS \cite{wall-laws-DNS}.}
+	\includegraphics[width=0.75\textwidth]{img/wall-laws-vs-experiment.jpg}
+	\caption{\textbf{Solid line}: linear and log laws (connected with the Van Driest function) \cite{turbulent-flows}; \textbf{Circles} and \textbf{dashed line}: boundary layer above a flat plate, zero pressure gradient, data respectively from a hot-wire anemometer \cite{wall-laws-experiment} and from DNS \cite{wall-laws-DNS}.}
 	\label{fig:wall-laws-vs-experiment}
 \end{figure}
 
@@ -647,7 +665,7 @@ Unified modeling utilizes the same velocity transport equation in the entire dom
 % Segregated (pro/con)
 Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each subdomain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define subdomains and involves complex implementation for the coupling across interfaces.
 
-\chapter{Mathematical and numerical framework}
+\chapter{Mathematical framework}
 The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modelling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical and numerical framework of the solver, which has been specifically customized and further developed for the purposes of this study. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, while the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) models. Furthermore, the chapter provides a description of the advanced methodologies implemented to handle high-Reynolds number flows and complex geometries, specifically focusing on the Wall-Modelling strategies and the Immersed Boundary Method (IBM).
 
 \section{Filtering operation}
@@ -838,6 +856,54 @@ At this point some corrections are implemented to ensure the correct  $O(y^3)$ n
 	\nu_R = (C_W \Delta_F)^2 \, \frac{(\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,3/2}}{(\widetilde{e}_{ij} \, \widetilde{e}_{ij})^{\, 5/2} + (\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,5/4}}
 	\label{eq:wale_viscosity}
 \end{equation}
+
+\chapter{Numerical framework}
+
+\section{CaNS solver}
+The numerical framework used is based on \textit{CaNS (Canonical Navier-Stokes)}, an open-source solver originally developed by Costa \cite{cans-costa} for massively parallel Direct Numerical Simulations (DNS) of canonical flows. The baseline code provides a highly efficient architecture for solving the incompressible Navier-Stokes equations on structured Cartesian grids. However, to address the high Reynolds number flows and complex geometries characterizing the present research, the original solver required specific adaptations. Consequently, the code was modified to operate as a Wall-Modeled Large Eddy Simulation (WM-LES) solver coupled with an Immersed Boundary Method (IBM).
+
+The algorithm solves the governing Navier-Stokes equations presented in equation \eqref{eq:NS-conv}. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{u})$:
+\begin{equation}
+    \label{eq:AD-def}
+    \mathcal{AD}(\bm{u}) = - \bm{u} \cdot \nabla \bm{u} + \nu \nabla^2 \bm{u}
+\end{equation}
+Using this notation, the system of equation solved by the algorithm simplifies to:
+\begin{equation}
+\label{eq:NS-AD}
+\begin{cases}
+    \nabla \cdot \bm{u} = 0 \\[1.5ex]
+    \dfrac{\partial \bm{u}}{\partial t} = \mathcal{AD}(\bm{u}) - \dfrac{1}{\rho} \, \nabla p + \bm{f}
+\end{cases}
+\end{equation}
+The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each substep.
+
+\subsection{Time integration - RK3}
+Runge–Kutta schemes perform time advancement by evaluating the solution at step $n+1$ via a sequence of intermediate stages. Considering a generic problem and a standard three stages Runge-Kutta method:
+\begin{equation}
+\label{eq:RK3-standard}
+\begin{cases}
+    \bm{u}_1 = \bm{u}_n \\[1.5ex]
+    
+    \bm{u}_2 = \bm{u}_n + \Delta t \, a_{21} \, \left( RHS_1 \right) \\[1.5ex]
+    
+    \bm{u}_3 = \bm{u}_n + \Delta t \, \{ a_{31} \, \left( RHS_1 \right) + a_{32} \, \left( RHS_2 \right) \} \\[1.5ex]
+    
+    \bm{u}_{n+1} = \bm{u}_n + \Delta t \, \sum_{k=1}^{3} b_k \, \left( RHS_k \right)
+\end{cases}
+\end{equation}
+The last equation recover the $n+1$ field with a weighted average of the intermediate solutions found in each substep.
+
+The use of multiple substep allows for a significant increase in accuracy and stability, but at the same time the storage of the arrays for each stage causes an important memory consumption. For this reason, low-storage versions of the scheme are usually implemented. Unlike the standard formulation the low-storage scheme updates the solution recursively "in-place":
+\begin{equation}
+\label{eq:RK3-low-storage}
+    \bm{u}_{k+1} = \bm{u}_{k} + \Delta t \, \{ \alpha_k \, \left( RHS_{k} \right) + \beta_k \, \left( RHS_{k-1} \right) \}
+\end{equation}
+it is worth noting that for the first substep ($k=1$), the coefficient $\beta_1$ is zero, reducing the dependence solely to the initial state. This recursive structure allows the solver to operate using a minimal number of memory registers, overwriting the solution array at each stage.
+
+Using the time integration scheme as is, to solve the \eqref{eq:NS-AD} momentum equation alone is not possible, since both the mass and momentum conservation have to be imposed. In order to couple the four equations, and ensure a divergence-free velocity, the solver employ a pressure-correction algorithm, nested in each substep of the RK3 cicle.
+
+\subsection{Pressure-correction}
+
 
 \backmatter
 
