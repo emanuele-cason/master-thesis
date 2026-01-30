@@ -193,12 +193,13 @@ In the current work, the implementation of an adaptive wall modeling approach is
 	$x_i$, $x$                                   & Spatial component                                                            \\
 	$t$                                          & Time                                                                         \\
 	$p$                                          & Pressure                                                                     \\
-	$e_{ij}$                                     & Strain rate tensor                                                           \\
-	$\omega_{ij}$                                & Rotation rate tensor                                                         \\
+	$\bm{e}_{ij}$                                     & Strain rate tensor                                                           \\
+	$\bm{\omega}_{ij}$                                & Rotation rate tensor                                                         \\
 	$\mu$                                        & Dynamic viscosity                                                            \\
 	$\nu$                                        & Kinematic viscosity                                                          \\
 	$\rho$                                       & Fluid density                                                                \\
 	$Re$                                         & Reynolds number                                                              \\
+	$\bm{f}$									 & Body forces\\
 
 	% RANS/LES decompositions
 	\addlinespace
@@ -228,6 +229,22 @@ In the current work, the implementation of an adaptive wall modeling approach is
 	$\ell_0$, $u_0$, $\tau_0$                    & Characteristic length, velocity and time of the large scales                 \\
 	$\eta$, $u_\eta$, $\tau_\eta$                & Characteristic length, velocity and time of the Kolmogorov scales            \\
 
+	% Wall bounded flows
+	\addlinespace
+	$\tau$                                       & Total shear stress \\
+	$\tau_W$                                     & Wall shear stress \\
+    $P_E$		                                 & Mean free-stream pressure \\
+    $P_W$                                        & Mean wall pressure \\
+	$h$                                          & Channel half-height \\
+    $U_C$                                        & Centerline mean velocity \\
+    $u_\tau$                                     & Friction velocity \\
+    $\delta_\nu$                                 & Viscous length scale \\
+    $U^+$                                        & Non-dimensional mean velocity (inner units) \\
+	$y^+$                                        & Non-dimensional wall distance (inner units) \\
+    $Re_\tau$                                    & Friction Reynolds number \\
+    $\kappa$                                     & Von Kármán constant \\
+    $B$                                          & Log-law integration constant \\
+
 	% LES
 	\addlinespace
 	$G$                                          & Spatial filter kernel function                                               \\
@@ -239,6 +256,15 @@ In the current work, the implementation of an adaptive wall modeling approach is
 	$C_S$                                        & Tuning constant for Smagorinsky model                                        \\
 	$\mathcal{S}_{ij}$                           & Traceless symmetric part of the square of the velocity gradient tensor       \\
 	$C_W$                                        & Tuning constant for WALE model                                               \\
+
+	% Numerical framework
+	\addlinespace
+	$\mathcal{AD}$, $\mathcal{AD}_k$			 & Advective/diffusive term (at sub-step $k$)\\
+	$\bm{u}_n$, $\bm{u}_k$						 & Velocity field at step $n$, at sub-step $k$\\
+	$\alpha_k$, $\beta_k$, $\gamma_k$			 & Coefficients for the low storage Runge-Kutta scheme\\
+	$\bm{u}^*$ 								 & Prediction velocity field\\
+	$p^*$										 & Correction pressure field\\
+
 
 	% Acronyms
 	\addlinespace
@@ -414,7 +440,7 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 
 	\item \textbf{Second similarity hypothesis:} \textit{In every turbulent flow at sufficiently high Reynolds number, the statistics of the motions of scale $\ell$ in the range $\eta \ll \ell \ll \ell_0$  have a universal form that is uniquely determined by $\mathcal{E}$, independent of $\nu$.}
 
-	      This intermediate range of scales is known as the inertial subrange. In this region, the eddies are large enough that viscous effects are negligible (since $\ell \gg \eta$), but small enough that the large-scale anisotropic geometry is not felt (since $\ell \ll \ell_0$). Consequently, the energy cascade is dominated mainly by inertial forces. Again by dimensional analysis:
+	      This intermediate range of scales is known as the inertial sub-range. In this region, the eddies are large enough that viscous effects are negligible (since $\ell \gg \eta$), but small enough that the large-scale anisotropic geometry is not felt (since $\ell \ll \ell_0$). Consequently, the energy cascade is dominated mainly by inertial forces. Again by dimensional analysis:
 	      \begin{equation}
 		      u_{\ell} = (\mathcal{E} \, \ell \,)^{1/3} \qquad
 		      \tau_{\ell} = \left( \frac{\ell \, ^2}{\mathcal{E}}  \,\right)^{1/3} \qquad
@@ -594,15 +620,15 @@ The ratio between the two characteristic length scales can be defined as the fri
 \subsubsection{Wall laws}
 Despite the previous separate definition of the two regions, the mean behavior of the flow varies with continuity moving away from the wall and so do the mathematical laws that describe the velocity profile:
 \begin{itemize}
-	\item \textbf{Viscous sublayer:} Inside the inner layer, in the close proximity of the wall, the flow is dominated by viscous effects. The linear relation is considered well verified:
+	\item \textbf{Viscous sub-layer:} Inside the inner layer, in the close proximity of the wall, the flow is dominated by viscous effects. The linear relation is considered well verified:
 	      \begin{equation}
-		      \makebox[5.0cm][c]{$\displaystyle u^+ = y^+$}
+		      \makebox[5.0cm][c]{$\displaystyle U^+ = y^+$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ < 5$}
 	      \end{equation}
-	\item \textbf{Buffer layer:} In the transition region ($5 < y^+ < 30$), neither the linear or the logarithmic law provides an accurate description, as viscous and turbulent stresses are of comparable magnitude. Consequently, the velocity profile is described by semi-empirical functions (such as Van Driest damping or Spalding's law) that smoothly connect the viscous sublayer to the logarithmic region.
+	\item \textbf{Buffer layer:} In the transition region ($5 < y^+ < 30$), neither the linear or the logarithmic law provides an accurate description, as viscous and turbulent stresses are of comparable magnitude. Consequently, the velocity profile is described by semi-empirical functions (such as Van Driest damping or Spalding's law) that smoothly connect the viscous sub-layer to the logarithmic region.
 	\item \textbf{Overlap region:} Moving towards the outer layer, the mean flow is described by the logarithmic law, still dependent on: the $y^+$ coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant ($B \approx 5.2$).
 	      \begin{equation}
-		      \makebox[5.0cm][c]{$\displaystyle u^+ = \frac{1}{\kappa} \, \text{ln} \, y^+ + B$}
+		      \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{1}{\kappa} \, \text{ln} \, y^+ + B$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ > 30$}
 	      \end{equation}
 	      It can be demonstrated that this law asymptotically transition to the defect law while approaching the outer layer. Then, the flow description is provided as a velocity defect with respect to the centerline velocity $U_C$. The defect law is dependent on: the $y/h$ normalized coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant $B_1$, specific for the type of flow.
@@ -695,7 +721,7 @@ First-order turbulence closures can be also classified by the number of governin
 
 \subsubsection{Model \boldmath$k - \mathcal{E}$} The $k - \mathcal{E}$ model is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near wall behavior \cite{cfd-blazek}.
 \begin{itemize}
-	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y+ \leq 1$) in order to stay valid and resolve the viscous sublayer.
+	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y+ \leq 1$) in order to stay valid and resolve the viscous sub-layer.
 	\item By contrast, high Reynolds number turbulence models don't need damping functions, they are less stringent in term of grid resolution (first node inside $10 \leq y+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
 \end{itemize}
 Since the method is based on the Boussinesq assumption, it inherits all the limitations related to the linear eddy viscosity modeling already discussed previously.
@@ -740,7 +766,7 @@ Following the classification proposed by Fröhlich and von Terzi \cite{urans-hyb
 Unified modeling utilizes the same velocity transport equation in the entire domain, while the transition between RANS and LES models is managed locally. The switching between different models can be performed with a \textit{blending} function approach or by using a pure LES model in one part of the domain and a pure RANS model in the other, with the so called \textit{interfacing} approach, this is the case for instance of Detached Eddy Simulations (DES). While this approach is user-friendly as it avoids explicit zonal boundaries, it suffers from the potential existence of a "gray area" at the interface.
 
 % Segregated (pro/con)
-Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each subdomain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define subdomains and involves complex implementation for the coupling across interfaces.
+Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each sub-domain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define sub-domains and involves complex implementation for the coupling across interfaces.
 
 \chapter{Mathematical framework}
 The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modelling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical and numerical framework of the solver, which has been specifically customized and further developed for the purposes of this study. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, while the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) models. Furthermore, the chapter provides a description of the advanced methodologies implemented to handle high-Reynolds number flows and complex geometries, specifically focusing on the Wall-Modelling strategies and the Immersed Boundary Method (IBM).
@@ -759,7 +785,7 @@ where:
 \begin{itemize}
 	\item $\phi$ represents the generic flow variable.
 	\item $\widetilde{\phi}$ is the filtered generic flow variable.
-	\item $\phi''$ is the residual/subgrid component.
+	\item $\phi''$ is the residual/sub-grid component.
 	\item The double integral represent a temporal (one dimensional) and spatial (three dimensional) "scan" of the entire domain.
 	\item $G$ is the filter kernel, dependent on the choice of $\Delta_F$.
 \end{itemize}
@@ -844,7 +870,7 @@ Applying the filtering operation to the incompressible Navier-Stokes equations, 
 	\end{aligned}
 	\right.
 \end{equation}
-where $\widetilde{e}_{ij}$ represents the resolved rate-of-strain tensor and $\tau_{ij}^R$ is the residual (or subgrid-scale) stress tensor:
+where $\widetilde{e}_{ij}$ represents the resolved rate-of-strain tensor and $\tau_{ij}^R$ is the residual (or sub-grid-scale) stress tensor:
 \begin{equation}
 	\widetilde{e}_{ij} = \frac{1}{2} \left( \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} + \frac{\partial \, \widetilde{u}_j}{\partial \, x_i} \right)
 	\qquad
@@ -926,7 +952,7 @@ In which the participating components are:
 	\item The squared magnitude of the resolved rotation rate: $\widetilde{\omega}^{\,2} = \widetilde{\omega}_{ij} \, \widetilde{\omega}_{ij}$
 	\item A strain-rotation interaction term: $IV_{e\omega} = \widetilde{e}_{ik} \, \widetilde{e}_{kj} \, \widetilde{\omega}_{jl} \,\widetilde{\omega}_{li}$ .
 \end{itemize}
-The formulated invariant \eqref{eq:wale-invariant}, is capable of detecting turbulent structures dominated by either strain, rotation, or both. Moreover, in the case of pure shear (e.g., laminar Poiseuille flow), the strain and rotation magnitudes balance each other ($\widetilde{e}^{\,2} \approx \widetilde{\omega}^{\,2}$), causing the invariant to vanish. This property ensures that the subgrid dissipation is naturally zero in laminar wall-bounded regions, allowing the development of instabilities and thus enabling the correct prediction of the laminar-to-turbulent transition.
+The formulated invariant \eqref{eq:wale-invariant}, is capable of detecting turbulent structures dominated by either strain, rotation, or both. Moreover, in the case of pure shear (e.g., laminar Poiseuille flow), the strain and rotation magnitudes balance each other ($\widetilde{e}^{\,2} \approx \widetilde{\omega}^{\,2}$), causing the invariant to vanish. This property ensures that the sub-grid dissipation is naturally zero in laminar wall-bounded regions, allowing the development of instabilities and thus enabling the correct prediction of the laminar-to-turbulent transition.
 
 At this point some corrections are implemented to ensure the correct  $O(y^3)$ near wall scaling, dimensional coherency and to avoid numerical instabilities related to the cancellation of the denominator. Finally, the expression for the WALE model is the following:
 \begin{equation}
@@ -952,7 +978,7 @@ Using this notation, the system of equations solved by the algorithm simplifies 
     \dfrac{\partial \bm{u}}{\partial t} = \mathcal{AD}(\bm{u}) - \nabla p + \bm{f}
 \end{cases}
 \end{equation}
-The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each substep.
+The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each sub-step.
 
 \subsection{Time integration - RK3}
 Runge–Kutta schemes perform time advancement by evaluating the solution at step $n+1$ via a sequence of intermediate stages. Considering a generic problem and a standard three-stage Runge-Kutta method:
@@ -968,16 +994,16 @@ Runge–Kutta schemes perform time advancement by evaluating the solution at ste
     \bm{u}_{n+1} = \bm{u}_n + \Delta t \, \sum_{k=1}^{3} b_k \, \left( RHS_k \right)
 \end{cases}
 \end{equation}
-The last equation yields the $n+1$ field with a weighted average of the intermediate solutions found in each $k$-substep.
+The last equation yields the $n+1$ field with a weighted average of the intermediate solutions found in each $k$-sub-step.
 
-The use of multiple substeps allows for a significant increase in accuracy and stability, but at the same time the storage of the arrays for each stage causes an excessive memory consumption. For this reason, low-storage versions of the scheme are usually implemented. Unlike the standard formulation, the low-storage scheme updates the solution recursively "in-place":
+The use of multiple sub-steps allows for a significant increase in accuracy and stability, but at the same time the storage of the arrays for each stage causes an excessive memory consumption. For this reason, low-storage versions of the scheme are usually implemented. Unlike the standard formulation, the low-storage scheme updates the solution recursively "in-place":
 \begin{equation}
 \label{eq:RK3-low-storage}
     \bm{u}_{k+1} = \bm{u}_{k} + \Delta t \, \{ \alpha_k \, \left( RHS_{k} \right) + \beta_k \, \left( RHS_{k-1} \right) \}
 \end{equation}
-it is worth noting that for the first substep ($k=1$), the coefficient $\beta_1$ is zero, reducing the dependence solely to the initial state. This recursive structure allows the solver to operate using a minimal number of memory registers, by overwriting the solution array at each stage.
+it is worth noting that for the first sub-step ($k=1$), the coefficient $\beta_1$ is zero, reducing the dependence solely to the initial state. This recursive structure allows the solver to operate using a minimal number of memory registers, by overwriting the solution array at each stage.
 
-Using the time integration scheme as is, to solve the \eqref{eq:NS-AD} momentum equation alone is not possible, since both the mass and momentum conservation have to be imposed. In order to couple the four equations, and ensure a divergence-free velocity, the solver employs a pressure-correction algorithm, nested in each substep of the RK3 cycle.
+Using the time integration scheme as is, to solve the \eqref{eq:NS-AD} momentum equation alone is not possible, since both the mass and momentum conservation have to be imposed. In order to couple the four equations, and ensure a divergence-free velocity, the solver employs a pressure-correction algorithm, nested in each sub-step of the RK3 cycle.
 
 \subsection{Pressure-correction}
 The algorithm can be summarized as follows:
@@ -1008,9 +1034,9 @@ w(i,j,k) = w(i,j,k) + factor1 * dwdtrk(i,j,k)
 	+ factor12 * (bforce(3) - dzci(k) * (p(i,j,k+1) - p(i,j,k)))
 \end{lstlisting}
 \end{codebox}
-where, for instance, \texttt{dudtrk} and \texttt{dudtrko} are the the $x$-direction convective/diffusive terms at the current and previous (older) substeps.
+where, for instance, \texttt{dudtrk} and \texttt{dudtrko} are the the $x$-direction convective/diffusive terms at the current and previous (older) sub-steps.
 
-\item \textbf{Poisson equation resolution:} Since, as anticipated, the evaluated $\bm{u}^*$ does not satisfy the continuity equation, it requires a correction. Such correction is enforced with a proper pressure correction field $p^* = p_{k+1/2} - p_{k-1/2}$, to obtain the final divergence free velocity of the current substep $\bm{u}_{k+1}$:
+\item \textbf{Poisson equation resolution:} Since, as anticipated, the evaluated $\bm{u}^*$ does not satisfy the continuity equation, it requires a correction. Such correction is enforced with a proper pressure correction field $p^* = p_{k+1/2} - p_{k-1/2}$, to obtain the final divergence free velocity of the current sub-step $\bm{u}_{k+1}$:
 \begin{equation}
 	\bm{u}_{k+1} - \bm{u}^* = - \Delta t \, \gamma_k \, \nabla p^*
 	\label{eq:PC-v-correction-1}
