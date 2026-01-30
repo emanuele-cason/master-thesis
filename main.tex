@@ -105,8 +105,8 @@
     bottom=5mm,
     left=6mm,
     right=6mm,
-    before skip=5mm,
-    after skip=5mm,
+    before skip=7mm,
+    after skip=7mm,
 }
 
 \onehalfspacing
@@ -939,7 +939,7 @@ At this point some corrections are implemented to ensure the correct  $O(y^3)$ n
 \section{CaNS solver}
 The numerical framework used is based on \textit{CaNS (Canonical Navier-Stokes)}, an open-source solver originally developed by Costa \cite{cans-costa} for massively parallel Direct Numerical Simulations (DNS) of canonical flows. The baseline code provides a highly efficient architecture for solving the incompressible Navier-Stokes equations on structured Cartesian grids. However, to address the high Reynolds number flows and complex geometries characterizing the present research, the original solver required specific adaptations. Consequently, the code was modified to operate as a Wall-Modeled Large Eddy Simulation (WM-LES) solver coupled with an Immersed Boundary Method (IBM).
 
-The algorithm solves the governing Navier-Stokes equations presented in equation \eqref{eq:NS-conv}. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{u})$:
+The algorithm solves the governing Navier-Stokes equations presented in equation \eqref{eq:NS-conv} with unit density. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective (or advective) and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{u})$:
 \begin{equation}
     \label{eq:AD-def}
     \mathcal{AD}(\bm{u}) = - \bm{u} \cdot \nabla \bm{u} + \nu \nabla^2 \bm{u}
@@ -949,7 +949,7 @@ Using this notation, the system of equations solved by the algorithm simplifies 
 \label{eq:NS-AD}
 \begin{cases}
     \nabla \cdot \bm{u} = 0 \\[1.5ex]
-    \dfrac{\partial \bm{u}}{\partial t} = \mathcal{AD}(\bm{u}) - \dfrac{1}{\rho} \, \nabla p + \bm{f}
+    \dfrac{\partial \bm{u}}{\partial t} = \mathcal{AD}(\bm{u}) - \nabla p + \bm{f}
 \end{cases}
 \end{equation}
 The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each substep.
@@ -968,14 +968,14 @@ Runge–Kutta schemes perform time advancement by evaluating the solution at ste
     \bm{u}_{n+1} = \bm{u}_n + \Delta t \, \sum_{k=1}^{3} b_k \, \left( RHS_k \right)
 \end{cases}
 \end{equation}
-The last equation recovers the $n+1$ field with a weighted average of the intermediate solutions found in each substep.
+The last equation yields the $n+1$ field with a weighted average of the intermediate solutions found in each $k$-substep.
 
-The use of multiple substep allows for a significant increase in accuracy and stability, but at the same time the storage of the arrays for each stage causes an important memory consumption. For this reason, low-storage versions of the scheme are usually implemented. Unlike the standard formulation, the low-storage scheme updates the solution recursively "in-place":
+The use of multiple substeps allows for a significant increase in accuracy and stability, but at the same time the storage of the arrays for each stage causes an excessive memory consumption. For this reason, low-storage versions of the scheme are usually implemented. Unlike the standard formulation, the low-storage scheme updates the solution recursively "in-place":
 \begin{equation}
 \label{eq:RK3-low-storage}
     \bm{u}_{k+1} = \bm{u}_{k} + \Delta t \, \{ \alpha_k \, \left( RHS_{k} \right) + \beta_k \, \left( RHS_{k-1} \right) \}
 \end{equation}
-it is worth noting that for the first substep ($k=1$), the coefficient $\beta_1$ is zero, reducing the dependence solely to the initial state. This recursive structure allows the solver to operate using a minimal number of memory registers, overwriting the solution array at each stage.
+it is worth noting that for the first substep ($k=1$), the coefficient $\beta_1$ is zero, reducing the dependence solely to the initial state. This recursive structure allows the solver to operate using a minimal number of memory registers, by overwriting the solution array at each stage.
 
 Using the time integration scheme as is, to solve the \eqref{eq:NS-AD} momentum equation alone is not possible, since both the mass and momentum conservation have to be imposed. In order to couple the four equations, and ensure a divergence-free velocity, the solver employs a pressure-correction algorithm, nested in each substep of the RK3 cycle.
 
@@ -984,14 +984,14 @@ The algorithm can be summarized as follows:
 \begin{enumerate}
 	\item \textbf{Prediction:} The procedure begins with the computation of a predicted velocity field, denoted as $\bm{u}^*$, which is not necessarily divergence-free. This intermediate field is obtained by advancing the momentum equation using the convective and diffusive terms $\mathcal{AD}$ evaluated at current and previous stages, along with the pressure gradient and body forces term. Consistent with the low-storage RK3 scheme described in equation \eqref{eq:RK3-low-storage}, the prediction step is formulated as:
 \begin{equation}
-\label{eq:predictor}
+\label{eq:PC-predictor}
 \bm{u}^* = \bm{u}_k + \Delta t \left( \alpha_k \, \mathcal{AD}_k + \beta_k \,\mathcal{AD}_{k-1} + \gamma_k \left( -\nabla p_{k-1/2} + \bm{f} \right) \right)
 \end{equation}
 % RICONTROLLARE
-It is crucial to observe the time-centering of the pressure term. In this formulation, the pressure is staggered in time with respect to the velocity field. The term $\nabla p^{k-1/2}$ represents the pressure gradient evaluated at the mid-point of the previous interval.
+It is crucial to observe the time-centering of the pressure term. In this formulation, the pressure is staggered in time with respect to the velocity field. The term $\nabla p_{k-1/2}$ represents the pressure gradient evaluated at the mid-point of the previous interval.
 
-The discrete form of Equation \eqref{eq:predictor} is implemented as follows:
-\begin{codebox}{rk.f90}
+The discrete form of Equation \eqref{eq:PC-predictor} is implemented as follows:
+\begin{codebox}{src/rk.f90}
 \begin{lstlisting}[style=mdfortran]
 factor1 = rkpar(1) * dt
 factor2 = rkpar(2) * dt
@@ -1008,6 +1008,30 @@ w(i,j,k) = w(i,j,k) + factor1 * dwdtrk(i,j,k)
 	+ factor12 * (bforce(3) - dzci(k) * (p(i,j,k+1) - p(i,j,k)))
 \end{lstlisting}
 \end{codebox}
+where, for instance, \texttt{dudtrk} and \texttt{dudtrko} are the the $x$-direction convective/diffusive terms at the current and previous (older) substeps.
+
+\item \textbf{Poisson equation resolution:} Since, as anticipated, the evaluated $\bm{u}^*$ does not satisfy the continuity equation, it requires a correction. Such correction is enforced with a proper pressure correction field $p^* = p_{k+1/2} - p_{k-1/2}$, to obtain the final divergence free velocity of the current substep $\bm{u}_{k+1}$:
+\begin{equation}
+	\bm{u}_{k+1} - \bm{u}^* = - \Delta t \, \gamma_k \, \nabla p^*
+	\label{eq:PC-v-correction-1}
+\end{equation}
+Applying the divergence to both sides:
+\begin{equation}
+	0 - \nabla \cdot \bm{u}^* = - \Delta t \, \gamma_k \, \nabla^2 p^* 
+	\qquad \implies \qquad
+	\nabla^2 p^* = \dfrac{\nabla \cdot \bm{u}^*}{\gamma_k \, \Delta t}
+\end{equation}
+The solution of the Poisson equation is usually the most computationally intensive step of a solver. In \textit{CaNS}, a Fast Fourier Transform (FFT) based method is employed, applied along the $x$ and $y$ domain dimensions \cite{cans-costa}.
+
+\item \textbf{Velocity correction:} The divergence-free velocity at the subsequent step $\bm{u}_{k+1}$ can be retrieved by reconsidering equation \eqref{eq:PC-v-correction-1}, that becomes:
+\begin{equation}
+	\bm{u}_{k+1} = \bm{u}^* - \Delta t \, \gamma_k \, \nabla p^*
+\end{equation}
+
+\item \textbf{Pressure update:} The pressure field at step $k+1/2$ is obtained by summation:
+\begin{equation}
+	p_{k+1/2} = p_{k-1/2} + p^*
+\end{equation}
 
 \end{enumerate}
 

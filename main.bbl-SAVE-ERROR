@@ -45,6 +45,475 @@
       \field{title}{Turbulent Flows}
       \field{year}{2000}
     \endentry
+    \entry{prandtl-dimensional-analysis}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=c9c5a29c29c124de95fa1b6fabde8022}{%
+           family={Prandtl},
+           familyi={P\bibinitperiod},
+           given={Ludwig},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{c9c5a29c29c124de95fa1b6fabde8022}
+      \strng{fullhash}{c9c5a29c29c124de95fa1b6fabde8022}
+      \strng{fullhashraw}{c9c5a29c29c124de95fa1b6fabde8022}
+      \strng{bibnamehash}{c9c5a29c29c124de95fa1b6fabde8022}
+      \strng{authorbibnamehash}{c9c5a29c29c124de95fa1b6fabde8022}
+      \strng{authornamehash}{c9c5a29c29c124de95fa1b6fabde8022}
+      \strng{authorfullhash}{c9c5a29c29c124de95fa1b6fabde8022}
+      \strng{authorfullhashraw}{c9c5a29c29c124de95fa1b6fabde8022}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Verhandl. 3rd Int. Math. Kongr. Heidelberg (1904), Leipzig}
+      \field{title}{Uber Flussigkeitsbewegung bei sehr kleiner Reibung}
+      \field{year}{1905}
+    \endentry
+    \entry{channel-stresses}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=13f5b9e17c13317d94d1ea5da03f7d38}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod}}}%
+        {{hash=8853dff8f39e11829340cc196aaaeda6}{%
+           family={Moin},
+           familyi={M\bibinitperiod},
+           given={Parviz},
+           giveni={P\bibinitperiod}}}%
+        {{hash=976c403e713ad81fe157117b341b8e66}{%
+           family={Moser},
+           familyi={M\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \strng{fullhash}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \strng{fullhashraw}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \strng{bibnamehash}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \strng{authorbibnamehash}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \strng{authornamehash}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \strng{authorfullhash}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \strng{authorfullhashraw}{7a006c4c5eaa6a9b2067170c0bc91d35}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of fluid mechanics}
+      \field{title}{Turbulence statistics in fully developed channel flow at low Reynolds number}
+      \field{volume}{177}
+      \field{year}{1987}
+      \field{pages}{133\bibrangedash 166}
+      \range{pages}{34}
+    \endentry
+    \entry{wall-laws-experiment}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=9147021f170acead7534cf96ad2d824f}{%
+           family={Klebanoff},
+           familyi={K\bibinitperiod},
+           given={Philip\bibnamedelima S},
+           giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {National Advisory Committee for Aeronautics}%
+      }
+      \strng{namehash}{9147021f170acead7534cf96ad2d824f}
+      \strng{fullhash}{9147021f170acead7534cf96ad2d824f}
+      \strng{fullhashraw}{9147021f170acead7534cf96ad2d824f}
+      \strng{bibnamehash}{9147021f170acead7534cf96ad2d824f}
+      \strng{authorbibnamehash}{9147021f170acead7534cf96ad2d824f}
+      \strng{authornamehash}{9147021f170acead7534cf96ad2d824f}
+      \strng{authorfullhash}{9147021f170acead7534cf96ad2d824f}
+      \strng{authorfullhashraw}{9147021f170acead7534cf96ad2d824f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Characteristics of turbulence in a boundary layer with zero pressure gradient}
+      \field{volume}{3178}
+      \field{year}{1954}
+    \endentry
+    \entry{wall-laws-DNS}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=671b8894e896e5135a29e51e8b1232ca}{%
+           family={Spalart},
+           familyi={S\bibinitperiod},
+           given={Philippe\bibnamedelima R},
+           giveni={P\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{671b8894e896e5135a29e51e8b1232ca}
+      \strng{fullhash}{671b8894e896e5135a29e51e8b1232ca}
+      \strng{fullhashraw}{671b8894e896e5135a29e51e8b1232ca}
+      \strng{bibnamehash}{671b8894e896e5135a29e51e8b1232ca}
+      \strng{authorbibnamehash}{671b8894e896e5135a29e51e8b1232ca}
+      \strng{authornamehash}{671b8894e896e5135a29e51e8b1232ca}
+      \strng{authorfullhash}{671b8894e896e5135a29e51e8b1232ca}
+      \strng{authorfullhashraw}{671b8894e896e5135a29e51e8b1232ca}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of fluid mechanics}
+      \field{title}{Direct simulation of a turbulent boundary layer up to R$\theta$= 1410}
+      \field{volume}{187}
+      \field{year}{1988}
+      \field{pages}{61\bibrangedash 98}
+      \range{pages}{38}
+    \endentry
+    \entry{cfd-anderson}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=0d7080711db4e5e2feabab32a6988a32}{%
+           family={Anderson},
+           familyi={A\bibinitperiod},
+           given={J.\bibnamedelimi D.},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=a2c47b0999d6f17e98f67026007e32fb}{%
+           family={Wendt},
+           familyi={W\bibinitperiod},
+           given={John\bibnamedelima F.},
+           giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{fullhash}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{fullhashraw}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{bibnamehash}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{authorbibnamehash}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{authornamehash}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{authorfullhash}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{authorfullhashraw}{0d7080711db4e5e2feabab32a6988a32}
+      \strng{editorbibnamehash}{a2c47b0999d6f17e98f67026007e32fb}
+      \strng{editornamehash}{a2c47b0999d6f17e98f67026007e32fb}
+      \strng{editorfullhash}{a2c47b0999d6f17e98f67026007e32fb}
+      \strng{editorfullhashraw}{a2c47b0999d6f17e98f67026007e32fb}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Computational Fluid Dynamics}
+      \field{year}{1992}
+    \endentry
+    \entry{les-sagaut}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=f401135a74995256e1cb979ed7e0e8cd}{%
+           family={Sagaut},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{f401135a74995256e1cb979ed7e0e8cd}
+      \strng{fullhash}{f401135a74995256e1cb979ed7e0e8cd}
+      \strng{fullhashraw}{f401135a74995256e1cb979ed7e0e8cd}
+      \strng{bibnamehash}{f401135a74995256e1cb979ed7e0e8cd}
+      \strng{authorbibnamehash}{f401135a74995256e1cb979ed7e0e8cd}
+      \strng{authornamehash}{f401135a74995256e1cb979ed7e0e8cd}
+      \strng{authorfullhash}{f401135a74995256e1cb979ed7e0e8cd}
+      \strng{authorfullhashraw}{f401135a74995256e1cb979ed7e0e8cd}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Large Eddy Simulation for Incompressible Flows}
+      \field{year}{1998}
+    \endentry
+    \entry{cfd-blazek}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=f7a66a2ce7e5750e3f331ffdc496ff1c}{%
+           family={Blazek},
+           familyi={B\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \strng{fullhash}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \strng{fullhashraw}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \strng{bibnamehash}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \strng{authorbibnamehash}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \strng{authornamehash}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \strng{authorfullhash}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \strng{authorfullhashraw}{f7a66a2ce7e5750e3f331ffdc496ff1c}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Computational Fluid Dynamics - Principles and Applications}
+      \field{year}{2015}
+    \endentry
+    \entry{tubulence-wilcox}{book}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=46130f5366b0385819e7bead7e59e48b}{%
+           family={Wilcox},
+           familyi={W\bibinitperiod},
+           given={David\bibnamedelima C},
+           giveni={D\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {DCW industries La Canada, CA}%
+      }
+      \strng{namehash}{8ea3386368ed7d227b520e8868957995}
+      \strng{fullhash}{8ea3386368ed7d227b520e8868957995}
+      \strng{fullhashraw}{8ea3386368ed7d227b520e8868957995}
+      \strng{bibnamehash}{8ea3386368ed7d227b520e8868957995}
+      \strng{authorbibnamehash}{8ea3386368ed7d227b520e8868957995}
+      \strng{authornamehash}{8ea3386368ed7d227b520e8868957995}
+      \strng{authorfullhash}{8ea3386368ed7d227b520e8868957995}
+      \strng{authorfullhashraw}{8ea3386368ed7d227b520e8868957995}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Turbulence modeling for CFD}
+      \field{volume}{2}
+      \field{year}{1998}
+    \endentry
+    \entry{rans-nl-model-lumley}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=be8ece05a80e0b10446f677855380ff9}{%
+           family={Lumley},
+           familyi={L\bibinitperiod},
+           given={John\bibnamedelima L},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{be8ece05a80e0b10446f677855380ff9}
+      \strng{fullhash}{be8ece05a80e0b10446f677855380ff9}
+      \strng{fullhashraw}{be8ece05a80e0b10446f677855380ff9}
+      \strng{bibnamehash}{be8ece05a80e0b10446f677855380ff9}
+      \strng{authorbibnamehash}{be8ece05a80e0b10446f677855380ff9}
+      \strng{authornamehash}{be8ece05a80e0b10446f677855380ff9}
+      \strng{authorfullhash}{be8ece05a80e0b10446f677855380ff9}
+      \strng{authorfullhashraw}{be8ece05a80e0b10446f677855380ff9}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Fluid Mechanics}
+      \field{number}{2}
+      \field{title}{Toward a turbulent constitutive relation}
+      \field{volume}{41}
+      \field{year}{1970}
+      \field{pages}{413\bibrangedash 434}
+      \range{pages}{22}
+    \endentry
+    \entry{urans-hybrid}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=f0e637fbbd76921aaa94d71a7a853318}{%
+           family={Fröhlich},
+           familyi={F\bibinitperiod},
+           given={Jochen},
+           giveni={J\bibinitperiod}}}%
+        {{hash=44608d4c07f1ee33eae18666c029a429}{%
+           family={Von\bibnamedelima Terzi},
+           familyi={V\bibinitperiod\bibinitdelim T\bibinitperiod},
+           given={Dominic},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \strng{fullhash}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \strng{fullhashraw}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \strng{bibnamehash}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \strng{authorbibnamehash}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \strng{authornamehash}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \strng{authorfullhash}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \strng{authorfullhashraw}{6e3e0ecf5540a98ddf9c2de69717b66c}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Progress in Aerospace Sciences}
+      \field{number}{5}
+      \field{title}{Hybrid LES/RANS methods for the simulation of turbulent flows}
+      \field{volume}{44}
+      \field{year}{2008}
+      \field{pages}{349\bibrangedash 377}
+      \range{pages}{29}
+    \endentry
+    \entry{wrles-re-chapman}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=c95ea3475efe715d2ae5af6ca7629da9}{%
+           family={Chapman},
+           familyi={C\bibinitperiod},
+           given={Dean\bibnamedelima R},
+           giveni={D\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{c95ea3475efe715d2ae5af6ca7629da9}
+      \strng{fullhash}{c95ea3475efe715d2ae5af6ca7629da9}
+      \strng{fullhashraw}{c95ea3475efe715d2ae5af6ca7629da9}
+      \strng{bibnamehash}{c95ea3475efe715d2ae5af6ca7629da9}
+      \strng{authorbibnamehash}{c95ea3475efe715d2ae5af6ca7629da9}
+      \strng{authornamehash}{c95ea3475efe715d2ae5af6ca7629da9}
+      \strng{authorfullhash}{c95ea3475efe715d2ae5af6ca7629da9}
+      \strng{authorfullhashraw}{c95ea3475efe715d2ae5af6ca7629da9}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{AIAA journal}
+      \field{number}{12}
+      \field{title}{Computational aerodynamics development and outlook}
+      \field{volume}{17}
+      \field{year}{1979}
+      \field{pages}{1293\bibrangedash 1313}
+      \range{pages}{21}
+    \endentry
+    \entry{wrles-re-choi2012}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=7888902881553c7a6ae2007e7eb1caa8}{%
+           family={Choi},
+           familyi={C\bibinitperiod},
+           given={Haecheon},
+           giveni={H\bibinitperiod}}}%
+        {{hash=8853dff8f39e11829340cc196aaaeda6}{%
+           family={Moin},
+           familyi={M\bibinitperiod},
+           given={Parviz},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {AIP Publishing}%
+      }
+      \strng{namehash}{2b20b34299e926649467873eeff0861c}
+      \strng{fullhash}{2b20b34299e926649467873eeff0861c}
+      \strng{fullhashraw}{2b20b34299e926649467873eeff0861c}
+      \strng{bibnamehash}{2b20b34299e926649467873eeff0861c}
+      \strng{authorbibnamehash}{2b20b34299e926649467873eeff0861c}
+      \strng{authornamehash}{2b20b34299e926649467873eeff0861c}
+      \strng{authorfullhash}{2b20b34299e926649467873eeff0861c}
+      \strng{authorfullhashraw}{2b20b34299e926649467873eeff0861c}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Physics of fluids}
+      \field{number}{1}
+      \field{title}{Grid-point requirements for large eddy simulation: Chapman’s estimates revisited}
+      \field{volume}{24}
+      \field{year}{2012}
+    \endentry
+    \entry{wray-hunt}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=08e5f4bfe8727b182ef39d4efde54366}{%
+           family={Wray},
+           familyi={W\bibinitperiod},
+           given={AA},
+           giveni={A\bibinitperiod}}}%
+        {{hash=f90569cf41d5f6c2aeec1618b45727a3}{%
+           family={Hunt},
+           familyi={H\bibinitperiod},
+           given={JCR},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press Cambridge}%
+      }
+      \strng{namehash}{4db01fac321a787729aa8cf1892fe03e}
+      \strng{fullhash}{4db01fac321a787729aa8cf1892fe03e}
+      \strng{fullhashraw}{4db01fac321a787729aa8cf1892fe03e}
+      \strng{bibnamehash}{4db01fac321a787729aa8cf1892fe03e}
+      \strng{authorbibnamehash}{4db01fac321a787729aa8cf1892fe03e}
+      \strng{authornamehash}{4db01fac321a787729aa8cf1892fe03e}
+      \strng{authorfullhash}{4db01fac321a787729aa8cf1892fe03e}
+      \strng{authorfullhashraw}{4db01fac321a787729aa8cf1892fe03e}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Topological fluid mechanics}
+      \field{title}{Algorithms for classification of turbulent structures}
+      \field{year}{1990}
+      \field{pages}{95\bibrangedash 104}
+      \range{pages}{10}
+    \endentry
+    \entry{wale}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=d3a7c219cb3df768ca8bf1c1db19107e}{%
+           family={Nicoud},
+           familyi={N\bibinitperiod},
+           given={Franck},
+           giveni={F\bibinitperiod}}}%
+        {{hash=7f7ec80f8ad91d7e48f1324a24820084}{%
+           family={Ducros},
+           familyi={D\bibinitperiod},
+           given={Frédéric},
+           giveni={F\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \strng{fullhash}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \strng{fullhashraw}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \strng{bibnamehash}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \strng{authorbibnamehash}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \strng{authornamehash}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \strng{authorfullhash}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \strng{authorfullhashraw}{7382b62eba61d0d935b6f01d6af3ce5d}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Flow, turbulence and Combustion}
+      \field{number}{3}
+      \field{title}{Subgrid-scale stress modelling based on the square of the velocity gradient tensor}
+      \field{volume}{62}
+      \field{year}{1999}
+      \field{pages}{183\bibrangedash 200}
+      \range{pages}{18}
+    \endentry
+    \entry{cans-costa}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=07a4857f9effa6afd44b26d7abd4e66a}{%
+           family={Costa},
+           familyi={C\bibinitperiod},
+           given={Pedro},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{07a4857f9effa6afd44b26d7abd4e66a}
+      \strng{fullhash}{07a4857f9effa6afd44b26d7abd4e66a}
+      \strng{fullhashraw}{07a4857f9effa6afd44b26d7abd4e66a}
+      \strng{bibnamehash}{07a4857f9effa6afd44b26d7abd4e66a}
+      \strng{authorbibnamehash}{07a4857f9effa6afd44b26d7abd4e66a}
+      \strng{authornamehash}{07a4857f9effa6afd44b26d7abd4e66a}
+      \strng{authorfullhash}{07a4857f9effa6afd44b26d7abd4e66a}
+      \strng{authorfullhashraw}{07a4857f9effa6afd44b26d7abd4e66a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Computers \& Mathematics with Applications}
+      \field{number}{8}
+      \field{title}{A FFT-based finite-difference solver for massively-parallel direct numerical simulations of turbulent flows}
+      \field{volume}{76}
+      \field{year}{2018}
+      \field{pages}{1853\bibrangedash 1862}
+      \range{pages}{10}
+    \endentry
   \enddatalist
 \endrefsection
 \endinput
