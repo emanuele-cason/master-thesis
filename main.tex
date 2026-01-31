@@ -308,7 +308,7 @@ The Navier-Stokes equations express the principles of mass and momentum conserva
 \label{eq:NS-conv}
 \begin{cases}
     \nabla \cdot \bm{u} = 0 \\[1.5ex]
-    \dfrac{\partial \bm{u}}{\partial t} + \bm{u} \cdot \nabla \bm{u} = -\dfrac{\nabla p}{\rho} + \nu \nabla^2 \bm{u} + \bm{f}
+    \dfrac{\partial \bm{u}}{\partial t} + \bm{u} \cdot \nabla \bm{u} = -\dfrac{\nabla p}{\rho} + \nabla \cdot (2\nu \bm{e}) + \bm{f}
 \end{cases}
 \end{equation}
 or recasting the system in its \textit{conservative form}:
@@ -316,7 +316,7 @@ or recasting the system in its \textit{conservative form}:
 \label{eq:NS-cons}
 \begin{cases}
     \nabla \cdot \bm{u} = 0 \\[1.5ex]
-    \dfrac{\partial \bm{u}}{\partial t} + \nabla \cdot (\bm{u} \otimes \bm{u}) = -\dfrac{\nabla p}{\rho} + \nu \nabla^2 \bm{u} + \bm{f}
+    \dfrac{\partial \bm{u}}{\partial t} + \nabla \cdot (\bm{u} \otimes \bm{u}) = -\dfrac{\nabla p}{\rho} + \nabla \cdot (2\nu \bm{e}) + \bm{f}
 \end{cases}
 \end{equation}
 where $\bm{f}$ represents the body forces.
@@ -866,7 +866,7 @@ Applying the filtering operation to the incompressible Navier-Stokes equations, 
 	\hspace{0.15cm}
 	\begin{aligned}
 		 & \frac{\partial \, \widetilde{u}_i}{\partial \, x_i} = 0                                                                                                                                                                                                                                                                                                                                              \\[12pt]
-		 & \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial \, x_j} \left( 2 \, \nu \, \widetilde{e}_{ij} \right) - \frac{\partial}{\partial \, x_j} \left( \widetilde{u_i \, u_j} - \widetilde{u}_i \, \widetilde{u}_j \right)
+		 & \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial \, x_j} \left( 2 \, \nu \, \widetilde{e}_{ij} \right) - \frac{\partial}{\partial \, x_j} \left( \widetilde{u_i \, u_j} - \widetilde{u}_i \, \widetilde{u}_j \right) + f_i
 	\end{aligned}
 	\right.
 \end{equation}
@@ -894,7 +894,16 @@ As most of the strategies for functional modelling, the Smagorinsky approach mod
 \end{equation}
 The first term is related to the sub-grid kinetic energy $k_R$, while the second one is modeled as a term linearly proportional to the deformation tensor of the resolved field $\widetilde{e}_{ij}$ through the sub-grid scale eddy viscosity coefficient $\nu_R$.
 
-In the Smagorinsky model the $\nu_R$ scalar is defined in turn as:
+Substituting this closure into the filtered momentum equation \eqref{eq:les-equations}, the isotropic part of the residual stress is absorbed into the pressure term. Defining a modified pressure $\widetilde{p}$ (which now includes the trace of the sub-grid stress tensor) and grouping the molecular and eddy viscosities, the governing equation for the large scales becomes:
+\begin{equation}
+    \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial x_j} \left[ (\nu + \nu_{R}) \left( \frac{\partial \widetilde{u}_i}{\partial x_j} + \frac{\partial \widetilde{u}_j}{\partial x_i} \right) \right] + f_i
+\end{equation}
+Exploiting the incompressibility constraint ($\nabla \cdot \bm{\widetilde{u}} = 0$) to simplify the viscous term, it is possible to retrieve the formulation implemented in the numerical solver. The equation can be rewritten in vector notation as:
+\begin{equation}
+    \frac{\partial \bm{\widetilde{u}}}{\partial t} + \bm{\widetilde{u}} \cdot \nabla \bm{\widetilde{u}} = - \frac{1}{\rho} \, \nabla \widetilde{p} + (\nu + \nu_{R}) \, \nabla^2 \, \bm{\widetilde{u}} + \bm{f}
+	\label{eq:les-mom-equation}
+\end{equation}
+In the Smagorinsky model the $\nu_R$ scalar is defined as:
 \begin{equation}
 	\nu_R = (C_S \, \Delta_F)^2 \, |\widetilde{e}_{ij}| \qquad \quad |\widetilde{e}_{ij}| := \sqrt{2 \, \widetilde{e}_{ij} \, \widetilde{e}_{ij}}
 \end{equation}
@@ -965,20 +974,20 @@ At this point some corrections are implemented to ensure the correct  $O(y^3)$ n
 \section{CaNS solver}
 The numerical framework used is based on \textit{CaNS (Canonical Navier-Stokes)}, an open-source solver originally developed by Costa \cite{cans-costa} for massively parallel Direct Numerical Simulations (DNS) of canonical flows. The baseline code provides a highly efficient architecture for solving the incompressible Navier-Stokes equations on structured Cartesian grids. However, to address the high Reynolds number flows and complex geometries characterizing the present research, the original solver required specific adaptations. Consequently, the code was modified to operate as a Wall-Modeled Large Eddy Simulation (WM-LES) solver coupled with an Immersed Boundary Method (IBM).
 
-The algorithm solves the governing Navier-Stokes equations presented in equation \eqref{eq:NS-conv} with unit density. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective (or advective) and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{u})$:
+The algorithm solves the governing filtered Navier-Stokes equations presented in equation \eqref{eq:les-mom-equation} with unit density. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective (or advective) and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{\widetilde{u}})$:
 \begin{equation}
     \label{eq:AD-def}
-    \mathcal{AD}(\bm{u}) = - \bm{u} \cdot \nabla \bm{u} + \nu \nabla^2 \bm{u}
+    \mathcal{AD}(\bm{\widetilde{u}}) = - \bm{\widetilde{u}} \cdot \nabla \bm{\widetilde{u}} + (\nu + \nu_R) \, \nabla^2 \,  \widetilde{u}
 \end{equation}
 Using this notation, the system of equations solved by the algorithm simplifies to:
 \begin{equation}
 \label{eq:NS-AD}
 \begin{cases}
-    \nabla \cdot \bm{u} = 0 \\[1.5ex]
-    \dfrac{\partial \bm{u}}{\partial t} = \mathcal{AD}(\bm{u}) - \nabla p + \bm{f}
+    \nabla \cdot \bm{\widetilde{u}} = 0 \\[1.5ex]
+    \dfrac{\partial \bm{\widetilde{u}}}{\partial t} = \mathcal{AD}(\bm{\widetilde{u}}) - \nabla \widetilde{p} + \bm{f}
 \end{cases}
 \end{equation}
-The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each sub-step.
+The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a finite-volume pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each sub-step.
 
 \subsection{Time integration - RK3}
 Runge–Kutta schemes perform time advancement by evaluating the solution at step $n+1$ via a sequence of intermediate stages. Considering a generic problem and a standard three-stage Runge-Kutta method:
@@ -1061,6 +1070,13 @@ The solution of the Poisson equation is usually the most computationally intensi
 
 \end{enumerate}
 
+\subsection{Finite Volume Method}
+The previous sections described the time integration scheme and the pressure correction algorithm. To complete the description, it is necessary to define how the spatial terms of equation \eqref{eq:NS-AD} are discretized.
+
+The solver uses a standard second-order Finite Volume Method (FVM) on a structured Cartesian grid. This approach is based on the integral form of the conservation laws applied to elementary control volumes. The main advantage of this method is that it naturally ensures the conservation of mass and momentum fluxes across the cell faces. For this reason the method is often implemented for its ability to compute flow fields which present discontinuities (for instance shocks, slip lines), namely weak solutions.
+
+
+\section{Immersed Boundary Method}
 
 \backmatter
 
