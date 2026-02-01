@@ -1091,10 +1091,13 @@ where, in this example, $\bm{S}$ is the surface vector, $\left( \bm{u_f} \cdot \
 
 Integrating \eqref{eq:LES-AD} in a cell control volume $\Omega$ and applying the divergence theorem:
 \begin{equation}
-	\int_{\Omega} \dfrac{\partial \, \bm{\widetilde{u}}}{\partial t} \, d \Omega =
-	- \int_S (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \, dS
-	- \int_S \left( \widetilde{p} \, \bm{I} \right) \, dS
-	+ \int_\Omega \bm{f} \, d \Omega
+	\begin{split}
+		\int_{\Omega} \dfrac{\partial \, \bm{\widetilde{u}}}{\partial t} \, d \Omega =
+		&- \int_S \left( \bm{\widetilde{u}} \, \bm{\widetilde{u}} \right) \cdot \bm{n} \, dS
+		+ \int_S (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \, dS \\
+		&- \int_S \left( \widetilde{p} \, \bm{I} \right) \, dS
+		+ \int_\Omega \bm{f} \, d \Omega
+	\end{split}
 \end{equation}
 This equation can be rewritten in its semi-discretized form, considering $\Omega = \Delta x \, \Delta y \, \Delta z$, as:
 \begin{equation}
@@ -1128,32 +1131,40 @@ where the index $i$ express the direction in which the momentum conservation equ
 
 Finally, to bridge the theoretical formulation with the numerical implementation, the specific notation adopted in the code is introduced. A distinction is made between the generic tensor indices and the specific spatial directions: while the lowercase subscripts ($i, j, k$) act as placeholders, the uppercase letters $I, J, K$ represent the considered direction corresponding to the $x, y$, and $z$ axes, respectively. Furthermore, the control volume faces are identified by their orientation relative to the cell center, using $P$ (Plus) for the positive direction and $M$ (Minus) for the negative direction.
 
-For instance, considering the momentum balance \eqref{eq:discretized-mom-indexed} in the $y \equiv J$ direction:
+For instance, considering the momentum balance \eqref{eq:discretized-mom-indexed} in the $x \equiv I$ direction:
 \begin{equation}
 	\begin{split}
-		(\Delta x \, \Delta y \, \Delta z) \, \dfrac{\partial \, v}{\partial t} =
-		&- (F_{J, IP}^{\, conv} - F_{J, IM}^{\, conv})(\Delta y \, \Delta z)
-			-  (F_{J, JP}^{\, conv} - F_{J, JM}^{\, conv})(\Delta x \, \Delta z)\\
-			&-  (F_{J, KP}^{\, conv} - F_{J, KM}^{\, conv})(\Delta x \, \Delta y)\\
-		&+ (F_{J, IP}^{\, visc} - F_{J, IM}^{\, visc})(\Delta y \, \Delta z)
-			+  (F_{J, JP}^{\, visc} - F_{J, JM}^{\, visc})(\Delta x \, \Delta z)\\
-			&+  (F_{J, KP}^{\, visc} - F_{J, KM}^{\, visc})(\Delta x \, \Delta y)\\
+		(\Delta x \, \Delta y \, \Delta z) \, \dfrac{\partial \, u}{\partial t} =
+		&- (F_{I, IP}^{\, conv} - F_{I, IM}^{\, conv})(\Delta y \, \Delta z)
+			-  (F_{I, JP}^{\, conv} - F_{I, JM}^{\, conv})(\Delta x \, \Delta z)\\
+			&-  (F_{I, KP}^{\, conv} - F_{I, KM}^{\, conv})(\Delta x \, \Delta y)\\
+		&+ (F_{I, IP}^{\, visc} - F_{I, IM}^{\, visc})(\Delta y \, \Delta z)
+			+  (F_{I, JP}^{\, visc} - F_{I, JM}^{\, visc})(\Delta x \, \Delta z)\\
+			&+  (F_{I, KP}^{\, visc} - F_{I, KM}^{\, visc})(\Delta x \, \Delta y)\\
 		&- (p_{JP} - p_{JM})(\Delta x \, \Delta z) + (\Delta x \, \Delta y \, \Delta z) \, f_J 
 	\end{split}
 \end{equation}
 And simplifying the volume:
 \begin{equation}
     \begin{split}
-        \dfrac{\partial v}{\partial t} =
-        &- \dfrac{F_{J, IP}^{\text{conv}} - F_{J, IM}^{\text{conv}}}{\Delta x}
-         - \dfrac{F_{J, JP}^{\text{conv}} - F_{J, JM}^{\text{conv}}}{\Delta y}
-         - \dfrac{F_{J, KP}^{\text{conv}} - F_{J, KM}^{\text{conv}}}{\Delta z} \\[1em]
-        &+ \dfrac{F_{J, IP}^{\text{visc}} - F_{J, IM}^{\text{visc}}}{\Delta x}
-         + \dfrac{F_{J, JP}^{\text{visc}} - F_{J, JM}^{\text{visc}}}{\Delta y}
-         + \dfrac{F_{J, KP}^{\text{visc}} - F_{J, KM}^{\text{visc}}}{\Delta z} \\[1em]
+		\phantom{(\Delta x \, \Delta y \, ,)}\,
+        \dfrac{\partial \, u}{\partial t} =
+        &- \dfrac{F_{I, IP}^{\, conv} - F_{I, IM}^{\, conv}}{\Delta x}
+         - \dfrac{F_{I, JP}^{\, conv} - F_{I, JM}^{\, conv}}{\Delta y}
+         - \dfrac{F_{I, KP}^{\, conv} - F_{I, KM}^{\, conv}}{\Delta z} \\[1em]
+        &+ \dfrac{F_{I, IP}^{\, visc} - F_{I, IM}^{\, visc}}{\Delta x}
+         + \dfrac{F_{I, JP}^{\, visc} - F_{I, JM}^{\, visc}}{\Delta y}
+         + \dfrac{F_{I, KP}^{\, visc} - F_{I, KM}^{\, visc}}{\Delta z} \\[1em]
         &- \dfrac{p_{JP} - p_{JM}}{\Delta y} + f_J 
     \end{split}
 \end{equation}
+To visualize the components acting in the momentum conservation equation, the convective and viscous flux density vector, along with the pressure term, are represented in Figure \ref{fig:fvm-flux-components}. As shown, they are consistently aligned with the positive coordinate axes on both faces, while pressure ($p$) acts compressively, directed inward normal to the surface.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/fvm-flux-components.jpg} 
+    \caption{Flux density components for the momentum balance in the $x$ direction. Body forces not shown.}
+    \label{fig:fvm-flux-components}
+\end{figure}
 
 \section{Immersed Boundary Method}
 
