@@ -1,0 +1,206 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# ==========================================
+# CONFIGURAZIONE UTENTE
+# ==========================================
+# Scegli quale equazione visualizzare: 'u', 'v', oppure 'w'
+target_var = 'u' 
+# ==========================================
+
+def get_label_suffix(di, dj, dk):
+    """
+    Converte offset interi (-1, 0, 1) in suffissi (m, c, p).
+    Esempio: (1, 0, -1) -> 'pcm'
+    """
+    mapping = {-1: 'm', 0: 'c', 1: 'p'}
+    # Se l'offset va oltre +/- 1 (es. stencil estesi), usa numeri o ??
+    s_i = mapping.get(int(di), '?')
+    s_j = mapping.get(int(dj), '?')
+    s_k = mapping.get(int(dk), '?')
+    return f"{s_i}{s_j}{s_k}"
+
+def get_stencil_data(var_name):
+    """
+    Restituisce liste di dizionari per ogni variabile (u, v, w).
+    Ogni dizionario contiene: {'coords': (x,y,z), 'label': 'nome_var'}
+    """
+    
+    u_nodes = []
+    v_nodes = []
+    w_nodes = []
+    target_node = None
+    
+    # Helper per aggiungere nodi
+    def add_node(idx_list, name_prefix, base_offset, i_off, j_off, k_off):
+        # Coordinate visuali (offset griglia + offset indice)
+        x = base_offset[0] + i_off
+        y = base_offset[1] + j_off
+        z = base_offset[2] + k_off
+        
+        # Genera label tipo 'u_pcc'
+        suffix = get_label_suffix(i_off, j_off, k_off)
+        label = f"{name_prefix}_{suffix}"
+        
+        idx_list.append({
+            'coords': (x, y, z),
+            'label': label,
+            'offset': (i_off, j_off, k_off) # utile per debug
+        })
+
+    # Offset base della griglia C-staggered
+    pos_u = (0.5, 0, 0)
+    pos_v = (0, 0.5, 0)
+    pos_w = (0, 0, 0.5)
+
+    if var_name == 'u':
+        target_node = pos_u
+        
+        # --- Stencil U (Eq. Momentum X) ---
+        # 1. Nodi U (Autoconvezione e Diffusione assiale)
+        # mom_xyz_ad carica: ccm, pcm, cpm, cmc, pmc, mcc, ccc, pcc...
+        # Copriamo i vicini principali
+        for i in [-1, 0, 1]:
+            for j in [-1, 0, 1]:
+                for k in [-1, 0, 1]:
+                    # Filtriamo per non riempire troppo il plot, teniamo croce + diagonali 
+                    # usate tipicamente nel codice (es. u_mpc riga 100)
+                    if abs(i)+abs(j)+abs(k) <= 2: 
+                        add_node(u_nodes, 'u', pos_u, i, j, k)
+
+        # 2. Nodi V (Termini crociati du/dy, v*u)
+        # Interpolazione alle facce: (i,j), (i+1,j), (i,j-1), (i+1,j-1)
+        # Corrispondono a ccc, pcc, cmc, pmc per la V rispetto al centro i,j,k
+        # Nota: in mom_xyz_ad i loops sono su v_ccc, v_pcc etc.
+        # Guardando il codice riga 113 (vu_jp): v_pcc, v_ccc
+        # Guardando riga 114 (vu_jm): v_pmc, v_cmc
+        v_offsets = [
+            (0,0,0), (1,0,0),   # j  (ccc, pcc)
+            (0,-1,0), (1,-1,0)  # j-1 (cmc, pmc)
+        ]
+        for off in v_offsets:
+            add_node(v_nodes, 'v', pos_v, *off)
+        
+        # 3. Nodi W (Termini crociati du/dz, w*u)
+        # Interpolazione: k e k-1. ccc, pcc, ccm, pcm
+        w_offsets = [
+            (0,0,0), (1,0,0),   # k (ccc, pcc)
+            (0,0,-1), (1,0,-1)  # k-1 (ccm, pcm)
+        ]
+        for off in w_offsets:
+            add_node(w_nodes, 'w', pos_w, *off)
+
+    elif var_name == 'v':
+        target_node = pos_v
+        
+        # --- Stencil V (Eq. Momentum Y) ---
+        # 1. Nodi V
+        for i in [-1, 0, 1]:
+            for j in [-1, 0, 1]:
+                for k in [-1, 0, 1]:
+                    if abs(i)+abs(j)+abs(k) <= 2:
+                        add_node(v_nodes, 'v', pos_v, i, j, k)
+        
+        # 2. Nodi U (uv)
+        # j, j+1 e i, i-1
+        u_offsets = [
+            (0,0,0), (0,1,0), # i (ccc, cpc)
+            (-1,0,0), (-1,1,0) # i-1 (mcc, mpc)
+        ]
+        for off in u_offsets:
+            add_node(u_nodes, 'u', pos_u, *off)
+            
+        # 3. Nodi W (wv)
+        # k, k-1
+        w_offsets = [
+            (0,0,0), (0,1,0), # k (ccc, cpc)
+            (0,0,-1), (0,1,-1) # k-1 (ccm, cpm)
+        ]
+        for off in w_offsets:
+            add_node(w_nodes, 'w', pos_w, *off)
+
+    elif var_name == 'w':
+        target_node = pos_w
+        
+        # --- Stencil W (Eq. Momentum Z) ---
+        # 1. Nodi W
+        for i in [-1, 0, 1]:
+            for j in [-1, 0, 1]:
+                for k in [-1, 0, 1]:
+                    if abs(i)+abs(j)+abs(k) <= 2:
+                        add_node(w_nodes, 'w', pos_w, i, j, k)
+        
+        # 2. Nodi U (uw)
+        # k, k+1 e i, i-1
+        u_offsets = [
+            (0,0,0), (0,0,1), # i (ccc, ccp)
+            (-1,0,0), (-1,0,1) # i-1 (mcc, mcp)
+        ]
+        for off in u_offsets:
+            add_node(u_nodes, 'u', pos_u, *off)
+
+        # 3. Nodi V (vw)
+        # k, k+1 e j, j-1
+        v_offsets = [
+            (0,0,0), (0,0,1), # j (ccc, ccp)
+            (0,-1,0), (0,-1,1) # j-1 (cmc, cmp)
+        ]
+        for off in v_offsets:
+            add_node(v_nodes, 'v', pos_v, *off)
+
+    return u_nodes, v_nodes, w_nodes, target_node
+
+def plot_3d_stencil_labeled(var_name):
+    u_data, v_data, w_data, target = get_stencil_data(var_name)
+    
+    fig = plt.figure(figsize=(12, 10))
+    ax = fig.add_subplot(111, projection='3d')
+    
+    # Funzione helper per plottare gruppo di nodi
+    def plot_group(data_list, color, marker, base_label):
+        if not data_list: return
+        xs = [d['coords'][0] for d in data_list]
+        ys = [d['coords'][1] for d in data_list]
+        zs = [d['coords'][2] for d in data_list]
+        
+        ax.scatter(xs, ys, zs, c=color, s=80, marker=marker, label=base_label, alpha=0.6, depthshade=False)
+        
+        # Aggiunta etichette
+        for d in data_list:
+            x, y, z = d['coords']
+            label = d['label']
+            # Piccolo offset per il testo in modo che non copra il pallino
+            ax.text(x, y, z + 0.05, label, color=color, fontsize=9, fontweight='bold', ha='center')
+
+    # Plot dei gruppi
+    plot_group(u_data, 'blue', 'o', 'u nodes')
+    plot_group(v_data, 'red', '^', 'v nodes')
+    plot_group(w_data, 'green', 's', 'w nodes')
+
+    # Evidenzia Target
+    if target:
+        ax.scatter([target[0]], [target[1]], [target[2]], c='k', s=200, marker='x', linewidth=2, label=f'CALCOLO d{var_name}/dt')
+        ax.text(target[0], target[1], target[2]-0.1, f"{var_name}_ccc", color='k', fontsize=12, fontweight='bold', ha='center')
+
+    # Assi e Titoli
+    ax.set_xlabel('i')
+    ax.set_ylabel('j')
+    ax.set_zlabel('k')
+    ax.set_title(f'Stencil Momentum {var_name.upper()} - Naming Convention (m, c, p)', fontsize=14)
+    
+    # Limits
+    ax.set_xlim(-0.8, 1.8)
+    ax.set_ylim(-0.8, 1.8)
+    ax.set_zlim(-0.8, 1.8)
+    
+    # Rendi la visualizzazione meno affollata togliendo il pane grigio
+    ax.xaxis.pane.fill = False
+    ax.yaxis.pane.fill = False
+    ax.zaxis.pane.fill = False
+
+    ax.legend(loc='upper left')
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == "__main__":
+    plot_3d_stencil_labeled(target_var)

@@ -900,7 +900,7 @@ Substituting this closure into the filtered momentum equation \eqref{eq:les-equa
 \end{equation}
 Exploiting the incompressibility constraint ($\nabla \cdot \bm{\widetilde{u}} = 0$) to simplify the viscous term, it is possible to retrieve the formulation implemented in the numerical solver. The equation can be rewritten in vector notation as:
 \begin{equation}
-    \frac{\partial \bm{\widetilde{u}}}{\partial t} + \bm{\widetilde{u}} \cdot \nabla \bm{\widetilde{u}} = - \frac{1}{\rho} \, \nabla \widetilde{p} + (\nu + \nu_{R}) \, \nabla^2 \, \bm{\widetilde{u}} + \bm{f}
+    \frac{\partial \, \bm{\widetilde{u}}}{\partial t} + \bm{\widetilde{u}} \cdot \nabla \bm{\widetilde{u}} = - \frac{1}{\rho} \, \nabla \widetilde{p} + \nabla \cdot \left[ (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \right] + \bm{f}
 	\label{eq:les-mom-equation}
 \end{equation}
 In the Smagorinsky model the $\nu_R$ scalar is defined as:
@@ -977,16 +977,18 @@ The numerical framework used is based on \textit{CaNS (Canonical Navier-Stokes)}
 The algorithm solves the governing filtered Navier-Stokes equations presented in equation \eqref{eq:les-mom-equation} with unit density. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective (or advective) and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{\widetilde{u}})$:
 \begin{equation}
     \label{eq:AD-def}
-    \mathcal{AD}(\bm{\widetilde{u}}) = - \bm{\widetilde{u}} \cdot \nabla \bm{\widetilde{u}} + (\nu + \nu_R) \, \nabla^2 \,  \widetilde{u}
+    \mathcal{AD}(\bm{\widetilde{u}}) = - \nabla \left( \bm{\widetilde{u}} \, \bm{\widetilde{u}} \right)+ \nabla \cdot \left[ (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \right]
 \end{equation}
 Using this notation, the system of equations solved by the algorithm simplifies to:
 \begin{equation}
-\label{eq:NS-AD}
+\label{eq:LES-AD}
 \begin{cases}
     \nabla \cdot \bm{\widetilde{u}} = 0 \\[1.5ex]
-    \dfrac{\partial \bm{\widetilde{u}}}{\partial t} = \mathcal{AD}(\bm{\widetilde{u}}) - \nabla \widetilde{p} + \bm{f}
+    \dfrac{\partial \, \bm{\widetilde{u}}}{\partial t} = \mathcal{AD}(\bm{\widetilde{u}}) - \nabla \widetilde{p} + \bm{f}
 \end{cases}
 \end{equation}
+% \textit{Note that from this point onward, unless otherwise stated, all flow variables are to be understood as resolved (filtered) quantities, and the tilde notation is omitted, for notational simplicity.}
+
 The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a finite-volume pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each sub-step.
 
 \subsection{Time integration - RK3}
@@ -1012,7 +1014,7 @@ The use of multiple sub-steps allows for a significant increase in accuracy and 
 \end{equation}
 it is worth noting that for the first sub-step ($k=1$), the coefficient $\beta_1$ is zero, reducing the dependence solely to the initial state. This recursive structure allows the solver to operate using a minimal number of memory registers, by overwriting the solution array at each stage.
 
-Using the time integration scheme as is, to solve the \eqref{eq:NS-AD} momentum equation alone is not possible, since both the mass and momentum conservation have to be imposed. In order to couple the four equations, and ensure a divergence-free velocity, the solver employs a pressure-correction algorithm, nested in each sub-step of the RK3 cycle.
+Using the time integration scheme as is, to solve the \eqref{eq:LES-AD} momentum equation alone is not possible, since both the mass and momentum conservation have to be imposed. In order to couple the four equations, and ensure a divergence-free velocity, the solver employs a pressure-correction algorithm, nested in each sub-step of the RK3 cycle.
 
 \subsection{Pressure-correction}
 The algorithm can be summarized as follows:
@@ -1071,10 +1073,87 @@ The solution of the Poisson equation is usually the most computationally intensi
 \end{enumerate}
 
 \subsection{Finite Volume Method}
-The previous sections described the time integration scheme and the pressure correction algorithm. To complete the description, it is necessary to define how the spatial terms of equation \eqref{eq:NS-AD} are discretized.
+The previous sections described the time integration scheme and the pressure correction algorithm. To complete the description, it is necessary to define how the spatial terms of equation \eqref{eq:LES-AD} are discretized.
 
 The solver uses a standard second-order Finite Volume Method (FVM) on a structured Cartesian grid. This approach is based on the integral form of the conservation laws applied to elementary control volumes. The main advantage of this method is that it naturally ensures the conservation of mass and momentum fluxes across the cell faces. For this reason the method is often implemented for its ability to compute flow fields which present discontinuities (for instance shocks, slip lines), namely weak solutions.
 
+To obtain the integral form of the governing equations, the Gauss's Divergence Theorem is applied. This theorem allows to transform the volume integral into a surface integral, which can be subsequently approximated by a summation over the faces of the discrete control volume. Considering a generic field, for instance $\bm{u}$, the continuous and discrete forms of the theorem are recalled below:
+\begin{equation}
+    \int_{\Omega} \left( \nabla \cdot \bm{\widetilde{u}} \right) \, d\Omega 
+    = 
+    \int_{S} \bm{\widetilde{u}} \cdot \, d \bm{S}
+    \quad \implies \quad
+    \sum_{f} \bm{u_f} \cdot \bm{S}_{f}
+    = 
+    \sum_{f} \bm{F}_f^{\, vel} \cdot \bm{S}_{f}
+\end{equation}
+where, in this example, $\bm{S}$ is the surface vector, $\left( \bm{u_f} \cdot \bm{S}_{f} \right)$ is the flux contribution across the face $f$, and $\bm{F}_f^{\, vel} \equiv \bm{u_f}$ is the (velocity) flux density again across the face $f$. Note that the pedix $f$ act as the position of evaluation of fluid quantities.
+
+Integrating \eqref{eq:LES-AD} in a cell control volume $\Omega$ and applying the divergence theorem:
+\begin{equation}
+	\int_{\Omega} \dfrac{\partial \, \bm{\widetilde{u}}}{\partial t} \, d \Omega =
+	- \int_S (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \, dS
+	- \int_S \left( \widetilde{p} \, \bm{I} \right) \, dS
+	+ \int_\Omega \bm{f} \, d \Omega
+\end{equation}
+This equation can be rewritten in its semi-discretized form, considering $\Omega = \Delta x \, \Delta y \, \Delta z$, as:
+\begin{equation}
+	\begin{split}
+		\left(\Delta x \, \Delta y \, \Delta z \right) \, \dfrac{\partial \, \bm{u}}{\partial t} =
+		&- \sum_f \left( \bm{u} \, \bm{u} \right)_f \cdot \bm{S}_f \\
+		&+ \sum_f \left[ (\nu + \nu_{R}) \, \left(\nabla \bm{u} + \left( \nabla \bm{u} \, \right)^T \right) \right]_f \cdot \bm{S}_f \\
+		&- \sum_f \left( p \, \bm{I} \right) \cdot \bm{S}_f \\
+		&+ \left(\Delta x \, \Delta y \, \Delta z \right) \, \bm{f}
+	\end{split}
+\end{equation}
+That is, in indexed notation:
+\begin{equation}
+	\label{eq:discretized-mom-indexed}
+\begin{split}
+    (\Delta x \, \Delta y \, \Delta z) \, \dfrac{\partial \, u_i}{\partial t} =
+    &- \sum_f (u_i \, u_j)_f \, S_{f,j} \\
+    & + \sum_f \left[ (\nu + \nu_{R}) \, \left( \nabla_j \, u_i + \nabla_i \, u_j \right) \right]_f \, S_{f,j} \\
+    & - \sum_f p_f \, S_{f,i} \\
+    & + (\Delta x \, \Delta y \, \Delta z) \, f_i
+\end{split}
+\end{equation}
+The flux density terms appearing can be identified. Specifically, the convective and viscous flux density tensors are defined as:
+\begin{equation}
+	\begin{split}
+    &F_{i, j, f}^{\, conv} = (u_i \, u_j)_f \\
+    &F_{i, j, f}^{\, visc} = \left[ (\nu + \nu_{R}) \, \left( \nabla_j u_i + \nabla_i u_j \right) \right]_f
+\end{split}
+\end{equation}
+where the index $i$ express the direction in which the momentum conservation equation is considered, $j$ indicates the flux vector component direction and $f$ the position in which the tensor is evaluated. Since the considered grid is Cartesian, the considered face $f$ already determines the considered flux direction, so that the $j$ index is redundant and can be suppressed.
+
+Finally, to bridge the theoretical formulation with the numerical implementation, the specific notation adopted in the code is introduced. A distinction is made between the generic tensor indices and the specific spatial directions: while the lowercase subscripts ($i, j, k$) act as placeholders, the uppercase letters $I, J, K$ represent the considered direction corresponding to the $x, y$, and $z$ axes, respectively. Furthermore, the control volume faces are identified by their orientation relative to the cell center, using $P$ (Plus) for the positive direction and $M$ (Minus) for the negative direction.
+
+For instance, considering the momentum balance \eqref{eq:discretized-mom-indexed} in the $y \equiv J$ direction:
+\begin{equation}
+	\begin{split}
+		(\Delta x \, \Delta y \, \Delta z) \, \dfrac{\partial \, v}{\partial t} =
+		&- (F_{J, IP}^{\, conv} - F_{J, IM}^{\, conv})(\Delta y \, \Delta z)
+			-  (F_{J, JP}^{\, conv} - F_{J, JM}^{\, conv})(\Delta x \, \Delta z)\\
+			&-  (F_{J, KP}^{\, conv} - F_{J, KM}^{\, conv})(\Delta x \, \Delta y)\\
+		&+ (F_{J, IP}^{\, visc} - F_{J, IM}^{\, visc})(\Delta y \, \Delta z)
+			+  (F_{J, JP}^{\, visc} - F_{J, JM}^{\, visc})(\Delta x \, \Delta z)\\
+			&+  (F_{J, KP}^{\, visc} - F_{J, KM}^{\, visc})(\Delta x \, \Delta y)\\
+		&- (p_{JP} - p_{JM})(\Delta x \, \Delta z) + (\Delta x \, \Delta y \, \Delta z) \, f_J 
+	\end{split}
+\end{equation}
+And simplifying the volume:
+\begin{equation}
+    \begin{split}
+        \dfrac{\partial v}{\partial t} =
+        &- \dfrac{F_{J, IP}^{\text{conv}} - F_{J, IM}^{\text{conv}}}{\Delta x}
+         - \dfrac{F_{J, JP}^{\text{conv}} - F_{J, JM}^{\text{conv}}}{\Delta y}
+         - \dfrac{F_{J, KP}^{\text{conv}} - F_{J, KM}^{\text{conv}}}{\Delta z} \\[1em]
+        &+ \dfrac{F_{J, IP}^{\text{visc}} - F_{J, IM}^{\text{visc}}}{\Delta x}
+         + \dfrac{F_{J, JP}^{\text{visc}} - F_{J, JM}^{\text{visc}}}{\Delta y}
+         + \dfrac{F_{J, KP}^{\text{visc}} - F_{J, KM}^{\text{visc}}}{\Delta z} \\[1em]
+        &- \dfrac{p_{JP} - p_{JM}}{\Delta y} + f_J 
+    \end{split}
+\end{equation}
 
 \section{Immersed Boundary Method}
 
