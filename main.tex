@@ -987,7 +987,7 @@ Using this notation, the system of equations solved by the algorithm simplifies 
     \dfrac{\partial \, \bm{\widetilde{u}}}{\partial t} = \mathcal{AD}(\bm{\widetilde{u}}) - \nabla \widetilde{p} + \bm{f}
 \end{cases}
 \end{equation}
-% \textit{Note that from this point onward, unless otherwise stated, all flow variables are to be understood as resolved (filtered) quantities, and the tilde notation is omitted, for notational simplicity.}
+\textit{Note that from this point onward, since the (later described) Finite Volume Method deals by definition with volume-averaged values, the tilde notation for filtered variables is suppressed to simplify the discrete formulation.}
 
 The core of the solver workflow is a three-stage Runge-Kutta (RK3) scheme for time integration, with a finite-volume pressure-correction method for the coupling of the mass and momentum Navier-Stokes equations for each sub-step.
 
@@ -1075,7 +1075,7 @@ The solution of the Poisson equation is usually the most computationally intensi
 \subsection{Finite Volume Method}
 The previous sections described the time integration scheme and the pressure correction algorithm. To complete the description, it is necessary to define how the spatial terms of equation \eqref{eq:LES-AD} are discretized.
 
-The solver uses a standard second-order Finite Volume Method (FVM) on a structured Cartesian grid. This approach is based on the integral form of the conservation laws applied to elementary control volumes. The main advantage of this method is that it naturally ensures the conservation of mass and momentum fluxes across the cell faces. For this reason the method is often implemented for its ability to compute flow fields which present discontinuities (for instance shocks, slip lines), namely weak solutions.
+The solver uses a standard second-order Finite Volume Method (FVM) on a structured Cartesian grid. This approach is based on the integral form of the conservation laws applied to elementary control volumes. The main advantage of this method is that it naturally ensures the conservation of mass and momentum fluxes across the control volume faces \cite{cfd-anderson}. For this reason the method is often implemented for its ability to compute flow fields which present discontinuities (for instance shocks, slip lines), namely weak solutions \cite{cfd-blazek}.
 
 To obtain the integral form of the governing equations, the Gauss's Divergence Theorem is applied. This theorem allows to transform the volume integral into a surface integral, which can be subsequently approximated by a summation over the faces of the discrete control volume. Considering a generic field, for instance $\bm{u}$, the continuous and discrete forms of the theorem are recalled below:
 \begin{equation}
@@ -1102,6 +1102,7 @@ Integrating \eqref{eq:LES-AD} in a cell control volume $\Omega$ and applying the
 This equation can be rewritten in its semi-discretized form, considering $\Omega = \Delta x \, \Delta y \, \Delta z$, as:
 \begin{equation}
 	\begin{split}
+		\phantom{,}
 		\left(\Delta x \, \Delta y \, \Delta z \right) \, \dfrac{\partial \, \bm{u}}{\partial t} =
 		&- \sum_f \left( \bm{u} \, \bm{u} \right)_f \cdot \bm{S}_f \\
 		&+ \sum_f \left[ (\nu + \nu_{R}) \, \left(\nabla \bm{u} + \left( \nabla \bm{u} \, \right)^T \right) \right]_f \cdot \bm{S}_f \\
@@ -1129,7 +1130,7 @@ The flux density terms appearing can be identified. Specifically, the convective
 \end{equation}
 where the index $i$ express the direction in which the momentum conservation equation is considered, $j$ indicates the flux vector component direction and $f$ the position in which the tensor is evaluated. Since the considered grid is Cartesian, the considered face $f$ already determines the considered flux direction, so that the $j$ index is redundant and can be suppressed.
 
-Finally, to bridge the theoretical formulation with the numerical implementation, the specific notation adopted in the code is introduced. A distinction is made between the generic tensor indices and the specific spatial directions: while the lowercase subscripts ($i, j, k$) act as placeholders, the uppercase letters $I, J, K$ represent the considered direction corresponding to the $x, y$, and $z$ axes, respectively. Furthermore, the control volume faces are identified by their orientation relative to the cell center, using $P$ (Plus) for the positive direction and $M$ (Minus) for the negative direction.
+Finally, to bridge the theoretical formulation with the numerical implementation, the specific notation adopted in the code is introduced. A distinction is made between the generic tensor indices and the specific spatial directions: while the lowercase subscripts ($i, j, k$) act as placeholders, the uppercase letters $I, J, K$ represent the considered direction corresponding to the $x, y$, and $z$ axes, respectively. Furthermore, the control volume faces are identified by their orientation relative to the coordinate system, using $P$ (Plus) for the positive direction and $M$ (Minus) for the negative direction.
 
 For instance, considering the momentum balance \eqref{eq:discretized-mom-indexed} in the $x \equiv I$ direction:
 \begin{equation}
@@ -1158,15 +1159,30 @@ And simplifying the volume:
         &- \dfrac{p_{JP} - p_{JM}}{\Delta y} + f_J 
     \end{split}
 \end{equation}
-To visualize the components acting in the momentum conservation equation, the convective and viscous flux density vector, along with the pressure term, are represented in Figure \ref{fig:fvm-flux-components}. As shown, they are consistently aligned with the positive coordinate axes on both faces, while pressure ($p$) acts compressively, directed inward normal to the surface.
+To visualize the components acting in the momentum conservation equation, the convective and viscous flux density vector, along with the pressure term, are represented in Figure \ref{fig:fvm-flux-components}. As shown, they are consistently aligned with the positive coordinate axes on both faces, while pressure ($p$) acts compressively, directed inward.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\textwidth]{img/fvm-flux-components.jpg} 
-    \caption{Flux density components for the momentum balance in the $x$ direction. Body forces not shown.}
+    \includegraphics[width=0.7\textwidth]{img/fvm-flux-components-v2.jpg} 
+    \caption{Flux density components for the momentum balance for the $u$ control volumes. Body forces not shown.}
     \label{fig:fvm-flux-components}
 \end{figure}
 
-\section{Immersed Boundary Method}
+\begin{figure}[htbp]
+    \centering
+	% Multiply height * 0.7899 for the IP-crop image
+    \includegraphics[height=0.5055\textwidth,keepaspectratio]{img/fvm-stencil-IP-crop.jpg}
+    \hfill
+    \includegraphics[height=0.64\textwidth,keepaspectratio]{img/fvm-stencil-JP.jpg}
+    \hfill
+    \includegraphics[height=0.64\textwidth,keepaspectratio]{img/fvm-stencil-KP.jpg}
+    \caption{Stencils for the evaluation of the flux components acting on the positive faces (IP, JP, KP) for the momentum balance in the $x$ direction. The stencils for the opposite faces (IM, JM, KM) are evaluated on the mirrored set of nodes. Note that the $u$ control volume (solid blue) is translated with respect to the $p$ cell (dashed grey), as a consequence of the staggered grid adopted.}
+    \label{fig:fvm-stencils}
+\end{figure}
+
+\subsection{Fluxes evaluations on staggered grid}
+The evaluation of the flux density terms defined in the previous section requires the knowledge of fluxes and pressures at specific locations on the grid, specifically at the centers of the control volume faces. However, the solver employs a staggered grid arrangement, where grid flow variables such as pressure, viscosities and velocity components, (from which the convective and diffusive fluxes are derived), are stored at different nodal locations to prevent instabilities and spurious oscillations.
+
+In this configuration, scalar quantities (pressure $p$, viscosity $\nu$, ...) are stored at the grid cell centers, while velocity components are stored at the midpoints of the cell faces corresponding to their direction. Consequently, the control volumes for the momentum equations are shifted relative to the grid cells, as illustrated in Figure \ref{fig:fvm-stencils}.
 
 \backmatter
 
