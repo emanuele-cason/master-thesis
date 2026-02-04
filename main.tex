@@ -23,10 +23,11 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{tcolorbox}
-\tcbuselibrary{skins}
 \usepackage{tikz}
 \usepackage[T1]{fontenc}
 \usepackage{zi4}
+
+\tcbuselibrary{skins, breakable}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
 \setlength{\parindent}{0pt}
@@ -85,7 +86,8 @@
 }
 
 \newtcolorbox{codebox}[1]{
-    enhanced,
+    enhanced jigsaw,
+	breakable,
     colback=md-bg,
     colframe=md-bg,
     boxrule=0pt,
@@ -1127,6 +1129,7 @@ The flux density terms appearing can be identified. Specifically, the convective
     &F_{i, j, f}^{\, conv} = (u_i \, u_j)_f \\
     &F_{i, j, f}^{\, visc} = \left[ (\nu + \nu_{R}) \, \left( \nabla_j u_i + \nabla_i u_j \right) \right]_f
 \end{split}
+\label{eq:conv-visc-fluxes}
 \end{equation}
 where the index $i$ express the direction in which the momentum conservation equation is considered, $j$ indicates the flux vector component direction and $f$ the position in which the tensor is evaluated. Since the considered grid is Cartesian, the considered face $f$ already determines the considered flux direction, so that the $j$ index is redundant and can be suppressed.
 
@@ -1158,6 +1161,7 @@ And simplifying the volume:
          + \dfrac{F_{I, KP}^{\, visc} - F_{I, KM}^{\, visc}}{\Delta z} \\[1em]
         &- \dfrac{p_{JP} - p_{JM}}{\Delta y} + f_J 
     \end{split}
+	\label{eq:discretized-mom-faces}
 \end{equation}
 To visualize the components acting in the momentum conservation equation, the convective and viscous flux density vector, along with the pressure term, are represented in Figure \ref{fig:fvm-flux-components}. As shown, they are consistently aligned with the positive coordinate axes on both faces, while pressure ($p$) acts compressively, directed inward.
 \begin{figure}[htbp]
@@ -1167,6 +1171,48 @@ To visualize the components acting in the momentum conservation equation, the co
     \label{fig:fvm-flux-components}
 \end{figure}
 
+\subsection{Flux computation on staggered grid}
+The evaluation of the flux density terms defined in the previous section requires the knowledge of fluxes and pressures at specific locations on the grid, specifically at the centers of the control volume faces. However, the solver employs a staggered grid arrangement, to prevent instabilities and spurious oscillations.
+
+In this configuration the grid flow variables (from which the convective and diffusive fluxes are derived), are stored at different nodal locations. Scalar quantities (pressure $p$, viscosity $\nu$, ...) are defined at the grid cell centers, while velocity components are stored at the midpoints of the cell faces corresponding to their direction. Consequently, the control volumes for the momentum equations are shifted relative to the grid cells, as illustrated in Figure \ref{fig:fvm-stencils}.
+
+Since the variable values are not directly available at all the required face locations for the flux computation, some basic interpolation schemes (arithmetic averaging) are implemented.
+The evaluation of first and second derivatives instead, is performed through a Centered First Derivative (CFD/CS2) stencil, accurate to the second order. Applying such interpolation or discretization to the fluxes terms \eqref{eq:conv-visc-fluxes} that appears in equation \eqref{eq:discretized-mom-faces} yields, for example:
+\begin{equation}
+	\begin{split}
+		&F_{I, IP}^{\, conv} = \left( \dfrac{u_{pcc} + u_{ccc}}{2} \right)^2 \\[0.5em]
+		&F_{I, JP}^{\, visc} = \left( \nu + \dfrac{s_{ccc}+s_{pcc}+s_{cpc}+s_{ppc}}{4} \right) \left( \dfrac{u_{cpc}-u_{ccc}}{\Delta x} + \dfrac{v_{pcc}-v_{ccc}}{\Delta x} \right)
+	\end{split}
+\end{equation}
+And the corresponding code implementation is the following:
+\begin{codebox}{src/mom.f90}
+\begin{lstlisting}[style=mdfortran]
+...
+visc_jp = 0.25_rp * (s_ccc + s_pcc + s_cpc+ s_ppc)
+...
+dudy_jp = (u_cpc - u_ccc) * dyi
+...
+dvdx_jp = (v_pcc - v_ccc) * dxi
+...
+uu_ip  = 0.25_rp * (u_pcc + u_ccc) * (u_ccc + u_pcc)
+...
+! Viscosity terms (molecular)
+dudtd_xy_s = visc * (dudx_ip - dudx_im) * dxi
+  + visc * (dudy_jp - dudy_jm) * dyi    
+dudtd_z_s  =  visc * (dudz_kp - dudz_km) * dzfi
+
+dudt_s = 
+  ! Convective terms
+  - (uu_ip - uu_im) * dxi
+  - (vu_jp - vu_jm) * dyi
+  - (wu_kp - wu_km) * dzfi(k) 
+  ! Viscous terms (turbulent)
+  + (visc_ip * (dudx_ip + dudx_ip) - visc_im * (dudx_im + dudx_im)) * dxi
+  + (visc_jp * (dudy_jp + dvdx_jp) - visc_jm * (dudy_jm + dvdx_jm)) * dyi 
+  + (visc_kp * (dudz_kp + dwdx_kp) - visc_km * (dudz_km + dwdx_km)) * dzfi 
+\end{lstlisting}
+\end{codebox}
+
 \begin{figure}[htbp]
     \centering
 	% Multiply height * 0.7899 for the IP-crop image
@@ -1175,14 +1221,9 @@ To visualize the components acting in the momentum conservation equation, the co
     \includegraphics[height=0.64\textwidth,keepaspectratio]{img/fvm-stencil-JP.jpg}
     \hfill
     \includegraphics[height=0.64\textwidth,keepaspectratio]{img/fvm-stencil-KP.jpg}
-    \caption{Stencils for the evaluation of the flux components acting on the positive faces (IP, JP, KP) for the momentum balance in the $x$ direction. The stencils for the opposite faces (IM, JM, KM) are evaluated on the mirrored set of nodes. Note that the $u$ control volume (solid blue) is translated with respect to the $p$ cell (dashed grey), as a consequence of the staggered grid adopted.}
+    \caption{Stencils for the evaluation of the flux components acting on the positive faces (IP, JP, KP) for the momentum balance in the $x$ direction. The stencils for the opposite faces (IM, JM, KM) are evaluated on the mirrored set of nodes. Note that the $u$ control volume (solid blue) is translated with respect to the grid cell (dashed grey), as a consequence of the staggered configuration adopted. The local turbulent viscosity is indicated with $s$.}
     \label{fig:fvm-stencils}
 \end{figure}
-
-\subsection{Fluxes evaluations on staggered grid}
-The evaluation of the flux density terms defined in the previous section requires the knowledge of fluxes and pressures at specific locations on the grid, specifically at the centers of the control volume faces. However, the solver employs a staggered grid arrangement, where grid flow variables such as pressure, viscosities and velocity components, (from which the convective and diffusive fluxes are derived), are stored at different nodal locations to prevent instabilities and spurious oscillations.
-
-In this configuration, scalar quantities (pressure $p$, viscosity $\nu$, ...) are stored at the grid cell centers, while velocity components are stored at the midpoints of the cell faces corresponding to their direction. Consequently, the control volumes for the momentum equations are shifted relative to the grid cells, as illustrated in Figure \ref{fig:fvm-stencils}.
 
 \backmatter
 
