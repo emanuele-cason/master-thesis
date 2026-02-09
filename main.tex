@@ -1184,7 +1184,7 @@ The evaluation of first and second derivatives instead, is performed through a C
 		&F_{I, JP}^{\, visc} = \left( \nu + \dfrac{s_{ccc}+s_{pcc}+s_{cpc}+s_{ppc}}{4} \right) \left( \dfrac{u_{cpc}-u_{ccc}}{\Delta x} + \dfrac{v_{pcc}-v_{ccc}}{\Delta x} \right)
 	\end{split}
 \end{equation}
-And the corresponding code implementation is the following:
+And the corresponding code implementation for the $\mathcal{AD}$ contribution is the following:
 \begin{codebox}{src/mom.f90}
 \begin{lstlisting}[style=mdfortran]
 ...
@@ -1196,7 +1196,7 @@ dvdx_jp = (v_pcc - v_ccc) * dxi
 ...
 uu_ip  = 0.25_rp * (u_pcc + u_ccc) * (u_ccc + u_pcc)
 ...
-! Viscosity terms (molecular)
+! Viscous terms (molecular)
 dudtd_xy_s = visc * (dudx_ip - dudx_im) * dxi
   + visc * (dudy_jp - dudy_jm) * dyi    
 dudtd_z_s  =  visc * (dudz_kp - dudz_km) * dzfi
@@ -1210,6 +1210,8 @@ dudt_s =
   + (visc_ip * (dudx_ip + dudx_ip) - visc_im * (dudx_im + dudx_im)) * dxi
   + (visc_jp * (dudy_jp + dvdx_jp) - visc_jm * (dudy_jm + dvdx_jm)) * dyi 
   + (visc_kp * (dudz_kp + dwdx_kp) - visc_km * (dudz_km + dwdx_km)) * dzfi 
+...
+dudtrk_ad = dudt_s + dudtd_xy_s + dudtd_z_s
 \end{lstlisting}
 \end{codebox}
 
@@ -1224,6 +1226,27 @@ dudt_s =
     \caption{Stencils for the evaluation of the flux components acting on the positive faces (IP, JP, KP) for the momentum balance in the $x$ direction. The stencils for the opposite faces (IM, JM, KM) are evaluated on the mirrored set of nodes. Note that the $u$ control volume (solid blue) is translated with respect to the grid cell (dashed grey), as a consequence of the staggered configuration adopted. The local turbulent viscosity is indicated with $s$.}
     \label{fig:fvm-stencils}
 \end{figure}
+
+\newpage
+\section{Immersed Boundary Method}
+The adoption of the Immersed Boundary Method (IBM) is primarily driven by the necessity to overcome the limitations and computational costs associated with traditional body-fitted grids. 
+
+Specifically, the conventional approach employs structured or unstructured grids thats conform to the geometry. The mesh generation requires to define a curvilinear coordinate system for the governing equations, aligned with the grid or to incorporate the information regarding the grid in the discretization \cite{ibm-mittal-iaccarino}. Such operations require complex and computationally demanding algorithms that can result in poor quality discretizations (skewed elements for instance), potentially compromising numerical stability. The variability of the considered geometry and the resulting mesh, makes the problem of storing and accessing the data related to each element non-optimal in terms of performance and non-straitforward in its implementation. Furthermore, in the presence of moving boundaries, the solver requires a continuous re-meshing.
+
+The most significant advantage of the IBM lies in the simplification of the grid generation phase. The IBM employs structured Cartesian grids, facilitating the implementation of efficient iterative solvers and simplyfing parallelization. Such grids are defined indipendently from the geometry and fixed in time, meaning that the body can move or deform without requiring computationally expensive re-meshing steps.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/ibm-demo.jpg} 
+    \caption{Conceptual example of a complex component (centrifugal impeller) immersed in the Cartesian grid. Note that the domain is clipped for visual clarity.}
+    \label{fig:ibm-demo}
+\end{figure}
+
+\subsection{Geometry representation}
+In order to use the IBM there is the need of numerically describe the immersed geometry. The STereoLithograpy (STL) file format is an industry standard for the representation of 3D objects. It describes an unstructured triangulated surface by the unit normal and vertices. However, since the solver operates on a structured Cartesian grid, a mapping strategy is required to trasfer the geometrical information from the imported surface to the grid. The standard approach to perform such transfer is through the generation of a Signed Distance Field (SDF).
+
+The SDF is a scalar field, defined for every grid node, representing the shorter distance to the immersed boundary. Furthermore, a sign is attributed to distinguish between the fluid (positive SDF) and the solid (negative SDF) domains. This approach is particularly efficient for several reasons: it	directly provide the wall distance information at each node, necessary for the wall modeling; being a continuous field it allows for a sub-grid resolution of the geometry and a accurate determination of the interface position between nodes; it also simplify the calculation of the local wall-normal direction, from the SDF gradient.
+
 
 \backmatter
 
