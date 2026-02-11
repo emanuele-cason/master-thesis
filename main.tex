@@ -1231,9 +1231,9 @@ dudtrk_ad = dudt_s + dudtd_xy_s + dudtd_z_s
 \section{Immersed Boundary Method}
 The adoption of the Immersed Boundary Method (IBM) is primarily driven by the necessity to overcome the limitations and computational costs associated with traditional body-fitted grids. 
 
-Specifically, the conventional approach employs structured or unstructured grids thats conform to the geometry. The mesh generation requires to define a curvilinear coordinate system for the governing equations, aligned with the grid or to incorporate the information regarding the grid in the discretization \cite{ibm-mittal-iaccarino}. Such operations require complex and computationally demanding algorithms that can result in poor quality discretizations (skewed elements for instance), potentially compromising numerical stability. The variability of the considered geometry and the resulting mesh, makes the problem of storing and accessing the data related to each element non-optimal in terms of performance and non-straitforward in its implementation. Furthermore, in the presence of moving boundaries, the solver requires a continuous re-meshing.
+Specifically, the conventional approach employs structured or unstructured grids that conform to the geometry. The mesh generation requires defining a curvilinear coordinate system for the governing equations, aligned with the grid or to incorporate the information regarding the grid in the discretization \cite{ibm-mittal-iaccarino}. Such operations require complex and computationally demanding algorithms that can result in poor quality discretizations (skewed elements, for instance), potentially compromising numerical stability. The variability of the considered geometry and the resulting mesh, makes the problem of storing and accessing the data related to each element non-optimal in terms of performance and non-straightforward in its implementation. Furthermore, in the presence of moving boundaries, the solver requires a continuous re-meshing.
 
-The most significant advantage of the IBM lies in the simplification of the grid generation phase. The IBM employs structured Cartesian grids, facilitating the implementation of efficient iterative solvers and simplyfing parallelization. Such grids are defined indipendently from the geometry and fixed in time, meaning that the body can move or deform without requiring computationally expensive re-meshing steps.
+The most significant advantage of the IBM lies in the simplification of the grid generation phase. The IBM employs structured Cartesian grids, facilitating the implementation of efficient iterative solvers and simplifying parallelization. Such grids are defined independently from the geometry and fixed in time, meaning that the body can move or deform without requiring computationally expensive re-meshing steps.
 
 \begin{figure}[htbp]
     \centering
@@ -1243,9 +1243,54 @@ The most significant advantage of the IBM lies in the simplification of the grid
 \end{figure}
 
 \subsection{Geometry representation}
-In order to use the IBM there is the need of numerically describe the immersed geometry. The STereoLithograpy (STL) file format is an industry standard for the representation of 3D objects. It describes an unstructured triangulated surface by the unit normal and vertices. However, since the solver operates on a structured Cartesian grid, a mapping strategy is required to trasfer the geometrical information from the imported surface to the grid. The standard approach to perform such transfer is through the generation of a Signed Distance Field (SDF).
+In order to use the IBM there is the need to numerically describe the immersed geometry. The STereoLithography (STL) file format is an industry standard for the representation of 3D objects. It describes an unstructured triangulated surface by the unit normal and vertices. However, since the solver operates on a structured Cartesian grid, a mapping strategy is required to transfer the geometrical information from the imported surface to the grid. The standard approach to perform such transfer is through the generation of a Signed Distance Field (SDF).
 
-The SDF is a scalar field, defined for every grid node, representing the shorter distance to the immersed boundary. Furthermore, a sign is attributed to distinguish between the fluid (positive SDF) and the solid (negative SDF) domains. This approach is particularly efficient for several reasons: it	directly provide the wall distance information at each node, necessary for the wall modeling; being a continuous field it allows for a sub-grid resolution of the geometry and a accurate determination of the interface position between nodes; it also simplify the calculation of the local wall-normal direction, from the SDF gradient.
+The SDF is a scalar field, defined for every grid node, representing the shortest distance to the immersed boundary. Furthermore, a sign is attributed to distinguish between the fluid (positive SDF) and the solid (negative SDF) domains. This approach is particularly efficient for several reasons: it directly provides the wall distance information at each node, which is necessary for the wall modeling; being a continuous field, it allows for a sub-grid resolution of the geometry and an accurate determination of the interface position between nodes; it also simplifies the calculation of the local wall-normal direction, from the SDF gradient.
+
+Despite these advantages, the computation of the SDF is a non-trivial operation. The evaluation of the exact distance between the grid nodes and the unstructured surface mesh can be computationally expensive and time-consuming, especially when dealing with complex geometries and high-resolution grids. The initial phase of the research relied on a parallelized code based on a direct search algorithm. However, to overcome the performance limitations of this approach, a new dedicated pre-processing software has been developed in the context of this work. This tool features a Graphical User Interface (GUI) to assist the user in the setup phase and implements optimized algorithms to efficiently generate the distance field. The standard generation approach and the proposed optimized process will be discussed in detail in the following sections.
+
+\subsubsection{Direct search algorithm}
+The first strategy adopted for the SDF evaluation was based on a direct evaluation of the geometric distance and sign for each point of the grid. Its workflow can be briefly summarized as follows:
+\begin{enumerate}
+	\item \textbf{Domain decomposition:} The computational domain is divided into slices, each one assigned to an MPI process.
+	\item \textbf{Distance calculation:} The algorithm iterates over every point of the staggered grid. For each one, a loop is performed over all the triangles of the STL object to calculate the distance, as shown in Figure \ref{fig:direct-search}. The minimum value is stored.
+	\item \textbf{Sign determination:} To determine if each point is inside or outside the body and the corresponding sign of the SDF, a ray is cast from the grid node towards an internal reference point (the centroid in this case). The sign is computed based on the even or odd number of intersections with the geometry surface.
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/direct-search-impeller.jpg} 
+    \caption{Direct search approach schematization.}
+    \label{fig:direct-search}
+\end{figure}
+
+While this approach is intuitive and straightforward, it suffers from scalability issues. The computational load of the algorithm in fact, is proportional to $O(N_{grid} \times N_{triangles})$. In order to implement a more efficient search algorithm, and introduce a visual interface for geometry positioning and scaling inside the computational domain, a dedicated pre-processing software was developed.
+
+\subsubsection{Optimized pre-processing tool}
+The pre-processor was developed in Python, implementing the Open3D library for high-performance geometric computations, PyQt5 for the Graphical User Interface and PyVista for the real-time 3D window rendering.
+
+The operational workflow of the developed tool can be divided into four main stages:
+\begin{enumerate}
+	\item \textbf{Project import:} At first the interface allows for the project folder selection, inside of which the 3D object STL file and the simulation and grid input parameters NML file are automatically identified and loaded. The domain bounding box and the 3D geometry are then visually rendered in the right window and they can be inspected using interactive 3D navigation.
+	\item \textbf{Immersed geometry positioning:} A dedicated left panel was introduced to allow for the scaling, translation and rotation of the immersed geometry and to activate/deactivate the visualization of the staggered grid nodes on the 3D view.
+	\item \textbf{Ray-casting:} Once the immersed geometry is positioned as desired, it is possible to proceed with the SDF computation. This operation is performed by the function \texttt{compute\_signed\_distance()} provided by the \texttt{RaycastingScene} class in Open3D. As detailed in the official documentation \cite{open3D-doc}, this module employs the Intel Embree library, which in turn relies on the Bounding Volume Hierarchy (BVH) approach \cite{embree-doc}.
+	
+	The BVH approach effectively optimizes the search pattern, organizing the geometry into a tree-based structure of nested bounding volumes. During the distance query (or ray-casting) the algorithm checks if the parent volumes (represented in green in Figure \ref{fig:ray-casting-bvh}) are intersected. If they are, the search is narrowed in the sub-tree volumes (represented in red), otherwise the entire related sub-tree is directly discarded, reducing the number of required measures to $O(N_{grid} \cdot \log N_{triangles})$, as schematized.
+
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.8\textwidth]{img/ray-casting-bvh.jpg} 
+		\caption{Bounding Volume Hierarchy approach schematized.}
+		\label{fig:ray-casting-bvh}
+	\end{figure}
+
+	\item \textbf{Output files generation:} Finally, the four SDFs (one for each node type of the staggered grid) are exported in binary (BIN) format for the solver, and in Visualization Toolkit (VTK) format for post-processing and visual geometry validation. Since the generated SDFs are strictly dependent on the specific grid configuration (input NML file), a log file is created alongside them. This log contains the SHA256 hashes of each input and output file, ensuring the reproducibility, traceability, and integrity of the pre-processing stage.
+\end{enumerate}
+
+
+
+
+
 
 
 \backmatter
