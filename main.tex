@@ -1075,6 +1075,7 @@ The solution of the Poisson equation is usually the most computationally intensi
 \end{enumerate}
 
 \subsection{Finite Volume Method}
+\label{subsec:FVM}
 The previous sections described the time integration scheme and the pressure correction algorithm. To complete the description, it is necessary to define how the spatial terms of equation \eqref{eq:LES-AD} are discretized.
 
 The solver uses a standard second-order Finite Volume Method (FVM) on a structured Cartesian grid. This approach is based on the integral form of the conservation laws applied to elementary control volumes. The main advantage of this method is that it naturally ensures the conservation of mass and momentum fluxes across the control volume faces \cite{cfd-anderson}. For this reason the method is often implemented for its ability to compute flow fields which present discontinuities (for instance shocks, slip lines), namely weak solutions \cite{cfd-blazek}.
@@ -1250,7 +1251,7 @@ The SDF is a scalar field, defined for every grid node, representing the shortes
 Despite these advantages, the computation of the SDF is a non-trivial operation. The evaluation of the exact distance between the grid nodes and the unstructured surface mesh can be computationally expensive and time-consuming, especially when dealing with complex geometries and high-resolution grids. The initial phase of the research relied on a parallelized code based on a direct search algorithm. However, to overcome the performance limitations of this approach, a new dedicated pre-processing software has been developed in the context of this work. This tool features a Graphical User Interface (GUI) to assist the user in the setup phase and implements optimized algorithms to efficiently generate the distance field. The standard generation approach and the proposed optimized process will be discussed in detail in the following sections.
 
 \subsubsection{Direct search algorithm}
-The first strategy adopted for the SDF evaluation was based on a direct evaluation of the geometric distance and sign for each point of the grid. Its workflow can be briefly summarized as follows:
+The first strategy adopted for the SDF evaluation was based on a Fortran code to directly evaluate the geometric distance and sign for each point of the grid. Its workflow can be briefly summarized as follows:
 \begin{enumerate}
 	\item \textbf{Domain decomposition:} The computational domain is divided into slices, each one assigned to an MPI process.
 	\item \textbf{Distance calculation:} The algorithm iterates over every point of the staggered grid. For each one, a loop is performed over all the triangles of the STL object to calculate the distance, as shown in Figure \ref{fig:direct-search}. The minimum value is stored.
@@ -1271,7 +1272,7 @@ The pre-processor was developed in Python, implementing the Open3D library for h
 
 The operational workflow of the developed tool can be divided into four main stages:
 \begin{enumerate}
-	\item \textbf{Project import:} At first the interface allows for the project folder selection, inside of which the 3D object STL file and the simulation and grid input parameters NML file are automatically identified and loaded. The domain bounding box and the 3D geometry are then visually rendered in the right window and they can be inspected using interactive 3D navigation.
+	\item \textbf{Project import:} At first the interface, depicted in Figure \ref{fig:sdf-generator}, allows for the project folder selection, inside of which the 3D object STL file and the simulation and grid input parameters NML file are automatically identified and loaded. The domain bounding box and the 3D geometry are then visually rendered in the right window and they can be inspected using interactive 3D navigation.
 	\item \textbf{Immersed geometry positioning:} A dedicated left panel was introduced to allow for the scaling, translation and rotation of the immersed geometry and to activate/deactivate the visualization of the staggered grid nodes on the 3D view.
 	\item \textbf{Ray-casting:} Once the immersed geometry is positioned as desired, it is possible to proceed with the SDF computation. This operation is performed by the function \texttt{compute\_signed\_distance()} provided by the \texttt{RaycastingScene} class in Open3D. As detailed in the official documentation \cite{open3D-doc}, this module employs the Intel Embree library, which in turn relies on the Bounding Volume Hierarchy (BVH) approach \cite{embree-doc}.
 	
@@ -1287,10 +1288,19 @@ The operational workflow of the developed tool can be divided into four main sta
 	\item \textbf{Output files generation:} Finally, the four SDFs (one for each node type of the staggered grid) are exported in binary (BIN) format for the solver, and in Visualization Toolkit (VTK) format for post-processing and visual geometry validation. Since the generated SDFs are strictly dependent on the specific grid configuration (input NML file), a log file is created alongside them. This log contains the SHA256 hashes of each input and output file, ensuring the reproducibility, traceability, and integrity of the pre-processing stage.
 \end{enumerate}
 
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{img/sdf-generator.png} 
+	\caption{Graphical User Interface of the developed SDF generator.}
+	\label{fig:sdf-generator}
+\end{figure}
 
-
-
-
+\subsection{Immersed boundary forcing}
+As introduced above, the IBM consists on the immersion of the generic geometry in a fixed Cartesian grid. The approach relies on the resolution of the entire domain, without the need of excluding the geometry from it. The immersed body presence instead, have to be enforced on the flow field by introducing some sort of modification, or forcing, in the governing equations. This can be done in two different ways \cite{ibm-mittal-iaccarino}:
+\begin{itemize}
+	\item \textbf{Continuous forcing:} The continuous forcing approach is based on the introduction of a forcing function in the continuous governing equations \eqref{eq:LES-AD} before their discretization. This is particularly useful for elastic boundary cases, with possible applications for example in biological and multiphase flows. On the other hand, the introduction of parameters for boundary description can have implications in terms of numerical stability and the smoothing of the forcing function results in a not sharp interface representation.
+	\item \textbf{Discrete forcing:} With the discrete forcing approach, the equations \eqref{eq:LES-AD} are first discretized on the Cartesian grid, as already discussed in Section \ref{subsec:FVM}, and the discretization itself is adjusted near the walls to take into account the body presence. This direct control over the discretized equations allows for a better control also for numerical stability and properties conservation of the solver. Moreover a sharper representation of the interfaces can be obtained, and this is particularly relevant, especially at high Reynolds numbers.
+\end{itemize}
 
 
 \backmatter
