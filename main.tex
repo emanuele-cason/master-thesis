@@ -752,7 +752,7 @@ The large-scale structures, often referred to as "eddies", contain the majority 
 This strategy offers significant advantages over RANS approaches. Since the large-scale unsteady motions are resolved directly rather than averaged, LES is capable of capturing transient phenomena and flow instabilities, which are critical in aerodynamic flows involving separation or bluff bodies. The arbitrary aspects are confined only to the small scales, making the simulation less dependent on model calibration compared to RANS, where the entire turbulent spectrum is modeled.
 
 % Disadvantages
-However, these advantages come with a substantial computational cost. In terms of grid resolution requirements, LES places itself in an intermediate position between DNS and RANS, only requiring the resolution of the structures down to the cut-off width $\Delta$. Consequently, the number of degrees of freedom is significantly lower than that of DNS, and substantially higher than RANS, where the mesh is only required to resolve the mean flow gradients. This requirement becomes particularly critical in wall-bounded flows, where the physical size of the energy-carrying eddies decreases proportionally to the distance from the wall \cite{turbulent-flows}. In the so-called Wall-Resolved LES (WR-LES), the need to resolve these inner boundary layer structures leads to a computational cost that scales significantly with the Reynolds number ($Re^{13/7}$) \cite{wrles-re-chapman} \cite{wrles-re-choi2012}, with possible prohibitive costs. To overcome this limitation and apply LES to high-Reynolds number flows of engineering interest, Wall-Modeled LES (WM-LES) approaches are adopted to bypass the strict resolution requirements of the near-wall region.
+However, these advantages come with a substantial computational cost. In terms of grid resolution requirements, LES places itself in an intermediate position between DNS and RANS, only requiring the resolution of the structures down to the cut-off width $\Delta$. Consequently, the number of degrees of freedom is significantly lower than that of DNS, and substantially higher than RANS, where the mesh is only required to resolve the mean flow gradients. This requirement becomes particularly critical in wall-bounded flows, where the physical size of the energy-carrying eddies decreases proportionally to the distance from the wall \cite{turbulent-flows}. In the so-called Wall-Resolved LES (WR-LES), the need to resolve these inner boundary layer structures leads to a computational cost that scales significantly with the Reynolds number ($Re^{13/7}$) \cite{wrles-re-chapman} \cite{wrles-re-choi2012}, with possible prohibitive costs. To overcome this limitation and apply LES to high-Reynolds number flows of engineering interest, Wall-Modeled LES (WM-LES) approaches are adopted to bypass the strict resolution requirements of the near wall region.
 
 % Postpone discussion
 Considering the central role of this methodology in the present work, and specifically the application of Wall-Modeled LES, this topic will be addressed in detail in the following chapter.
@@ -823,6 +823,7 @@ It is important to observe that a filter satisfying these properties differs sub
 This implies that applying the filter twice produces a result different from a single application and the filtered fluctuation is not necessarily zero.
 
 \subsection{Explicit and implicit filtering}
+\label{sec:filtering}
 
 It is important to distinguish between explicit and implicit filtering.
 
@@ -938,6 +939,7 @@ While the model satisfies some useful properties, like its independence on coord
 \end{enumerate}
 
 \subsubsection{WALE model}
+\label{sec:WALE}
 
 The WALE model addresses the limitations of Smagorinsky one, while maintaining its advantageous properties of independence of coordinate transformations and grid topology choice.
 
@@ -974,7 +976,7 @@ At this point some corrections are implemented to ensure the correct  $O(y^3)$ n
 \chapter{Numerical framework}
 
 \section{CaNS solver}
-The numerical framework used is based on \textit{CaNS (Canonical Navier-Stokes)}, an open-source solver originally developed by Costa \cite{cans-costa} for massively parallel Direct Numerical Simulations (DNS) of canonical flows. The baseline code provides a highly efficient architecture for solving the incompressible Navier-Stokes equations on structured Cartesian grids. However, to address the high Reynolds number flows and complex geometries characterizing the present research, the original solver required specific adaptations. Consequently, the code was modified to operate as a Wall-Modeled Large Eddy Simulation (WM-LES) solver coupled with an Immersed Boundary Method (IBM).
+The numerical framework used is based on \textit{CaNS (Canonical Navier-Stokes)}, an open-source solver originally developed by Costa \cite{cans-costa} for massively parallel Direct Numerical Simulations (DNS) of canonical flows. The baseline code provides a highly efficient architecture for solving the incompressible Navier-Stokes equations on structured Cartesian grids. However, to address the high Reynolds number flows and complex geometries characterizing the present research, the original solver required specific adaptations. Consequently, the code was modified to operate as a Wall-Modeled Large Eddy Simulation (WM-LES) solver, utilizing implicit filtering and the WALE sub-grid scale model (introduced respectively in Sections \ref{sec:filtering} and \ref{sec:WALE}), coupled with an Immersed Boundary Method (IBM).
 
 The algorithm solves the governing filtered Navier-Stokes equations presented in equation \eqref{eq:les-mom-equation} with unit density. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective (or advective) and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{\widetilde{u}})$:
 \begin{equation}
@@ -1281,7 +1283,7 @@ The operational workflow of the developed tool can be divided into four main sta
 	\begin{figure}[htbp]
 		\centering
 		\includegraphics[width=0.8\textwidth]{img/ray-casting-bvh.jpg} 
-		\caption{Bounding Volume Hierarchy approach schematized.}
+		\caption{Bounding Volume Hierarchy approach schematization.}
 		\label{fig:ray-casting-bvh}
 	\end{figure}
 
@@ -1296,12 +1298,19 @@ The operational workflow of the developed tool can be divided into four main sta
 \end{figure}
 
 \subsection{Immersed boundary forcing}
-As introduced above, the IBM consists on the immersion of the generic geometry in a fixed Cartesian grid. The approach relies on the resolution of the entire domain, without the need of excluding the geometry from it. The immersed body presence instead, have to be enforced on the flow field by introducing some sort of modification, or forcing, in the governing equations. This can be done in two different ways \cite{ibm-mittal-iaccarino}:
+As introduced above, the IBM consists of the immersion of the generic geometry in a fixed Cartesian grid. The approach relies on the resolution of the entire domain, without the need of excluding the geometry from it. The immersed body presence, instead, has to be enforced on the flow field by introducing some sort of modification, or forcing, in the governing equations. This can be done in two different ways \cite{ibm-mittal-iaccarino}:
 \begin{itemize}
 	\item \textbf{Continuous forcing:} The continuous forcing approach is based on the introduction of a forcing function in the continuous governing equations \eqref{eq:LES-AD} before their discretization. This is particularly useful for elastic boundary cases, with possible applications for example in biological and multiphase flows. On the other hand, the introduction of parameters for boundary description can have implications in terms of numerical stability and the smoothing of the forcing function results in a not sharp interface representation.
-	\item \textbf{Discrete forcing:} With the discrete forcing approach, the equations \eqref{eq:LES-AD} are first discretized on the Cartesian grid, as already discussed in Section \ref{subsec:FVM}, and the discretization itself is adjusted near the walls to take into account the body presence. This direct control over the discretized equations allows for a better control also for numerical stability and properties conservation of the solver. Moreover a sharper representation of the interfaces can be obtained, and this is particularly relevant, especially at high Reynolds numbers.
+	\item \textbf{Discrete forcing:} With the discrete forcing approach, the equations \eqref{eq:LES-AD} are first discretized on the Cartesian grid, as already discussed in Section \ref{subsec:FVM}, and the discretization itself is adjusted near the walls to take into account the body presence. This direct control over the discretized equations allows for a better control also of numerical stability and properties conservation of the solver. Moreover, a sharper representation of the interfaces can be obtained, and this is particularly relevant, especially at high Reynolds numbers.
 \end{itemize}
 
+Following the classification above, the present code adopts a discrete forcing approach. The interaction between the fluid and the solid body is handled through a two-step procedure involving the solid nodes and the fluid-solid interface:
+\begin{enumerate}
+	\item \textbf{Solid nodes:} The velocity field in the solid domain (SDF $\leq$ 0) is set to zero. This is done at each sub-step of the Runge-Kutta time integration, before the start of the pressure-correction update.
+	\item \textbf{Interface flux correction:} Since the convective/viscous term ($\mathcal{AD}$) is computed in the entire domain without taking into account the effect of the wall presence, it is necessary to correct/update the solution in the fluid (SDF > 0) near wall region. This requires, first, choosing a criterion to define whether each control volume belongs to such a region; then for each interface control volume the velocity field is sampled, at a specific distance and direction with respect to the wall; the wall model computes the local wall stress; and finally the viscous term calculated by the solver is substituted in the momentum balance by the updated viscous term, accounting for the local wall stress.
+\end{enumerate}
+
+While the first step is trivial in its implementation, for the interface flux correction multiple criteria and approaches can be used, with different levels of accuracy, complexity and performance.
 
 \backmatter
 
