@@ -40,6 +40,8 @@
 \definecolor{md-function}{RGB}{156,39,176}
 \definecolor{md-operator}{RGB}{180, 0, 180}
 
+\captionsetup[subfigure]{justification=centering}
+
 \newcommand{\mathbbcal}[1]{
   \textpdfrender{
     TextRenderingMode=Stroke,
@@ -721,7 +723,7 @@ First-order turbulence closures can be also classified by the number of governin
 	\item Two-equation models such as $k-\mathcal{E}$, $k-\omega$ and their blended implementations like Shear Stress Transfer (SST) are the most widely employed and for their importance will be further analyzed below.
 \end{itemize}
 
-\subsubsection{Model \boldmath$k - \mathcal{E}$} The $k - \mathcal{E}$ model is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near wall behavior \cite{cfd-blazek}.
+\subsubsection{Model \boldmath$k - \mathcal{E}$} The $k - \mathcal{E}$ model is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near-wall behavior \cite{cfd-blazek}.
 \begin{itemize}
 	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y+ \leq 1$) in order to stay valid and resolve the viscous sub-layer.
 	\item By contrast, high Reynolds number turbulence models don't need damping functions, they are less stringent in term of grid resolution (first node inside $10 \leq y+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
@@ -752,7 +754,7 @@ The large-scale structures, often referred to as "eddies", contain the majority 
 This strategy offers significant advantages over RANS approaches. Since the large-scale unsteady motions are resolved directly rather than averaged, LES is capable of capturing transient phenomena and flow instabilities, which are critical in aerodynamic flows involving separation or bluff bodies. The arbitrary aspects are confined only to the small scales, making the simulation less dependent on model calibration compared to RANS, where the entire turbulent spectrum is modeled.
 
 % Disadvantages
-However, these advantages come with a substantial computational cost. In terms of grid resolution requirements, LES places itself in an intermediate position between DNS and RANS, only requiring the resolution of the structures down to the cut-off width $\Delta$. Consequently, the number of degrees of freedom is significantly lower than that of DNS, and substantially higher than RANS, where the mesh is only required to resolve the mean flow gradients. This requirement becomes particularly critical in wall-bounded flows, where the physical size of the energy-carrying eddies decreases proportionally to the distance from the wall \cite{turbulent-flows}. In the so-called Wall-Resolved LES (WR-LES), the need to resolve these inner boundary layer structures leads to a computational cost that scales significantly with the Reynolds number ($Re^{13/7}$) \cite{wrles-re-chapman} \cite{wrles-re-choi2012}, with possible prohibitive costs. To overcome this limitation and apply LES to high-Reynolds number flows of engineering interest, Wall-Modeled LES (WM-LES) approaches are adopted to bypass the strict resolution requirements of the near wall region.
+However, these advantages come with a substantial computational cost. In terms of grid resolution requirements, LES places itself in an intermediate position between DNS and RANS, only requiring the resolution of the structures down to the cut-off width $\Delta$. Consequently, the number of degrees of freedom is significantly lower than that of DNS, and substantially higher than RANS, where the mesh is only required to resolve the mean flow gradients. This requirement becomes particularly critical in wall-bounded flows, where the physical size of the energy-carrying eddies decreases proportionally to the distance from the wall \cite{turbulent-flows}. In the so-called Wall-Resolved LES (WR-LES), the need to resolve these inner boundary layer structures leads to a computational cost that scales significantly with the Reynolds number ($Re^{13/7}$) \cite{wrles-re-chapman} \cite{wrles-re-choi2012}, with possible prohibitive costs. To overcome this limitation and apply LES to high-Reynolds number flows of engineering interest, Wall-Modeled LES (WM-LES) approaches are adopted to bypass the strict resolution requirements of the near-wall region.
 
 % Postpone discussion
 Considering the central role of this methodology in the present work, and specifically the application of Wall-Modeled LES, this topic will be addressed in detail in the following chapter.
@@ -935,7 +937,7 @@ While the model satisfies some useful properties, like its independence on coord
 
 	\item \textbf{Inadequacy for pure shear and transitional flows: } In the case of pure shear flows, the large values of the $|\widetilde{e}_{ij}|$ invariant causes an overestimation of the energy to be virtually dissipated, preventing the growth of instabilities and consequently failing to reproduce the laminar-to-turbulent transition.
 
-	\item \textbf{Incorrect near wall behavior:} By construction, the Smagorinsky formulation yields a non-zero eddy viscosity $\nu_t$ whenever a velocity gradient exists. However, turbulent fluctuations are naturally damped near solid boundaries, implying that $\nu_t$ should disappear at the wall. A common approach to correct this behavior is the use of Van Driest damping functions. While this approach can improve the results, this is an ad hoc modification that depends on the distance to the wall ($y$), making it difficult to implement for complex geometries. Furthermore, this damping leads to an eddy-viscosity scaling of $O(y^2)$, which is inconsistent with the correct theoretical behavior of $O(y^3)$ \cite{wale}.
+	\item \textbf{Incorrect near-wall behavior:} By construction, the Smagorinsky formulation yields a non-zero eddy viscosity $\nu_t$ whenever a velocity gradient exists. However, turbulent fluctuations are naturally damped near solid boundaries, implying that $\nu_t$ should disappear at the wall. A common approach to correct this behavior is the use of Van Driest damping functions. While this approach can improve the results, this is an ad hoc modification that depends on the distance to the wall ($y$), making it difficult to implement for complex geometries. Furthermore, this damping leads to an eddy-viscosity scaling of $O(y^2)$, which is inconsistent with the correct theoretical behavior of $O(y^3)$ \cite{wale}.
 \end{enumerate}
 
 \subsubsection{WALE model}
@@ -967,7 +969,7 @@ In which the participating components are:
 \end{itemize}
 The formulated invariant \eqref{eq:wale-invariant}, is capable of detecting turbulent structures dominated by either strain, rotation, or both. Moreover, in the case of pure shear (e.g., laminar Poiseuille flow), the strain and rotation magnitudes balance each other ($\widetilde{e}^{\,2} \approx \widetilde{\omega}^{\,2}$), causing the invariant to vanish. This property ensures that the sub-grid dissipation is naturally zero in laminar wall-bounded regions, allowing the development of instabilities and thus enabling the correct prediction of the laminar-to-turbulent transition.
 
-At this point some corrections are implemented to ensure the correct  $O(y^3)$ near wall scaling, dimensional coherency and to avoid numerical instabilities related to the cancellation of the denominator. Finally, the expression for the WALE model is the following:
+At this point some corrections are implemented to ensure the correct  $O(y^3)$ near-wall scaling, dimensional coherency and to avoid numerical instabilities related to the cancellation of the denominator. Finally, the expression for the WALE model is the following:
 \begin{equation}
 	\nu_R = (C_W \Delta_F)^2 \, \frac{(\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,3/2}}{(\widetilde{e}_{ij} \, \widetilde{e}_{ij})^{\, 5/2} + (\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,5/4}}
 	\label{eq:wale_viscosity}
@@ -1307,10 +1309,39 @@ As introduced above, the IBM consists of the immersion of the generic geometry i
 Following the classification above, the present code adopts a discrete forcing approach. The interaction between the fluid and the solid body is handled through a two-step procedure involving the solid nodes and the fluid-solid interface:
 \begin{enumerate}
 	\item \textbf{Solid nodes:} The velocity field in the solid domain (SDF $\leq$ 0) is set to zero. This is done at each sub-step of the Runge-Kutta time integration, before the start of the pressure-correction update.
-	\item \textbf{Interface flux correction:} Since the convective/viscous term ($\mathcal{AD}$) is computed in the entire domain without taking into account the effect of the wall presence, it is necessary to correct/update the solution in the fluid (SDF > 0) near wall region. This requires, first, choosing a criterion to define whether each control volume belongs to such a region; then for each interface control volume the velocity field is sampled, at a specific distance and direction with respect to the wall; the wall model computes the local wall stress; and finally the viscous term calculated by the solver is substituted in the momentum balance by the updated viscous term, accounting for the local wall stress.
+	\item \textbf{Interface flux correction:} Since the convective/viscous term ($\mathcal{AD}$) is computed in the entire domain without taking into account the effect of the wall presence, it is necessary to correct/update the solution in the fluid (SDF > 0) near-wall region. This requires, first, choosing a criterion to define whether each control volume belongs to such a region; then for each interface control volume the velocity field is sampled, at a specific distance and direction with respect to the wall; the wall model computes the local wall stress; and finally the viscous term calculated by the solver is substituted in the momentum balance by the updated viscous term, accounting for the local wall stress.
 \end{enumerate}
 
-While the first step is trivial in its implementation, for the interface flux correction multiple criteria and approaches can be used, with different levels of accuracy, complexity and performance.
+While the first step is trivial in its implementation, for the interface flux correction multiple criteria and approaches can be used, with different levels of accuracy, complexity and performance. 
+
+The method originally implemented in this framework, was based on a approximated face-based check for wall intersection and stress computation. In the current work, a more accurate approach was implemented and tested, based instead on the calculation of the exact intersection area between each control volume and the geometry (wet area or cut-cell method).
+
+\subsubsection{Face-based staircase forcing}
+The first approach employed is represented in Figure \ref{fig:ibm-forcing-staircase} in 2D. At first a near-wall layer of control volumes is identified: this is done by defining, for each node, a distance $d$, consisting on the projection of the related cell along the local wall-normal direction. This allows to obtain a reduced subset of nodes (pruning) to be considered in the actual interface detection. For every node inside this layer, a related matching point is localized at a distance proportional to $d$, along the wall-normal direction, there the 3D external velocity field is sampled by interpolation, obtaining the $u_{MP}$ vector. To estimate the wall-stress, the wall-parallel component of the external velocity $u_{MP \, \parallel}$ is fed as an input for the wall model.
+
+At this point the local stress tensor is known at the near-wall nodes and has to be enforced. The interface is detected by checking whether any of the adjacent cells sharing a face with these nodes lie within the solid domain, which is indicated by a change in the sign of the SDF. If this condition is met, the shared cell face is considered part of the approximated interface. The stress vector acting on this face is then computed by multiplying the local stress tensor with the face area and used to update the viscous term in the momentum balance of the corresponding fluid cell. As shown in Figure \ref{fig:ibm-forcing-staircase-B}, with this approach the approximated interface assumes a staircase shape.
+
+\begin{figure}[htbp]
+	\centering
+
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/ibm-forcing-staircase-A.png}
+		\caption{Velocity sampling and wall-stress computation}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/ibm-forcing-staircase-B.png}
+		\caption{Interface detection and forcing with viscous term update}
+		\label{fig:ibm-forcing-staircase-B}
+	\end{subfigure}
+
+	\caption{Face-based staircase forcing: geometry interface (solid red line); interface-layer control volumes (filled in red), within distance $d$ (dashed red line) from the interface; wall-normal direction (dashed black line); matching point (red $\times$ marker); interpolated velocity $u_{MP}$ and its projection $u_{MP \, \parallel}$; velocity profile and stress tensor computed by the wall model (light blue); staircase detected interface (light blue line).}
+	\label{fig:ibm-forcing-staircase}
+\end{figure}
+
+\subsubsection{Cut-cell forcing}
 
 \backmatter
 
