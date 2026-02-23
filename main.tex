@@ -1337,11 +1337,60 @@ At this point the local stress tensor is known at the near-wall nodes and has to
 		\label{fig:ibm-forcing-staircase-B}
 	\end{subfigure}
 
-	\caption{Face-based staircase forcing: geometry interface (solid red line); interface-layer control volumes (filled in red), within distance $d$ (dashed red line) from the interface; wall-normal direction (dashed black line); matching point (red $\times$ marker); interpolated velocity $u_{MP}$ and its projection $u_{MP \, \parallel}$; velocity profile and stress tensor computed by the wall model (light blue); staircase detected interface (light blue line).}
+	\caption{Face-based staircase forcing: geometry interface (solid red line); interface-layer control volumes (filled in red), within distance $d$ (dashed red line) from the interface; wall-normal direction (dot-dashed black line); matching point (red $\times$ marker); interpolated velocity $u_{MP}$ and its projection $u_{MP \, \parallel}$; velocity profile and stress vector computed by the wall model (light blue); staircase detected interface (dashed black line).}
 	\label{fig:ibm-forcing-staircase}
 \end{figure}
 
 \subsubsection{Cut-cell forcing}
+To improve the interface discretization, and obtain higher accuracy during the application of the sampled wall stress, a cut-cell forcing approach was developed. The idea is to pre-compute, for every control volume of the domain, the scalar value of the interface area intersected with the cell. Although this operation might appear computationally expensive, its optimized implementation proved to be almost negligible in term of computational time. This efficiency can be explained at least by two aspects: the algorithm performs an initial pruning of the domain, discarding all the control volumes located too far from the interface. The cells with a non-null wetted area represent only a small percentage of the total domain. The second aspect is that the intersected area is computed only once at the beginning of the simulation and then stored. Since the considered case studies involve static geometries, there is no need to recompute the wetted area at each time step.
+
+The algorithm for the wetted area computation locally represents the intersected wall as a plane, with a known normal direction and distance from the cell center (obtained from the SDF). Using an analytical approach, the exact positions of each intersection point along the cell edges are determined (they can range from 3 to 6). This procedure allows computing the area of the resulting polygon, as shown in Figure \ref{fig:ibm-forcing-wet-area}. The improved accuracy of the interface representation compared to the previous method (Figure \ref{fig:ibm-forcing-staircase-B}) can be observed in Figure \ref{fig:ibm-forcing-cut-cell-B}, where the exact and the approximated boundaries are almost indistinguishable due to their near-perfect overlap.
+
+\begin{figure}[htbp]
+	\centering
+
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/ibm-forcing-wet-area-A.jpg}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/ibm-forcing-wet-area-B.jpg}
+	\end{subfigure}
+
+	\caption{Cell-interface intersection polygons.}
+	\label{fig:ibm-forcing-wet-area}
+\end{figure}
+
+According to this new definition, the interface cells are no longer limited to the fluid domain, but they can be either solid or fluid, as shown in Figure \ref{fig:ibm-forcing-cut-cell}. The sampling procedure along the local normal direction remains unchanged, but it is now performed for both solid and fluid control volumes, resulting in the wall-stress tensor in global coordinates. Unlike the previous approach, it is now used the exact wetted area to evaluate the interface forces. Specifically, the friction force applied to the fluid is computed by a matrix multiplication between the wall-stress tensor in global coordinates, and the local normal vector. The resulting shear stress vector is then scaled by the exact intersected area evaluated for the specific cell.
+
+As previously explained, also solid interface cells are now included in the friction force computation. However, since these control volumes lie within the solid body, the computed forcing terms cannot be applied directly to them. To overcome this issue, a flux redistribution strategy towards the surrounding fluid nodes is introduced. Specifically, the adjacent fluid cells (i.e., those sharing a face with the considered solid node) are selected as target control volumes for the redistribution, as illustrated in Figure \ref{fig:ibm-forcing-cut-cell-B}. To ensure that this procedure reflects the local flow physics as accurately as possible, a weighted approach was designed. The weighting factors are assigned according to two main criteria:
+
+\begin{itemize}
+\item \textbf{Distance from the wall}: higher priority is given to the fluid nodes located closer to the actual solid boundary. This requirement is necessary to maintain the physical proximity of the wall effect, preventing the boundary condition from being unphysically applied further away into the bulk of the fluid flow.
+\item \textbf{Directional alignment}: this is evaluated as the angle between the local surface normal (originating from the solid node) and the position vector connecting the solid node center to the target fluid node center. By assigning higher weights to smaller angles, this criterion prevents an artificial spatial diffusion (or "smearing") of the local wall-stress contribution along the tangential direction of the interface.
+\end{itemize}
+
+\begin{figure}[htbp]
+	\centering
+
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/ibm-forcing-cut-cell-A.png}
+		\caption{Velocity sampling and wall-stress computation for both solid and fluid nodes}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/ibm-forcing-cut-cell-B.png}
+		\caption{Wall-stress forcing and flux redistribution}
+		\label{fig:ibm-forcing-cut-cell-B}
+	\end{subfigure}
+
+	\caption{Cut-cell forcing: geometry interface (solid red line) and overlapped approximated interface (dashed black line); interface-layer control volumes, in the fluid (filled in red) and solid (filled in grey) domains; wall-normal direction (dot-dashed black line); matching point (red $\times$ marker); interpolated velocity $u_{MP}$ and its projection $u_{MP \, \parallel}$; velocity profile (light blue line) and stress contributions of fluid (light blue) and solid (brown) vectors computed by the wall model.}
+	\label{fig:ibm-forcing-cut-cell}
+\end{figure}
 
 \backmatter
 
