@@ -33,6 +33,8 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.8em plus 2pt minus 2pt}
 
+\setcounter{tocdepth}{3}
+
 \definecolor{md-bg}{RGB}{247,247,247}
 \definecolor{md-keyword}{RGB}{33,150,243}
 \definecolor{md-string}{RGB}{76,175,80}
@@ -293,7 +295,7 @@ In the current work, the implementation of an adaptive wall modeling approach is
 
 % Large eddy simulation for incompressible flows - an introduction (2006, Springer) - P. Sagaut
 
-Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced have mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modelling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
+Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced have mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modeling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
 
 As all mathematical models, the definition of the level of approximation have a primary importance also for fluid simulation. This choice concern various aspects of the description of the phenomena. Firstly the scale of reality considered: the reality can be described at an atomic, particle or micro- and macroscopic level. The last one is that used by classical mechanics, in particular continuum mechanics, that is the case considered in CFD.
 
@@ -356,7 +358,7 @@ By substituting in the Navier-Stokes equations \eqref{eq:NS-cons}, neglecting bo
 	\right.
 	\label{eq:rans}
 \end{equation}
-where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, and its modelling represents the closure problem of the RANS equations.
+where the term $\langle \bm{u}' \bm{u}' \rangle$ is the Reynolds stress tensor, and its modeling represents the closure problem of the RANS equations.
 
 \section{Energy cascade}
 
@@ -456,6 +458,7 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 In summary, the energy input associated with the mean velocity field (for example as a result of convection) is in part transferred from one point of the domain to another by the flux term, another part is transferred down to the inertial subrange by the production term. This transfer to smaller and smaller scales continues until the Kolmogorov scales are reached, the effects of viscosity become dominant and the energy can be dissipated as heat.
 
 \section{Wall bounded flows}
+\label{sec:wall-bounded-flows}
 
 \subsection{Inertial momentum balance}
 In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction.
@@ -513,23 +516,7 @@ The total shear stress $\tau(y)$ enclosed by brackets is composed by two contrib
 	\item \textbf{Viscous stress:} arises from the mean velocity gradients and is dominant in the immediate vicinity of the wall (inner region). It represents the molecular diffusion of momentum and is the only stress present in the laminar case.
 	\item \textbf{Turbulent stress:} derives from the correlation of velocity fluctuations and represents the momentum transfer due to turbulent mixing. It prevails in the outer region, far from the wall, and vanishes in laminar conditions.
 \end{itemize}
-% To be moved in the WM section
-% Attenzione, è una RANS quindi la viscosita nu_T è turbolenta non SGS.
-% Equation \eqref{eq:rans-tble} highlights that the mean velocity field evolution is driven by the pressure gradient and the combined effect of molecular diffusion and turbulent transport. 
 
-% As will be discussed in detail in section \ref{sec:rans}, the term $-\langle u'v' \rangle$, representing the Reynolds shear stress, introduces a closure problem, and can be modeled employing the Bousinnesq hypothesis, in equation \eqref{eq:boussinesq-model}.
-% \begin{equation}
-%     -\langle u'v' \rangle = 2 \, \nu_T \, E_{12} = \nu_T \, \frac{\partial U}{\partial y}
-%     \label{eq:tble-viscosity}
-% \end{equation}
-% By substituting relation \eqref{eq:tble-viscosity} into equation \eqref{eq:tble} and grouping the diffusive terms, the momentum equation can be rewritten on the form:
-% \begin{equation}
-%     \underbrace{\frac{\partial U}{\partial t} + U \frac{\partial U}{\partial x} + V \frac{\partial U}{\partial y}}_{\text{Inertial terms}} = 
-%     -\frac{1}{\rho} \frac{\partial P_W}{\partial x} 
-%     + \frac{\partial}{\partial y} \left[ (\nu + \nu_T) \frac{\partial U}{\partial y} \right]
-%     \label{eq:tble}
-% \end{equation}
-% The determination of $\nu_T$ is then delegated to specific turbulence models, such as the mixing length theory.
 Under the same assumptions, equation \eqref{eq:rans-wall-y} can be simplified and integrated  as:
 \begin{equation}
 	0 =
@@ -550,7 +537,9 @@ In the particular case of flow over a flat plate considered, since at the wall a
 \end{equation}
 Equation \eqref{eq:tble} represents the \textit{Inertial Momentum Balance}. The terms on the left-hand side account for the fluid inertia. These terms include both the unsteady acceleration and the spatial convection.
 Their presence indicates a non-equilibrium state: the pressure gradient and the total shear stress do not simply balance each other, and the local velocity profile is not determined uniquely by the instantaneous force balance, but depends on the flow evolution.
+
 \subsection{Equilibrium momentum balance}
+\label{sec:equilibrium-momentum-balance}
 The previous case can be further simplified considering the example of a fully developed channel flow, characterized by more restrictive assumptions. The geometry consists of two infinite flat plates placed at a distance $2h$, with the flow driven by a constant mean pressure gradient along the streamwise direction $x$. In this configuration, the statistics are assumed to be independent of the streamwise coordinate $x$ (except for the pressure), the spanwise coordinate $z$ and the time $t$:
 \begin{equation}
 	\frac{\partial}{\partial \, x} \, \langle ... \rangle = 0 \qquad \frac{\partial}{\partial \, z} \, \langle ... \rangle = 0 \qquad
@@ -773,7 +762,7 @@ Unified modeling utilizes the same velocity transport equation in the entire dom
 Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each sub-domain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define sub-domains and involves complex implementation for the coupling across interfaces.
 
 \chapter{Mathematical framework}
-The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modelling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical and numerical framework of the solver, which has been specifically customized and further developed for the purposes of this study. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, while the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) models. Furthermore, the chapter provides a description of the advanced methodologies implemented to handle high-Reynolds number flows and complex geometries, specifically focusing on the Wall-Modelling strategies and the Immersed Boundary Method (IBM).
+The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modeling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical and numerical framework of the solver, which has been specifically customized and further developed for the purposes of this study. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, while the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) models. Furthermore, the chapter provides a description of the advanced methodologies implemented to handle high-Reynolds number flows and complex geometries, specifically focusing on the Wall-Modeling strategies and the Immersed Boundary Method (IBM).
 
 \section{Filtering operation}
 Filtering is the operation that allows to mathematically separate the turbulent scales of motion. This decomposition is determined by a characteristic arbitrary cutoff width $\Delta_F$. In the spectral domain, this procedure acts as a low-pass filter: it retains the low-frequency, large-scale contributions, while the high-frequency fluctuations associated with spatial scales smaller than $\Delta_F$ are cut off to be modeled. Considering a generic field, this decomposition can be mathematically represented as:
@@ -885,15 +874,15 @@ The residual stress tensor $\tau_{ij}^R$ represents the effect of the unresolved
 
 The system consists of only 4 equations (1 continuity and 3 momentum equations), while the dependent variables to be determined are 10: the three filtered velocity components $\widetilde{u}_i$, the filtered pressure $\widetilde{p}$, and the six independent components of the residual stress tensor. Since the number of unknowns (10) exceeds the number of available equations (4), the system is mathematically unclosed. Therefore, a closure model is required to express the unknown stresses $\tau_{ij}^R$ in terms of the resolved flow variables.
 
-\subsection{Sub-Grid Scales modelling}
-The modelling of the coupling term between resolved and sub-grid scales has to be performed on the basis of the resolved scales alone. As explained by Sagaut \cite{les-sagaut} this can be done with two approaches:
+\subsection{Sub-Grid Scales modeling}
+The modeling of the coupling term between resolved and sub-grid scales has to be performed on the basis of the resolved scales alone. As explained by Sagaut \cite{les-sagaut} this can be done with two approaches:
 \begin{itemize}
-	\item \textbf{Structural modelling:} Allows for the modelling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scales structures. This is feasible when small scales shows an universal structure or a clear correlation with the structure of the resolved field.
-	\item \textbf{Functional modelling:} Consist in the modelling of the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This require an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
+	\item \textbf{Structural modeling:} Allows for the modeling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scales structures. This is feasible when small scales shows an universal structure or a clear correlation with the structure of the resolved field.
+	\item \textbf{Functional modeling:} Consist in the modeling of the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This require an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
 \end{itemize}
 
 \subsubsection{Smagorinsky model}
-As most of the strategies for functional modelling, the Smagorinsky approach models the sub-grid scale tensor $\tau_{ij}^R$, splitting it in a isotropic and a deviatoric contribution:
+As most of the strategies for functional modeling, the Smagorinsky approach models the sub-grid scale tensor $\tau_{ij}^R$, splitting it in a isotropic and a deviatoric contribution:
 \begin{equation}
 	- \, \tau_{ij}^R = - \, \frac{2}{3} \, k_R \, \delta_{ij} + 2 \, \nu_R \, \widetilde{e}_{ij}
 \end{equation}
@@ -974,6 +963,25 @@ At this point some corrections are implemented to ensure the correct  $O(y^3)$ n
 	\nu_R = (C_W \Delta_F)^2 \, \frac{(\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,3/2}}{(\widetilde{e}_{ij} \, \widetilde{e}_{ij})^{\, 5/2} + (\mathcal{S}_{ij} \, \mathcal{S}_{ij})^{\,5/4}}
 	\label{eq:wale_viscosity}
 \end{equation}
+
+\subsection{Wall modeling}
+While Sub-Grid Scale models provide the necessary closure for the unresolved turbulent structures within the bulk of the fluid domain, as seen in Section \ref{sec:wall-bounded-flows}, the treatment of solid boundaries in Large Eddy Simulations introduces further mathematical constraints. As the Reynolds number increases, the characteristic length scales of the near-wall turbulent structures (the viscous sub-layer and the buffer layer) become progressively smaller. Resolving these scales explicitly would require a grid resolution computationally prohibitive, effectively nullifying the advantages of the LES approach over DNS. 
+
+When the grid is too coarse to capture the intense velocity gradients at the wall, in order to mathematically close the governing equations at the domain boundaries, a Wall Model (WM) is introduced. The wall model acts as a bridging function, connecting the resolved fluid flow variables sampled at a certain distance from the wall (in the outer region) to the local wall shear stress, bypassing the need to numerically resolve the inner layer.
+
+\subsubsection{Reichardt equilibrium wall model}
+
+Among the various algebraic formulations available to model the near-wall velocity profile, the extended law of the wall proposed by Reichardt \cite{reichardt} was selected for this study. Unlike classical wall laws, introduced in Section \ref{sec:equilibrium-momentum-balance}, that are valid only in well-defined sub-layers of the boundary layer, the considered wall model is based on empirical data and attempts to cover the entire flow, from the viscous sub-layer to the bulk/wake region. However, it is important to remark that, despite its extended spatial validity, Reichardt's formulation remains fundamentally an equilibrium wall model, relying on the assumption of a fully developed and attached turbulent boundary layer.
+
+The continuous velocity profile is mathematically expressed by the following relationship:
+\begin{equation}
+    U^+ = \frac{1}{\kappa} \ln(1 + \kappa y^+) + C \left[ 1 - e^{-\frac{y^+}{B_1}} - \frac{y^+}{B_1} e^{-\frac{y^+}{B_2}} \right]
+    \label{eq:reichardt}
+\end{equation}
+where $\kappa$ represents the Von Kármán constant, the terms $C$, $B_1$, and $B_2$ are empirical calibration parameters that govern the shape of the velocity profile in the buffer layer and ensure the smooth transition toward the logarithmic region.
+
+% Add if NEQBL ODE model have to be introduced.
+% While providing a robust analytical framework, the application of this algebraic model in WM-LES introduces specific numerical challenges \cite{reichardt-limitations}: The accuracy of the predicted mean wall shear stress is highly sensitive to the wall-normal distance of the velocity sampling point. Furthermore, the optimal values of the model parameters ($C, \kappa, B_1, B_2$) required to minimize the prediction error are strictly dependent on the chosen sampling height. Even when these parameters are carefully calibrated to accurately predict the mean stress, the static nature of the coefficients inherently limits the model's ability to properly capture the turbulent fluctuations of the wall friction velocity.
 
 \chapter{Numerical framework}
 
@@ -1079,7 +1087,7 @@ The solution of the Poisson equation is usually the most computationally intensi
 \end{enumerate}
 
 \subsection{Finite Volume Method}
-\label{subsec:FVM}
+\label{sec:FVM}
 The previous sections described the time integration scheme and the pressure correction algorithm. To complete the description, it is necessary to define how the spatial terms of equation \eqref{eq:LES-AD} are discretized.
 
 The solver uses a standard second-order Finite Volume Method (FVM) on a structured Cartesian grid. This approach is based on the integral form of the conservation laws applied to elementary control volumes. The main advantage of this method is that it naturally ensures the conservation of mass and momentum fluxes across the control volume faces \cite{cfd-anderson}. For this reason the method is often implemented for its ability to compute flow fields which present discontinuities (for instance shocks, slip lines), namely weak solutions \cite{cfd-blazek}.
@@ -1303,7 +1311,7 @@ The operational workflow of the developed tool can be divided into four main sta
 As introduced above, the IBM consists of the immersion of the generic geometry in a fixed Cartesian grid. The approach relies on the resolution of the entire domain, without the need of excluding the geometry from it. The immersed body presence, instead, has to be enforced on the flow field by introducing some sort of modification, or forcing, in the governing equations. This can be done in two different ways \cite{ibm-mittal-iaccarino}:
 \begin{itemize}
 	\item \textbf{Continuous forcing:} The continuous forcing approach is based on the introduction of a forcing function in the continuous governing equations \eqref{eq:LES-AD} before their discretization. This is particularly useful for elastic boundary cases, with possible applications for example in biological and multiphase flows. On the other hand, the introduction of parameters for boundary description can have implications in terms of numerical stability and the smoothing of the forcing function results in a not sharp interface representation.
-	\item \textbf{Discrete forcing:} With the discrete forcing approach, the equations \eqref{eq:LES-AD} are first discretized on the Cartesian grid, as already discussed in Section \ref{subsec:FVM}, and the discretization itself is adjusted near the walls to take into account the body presence. This direct control over the discretized equations allows for a better control also of numerical stability and properties conservation of the solver. Moreover, a sharper representation of the interfaces can be obtained, and this is particularly relevant, especially at high Reynolds numbers.
+	\item \textbf{Discrete forcing:} With the discrete forcing approach, the equations \eqref{eq:LES-AD} are first discretized on the Cartesian grid, as already discussed in Section \ref{sec:FVM}, and the discretization itself is adjusted near the walls to take into account the body presence. This direct control over the discretized equations allows for a better control also of numerical stability and properties conservation of the solver. Moreover, a sharper representation of the interfaces can be obtained, and this is particularly relevant, especially at high Reynolds numbers.
 \end{itemize}
 
 Following the classification above, the present code adopts a discrete forcing approach. The interaction between the fluid and the solid body is handled through a two-step procedure involving the solid nodes and the fluid-solid interface:
@@ -1314,7 +1322,7 @@ Following the classification above, the present code adopts a discrete forcing a
 
 While the first step is trivial in its implementation, for the interface flux correction multiple criteria and approaches can be used, with different levels of accuracy, complexity and performance. 
 
-The method originally implemented in this framework, was based on a approximated face-based check for wall intersection and stress computation. In the current work, a more accurate approach was implemented and tested, based instead on the calculation of the exact intersection area between each control volume and the geometry (wet area or cut-cell method).
+The method originally implemented in this framework, was based on a approximated face-based check for wall intersection and stress computation. In the current work, a more accurate approach was implemented and tested, based instead on the calculation of the exact intersection area between each control volume and the geometry (wetted area or cut-cell method).
 
 \subsubsection{Face-based staircase forcing}
 The first approach employed is represented in Figure \ref{fig:ibm-forcing-staircase} in 2D. At first a near-wall layer of control volumes is identified: this is done by defining, for each node, a distance $d$, consisting on the projection of the related cell along the local wall-normal direction. This allows to obtain a reduced subset of nodes (pruning) to be considered in the actual interface detection. For every node inside this layer, a related matching point is localized at a distance proportional to $d$, along the wall-normal direction, there the 3D external velocity field is sampled by interpolation, obtaining the $u_{MP}$ vector. To estimate the wall-stress, the wall-parallel component of the external velocity $u_{MP \, \parallel}$ is fed as an input for the wall model.
@@ -1342,7 +1350,7 @@ At this point the local stress tensor is known at the near-wall nodes and has to
 \end{figure}
 
 \subsubsection{Cut-cell forcing}
-To improve the interface discretization, and obtain higher accuracy during the application of the sampled wall stress, a cut-cell forcing approach was developed. The idea is to pre-compute, for every control volume of the domain, the scalar value of the interface area intersected with the cell. Although this operation might appear computationally expensive, its optimized implementation proved to be almost negligible in term of computational time. This efficiency can be explained at least by two aspects: the algorithm performs an initial pruning of the domain, discarding all the control volumes located too far from the interface. The cells with a non-null wetted area represent only a small percentage of the total domain. The second aspect is that the intersected area is computed only once at the beginning of the simulation and then stored. Since the considered case studies involve static geometries, there is no need to recompute the wetted area at each time step.
+To improve the interface discretization, and obtain higher accuracy during the application of the sampled wall stress, a cut-cell forcing approach was developed. The idea is to pre-compute, for every control volume of the domain, the scalar value of the interface area intersected with the cell. Although this operation might appear computationally expensive, its optimized implementation proved to be almost negligible in term of computational time. This efficiency can be explained at least by two aspects: the algorithm performs an initial pruning of the domain, discarding all the control volumes located too far from the interface. The cells with a non-null wetted area, that can now be considered interface cells by definition, represent only a small percentage of the total domain. The second aspect is that the intersected area is computed only once at the beginning of the simulation and then stored. Since the considered case studies involve static geometries, there is no need to recompute the wetted area at each time step. Nevertheless, the code is already structured to handle geometry updates through a simple call to the \texttt{IBM\_UpdateGeometry} subroutine, thus allowing straightforward extension to moving or deforming boundaries.
 
 The algorithm for the wetted area computation locally represents the intersected wall as a plane, with a known normal direction and distance from the cell center (obtained from the SDF). Using an analytical approach, the exact positions of each intersection point along the cell edges are determined (they can range from 3 to 6). This procedure allows computing the area of the resulting polygon, as shown in Figure \ref{fig:ibm-forcing-wet-area}. The improved accuracy of the interface representation compared to the previous method (Figure \ref{fig:ibm-forcing-staircase-B}) can be observed in Figure \ref{fig:ibm-forcing-cut-cell-B}, where the exact and the approximated boundaries are almost indistinguishable due to their near-perfect overlap.
 
@@ -1371,6 +1379,8 @@ As previously explained, also solid interface cells are now included in the fric
 \item \textbf{Distance from the wall}: higher priority is given to the fluid nodes located closer to the actual solid boundary. This requirement is necessary to maintain the physical proximity of the wall effect, preventing the boundary condition from being unphysically applied further away into the bulk of the fluid flow.
 \item \textbf{Directional alignment}: this is evaluated as the angle between the local surface normal (originating from the solid node) and the position vector connecting the solid node center to the target fluid node center. By assigning higher weights to smaller angles, this criterion prevents an artificial spatial diffusion (or "smearing") of the local wall-stress contribution along the tangential direction of the interface.
 \end{itemize}
+
+At this point, the near-interface fluid control volumes collect the overall wall-stress effects. Specifically, cells in this region accumulates both their own direct boundary contribution (evaluated using their local wetted area, if intersected) and the redistributed forcing terms originating from the adjacent solid cells. This weighted aggregation is designed to be strictly conservative, ensuring that the total friction force exerted by the solid boundary on the fluid domain is rigorously preserved during the transfer process.
 
 \begin{figure}[htbp]
 	\centering
