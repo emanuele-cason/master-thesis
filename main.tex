@@ -1402,6 +1402,16 @@ At this point, the near-interface fluid control volumes collect the overall wall
 	\label{fig:ibm-forcing-cut-cell}
 \end{figure}
 
+\chapter{Result analysis}
+
+\section{Periodic hills benchmark}
+The case analyzed in this section is the flow in a channel with streamwise-periodic constrictions, commonly known as the ERCOFTAC periodic hills benchmark. In the present study, this configuration is used to assess the solver performance in the prediction of turbulent flows that exhibit complex dynamics. The benchmark is considered particularly challenging, since it involves separation and reattachment from a curved boundary, the formation of an unsteady shear layer and a large separation bubble, strong accelerations of the fluid on the convergent region of the channel, intense fluctuating pressure gradients, the turbulence recycling due to periodic boundaries and a bottom wall always far from equilibrium conditions \cite{cinnella}.
+
+For its demanding test geometry and the widely available predicted results, the benchmark is particularly useful for the assessment of meshing strategies, SGS and wall models and numerical methods. The configuration also became well established in the CFD community and chosen by several associations, workshop and projects such as ERCOFTAC (European Research Community on Flow, Turbulence and Combustion), IAHR (International Association for Hydro-Environment Engineering and Research), DESIDER (Detached Eddy Simulation for Industrial Aerodynamics), ATAAC (Advanced Turbulence Simulation for Aerodynamic Application Challenges) and more \cite{breuer} \cite{cinnella}.
+
+\subsection{Simulation setup}
+The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h=1$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h$, a spanwise width $L_y = 4.5 \, h$, and a channel height $L_z = 3.035 \, h$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the vertical direction, resulting in a domain height of $L_z = 3.135 \, h$. However this doesn't affect the channel geometry, that maintain its height of $3.035 \, h$.
+
 \backmatter
 
 \printbibliography[heading=bibintoc, title={Bibliography}]

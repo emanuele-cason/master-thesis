@@ -483,6 +483,37 @@
       \field{pages}{183\bibrangedash 200}
       \range{pages}{18}
     \endentry
+    \entry{reichardt}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=716351b23cb49784092ead7cd0330a85}{%
+           family={Reichardt},
+           familyi={R\bibinitperiod},
+           given={Hans},
+           giveni={H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley Online Library}%
+      }
+      \strng{namehash}{716351b23cb49784092ead7cd0330a85}
+      \strng{fullhash}{716351b23cb49784092ead7cd0330a85}
+      \strng{fullhashraw}{716351b23cb49784092ead7cd0330a85}
+      \strng{bibnamehash}{716351b23cb49784092ead7cd0330a85}
+      \strng{authorbibnamehash}{716351b23cb49784092ead7cd0330a85}
+      \strng{authornamehash}{716351b23cb49784092ead7cd0330a85}
+      \strng{authorfullhash}{716351b23cb49784092ead7cd0330a85}
+      \strng{authorfullhashraw}{716351b23cb49784092ead7cd0330a85}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ZAMM-Journal of Applied Mathematics and Mechanics/Zeitschrift für Angewandte Mathematik und Mechanik}
+      \field{number}{7}
+      \field{title}{Vollständige Darstellung der turbulenten Geschwindigkeitsverteilung in glatten Leitungen}
+      \field{volume}{31}
+      \field{year}{1951}
+      \field{pages}{208\bibrangedash 219}
+      \range{pages}{12}
+    \endentry
     \entry{cans-costa}{article}{}{}
       \name{author}{1}{}{%
         {{hash=07a4857f9effa6afd44b26d7abd4e66a}{%
@@ -513,6 +544,180 @@
       \field{year}{2018}
       \field{pages}{1853\bibrangedash 1862}
       \range{pages}{10}
+    \endentry
+    \entry{ibm-mittal-iaccarino}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=17ea8f19e2f7f049e668cb418d9ed141}{%
+           family={Mittal},
+           familyi={M\bibinitperiod},
+           given={Rajat},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f4fc3ea06f405e9a60f3950ebbdc575e}{%
+           family={Iaccarino},
+           familyi={I\bibinitperiod},
+           given={Gianluca},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Annual Reviews}%
+      }
+      \strng{namehash}{2aba00f731e46b3fa5eb7c39a492083b}
+      \strng{fullhash}{2aba00f731e46b3fa5eb7c39a492083b}
+      \strng{fullhashraw}{2aba00f731e46b3fa5eb7c39a492083b}
+      \strng{bibnamehash}{2aba00f731e46b3fa5eb7c39a492083b}
+      \strng{authorbibnamehash}{2aba00f731e46b3fa5eb7c39a492083b}
+      \strng{authornamehash}{2aba00f731e46b3fa5eb7c39a492083b}
+      \strng{authorfullhash}{2aba00f731e46b3fa5eb7c39a492083b}
+      \strng{authorfullhashraw}{2aba00f731e46b3fa5eb7c39a492083b}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annu. Rev. Fluid Mech.}
+      \field{number}{1}
+      \field{title}{Immersed boundary methods}
+      \field{volume}{37}
+      \field{year}{2005}
+      \field{pages}{239\bibrangedash 261}
+      \range{pages}{23}
+    \endentry
+    \entry{open3D-doc}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=583b219f408e24cb6cb070c555ef8617}{%
+           family={Open3D},
+           familyi={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{583b219f408e24cb6cb070c555ef8617}
+      \strng{fullhash}{583b219f408e24cb6cb070c555ef8617}
+      \strng{fullhashraw}{583b219f408e24cb6cb070c555ef8617}
+      \strng{bibnamehash}{583b219f408e24cb6cb070c555ef8617}
+      \strng{authorbibnamehash}{583b219f408e24cb6cb070c555ef8617}
+      \strng{authornamehash}{583b219f408e24cb6cb070c555ef8617}
+      \strng{authorfullhash}{583b219f408e24cb6cb070c555ef8617}
+      \strng{authorfullhashraw}{583b219f408e24cb6cb070c555ef8617}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{12}
+      \field{note}{Accessed: 2026-02-11}
+      \field{title}{Open3D 0.14 Release Notes}
+      \field{year}{2021}
+      \verb{urlraw}
+      \verb https://www.open3d.org/2021/12/10/open3d-014-full-of-features/
+      \endverb
+      \verb{url}
+      \verb https://www.open3d.org/2021/12/10/open3d-014-full-of-features/
+      \endverb
+    \endentry
+    \entry{embree-doc}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=ff97a9fdede09eaf6e1c8ec9f6a61dd5}{%
+           family={Intel},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \strng{fullhash}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \strng{fullhashraw}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \strng{bibnamehash}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \strng{authorbibnamehash}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \strng{authornamehash}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \strng{authorfullhash}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \strng{authorfullhashraw}{ff97a9fdede09eaf6e1c8ec9f6a61dd5}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 2026-02-11}
+      \field{title}{Intel® Embree: High Performance Ray Tracing Kernels}
+      \verb{urlraw}
+      \verb https://github.com/RenderKit/embree
+      \endverb
+      \verb{url}
+      \verb https://github.com/RenderKit/embree
+      \endverb
+    \endentry
+    \entry{cinnella}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=aa263777a8c4cf4206087a5a6be3b266}{%
+           family={Gloerfelt},
+           familyi={G\bibinitperiod},
+           given={Xavier},
+           giveni={X\bibinitperiod}}}%
+        {{hash=5ad689ab1c323a57944ae8e00da6ad3d}{%
+           family={Cinnella},
+           familyi={C\bibinitperiod},
+           given={Paola},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{3e935f5bc11f48e292956ea364be97a7}
+      \strng{fullhash}{3e935f5bc11f48e292956ea364be97a7}
+      \strng{fullhashraw}{3e935f5bc11f48e292956ea364be97a7}
+      \strng{bibnamehash}{3e935f5bc11f48e292956ea364be97a7}
+      \strng{authorbibnamehash}{3e935f5bc11f48e292956ea364be97a7}
+      \strng{authornamehash}{3e935f5bc11f48e292956ea364be97a7}
+      \strng{authorfullhash}{3e935f5bc11f48e292956ea364be97a7}
+      \strng{authorfullhashraw}{3e935f5bc11f48e292956ea364be97a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Flow, Turbulence and Combustion}
+      \field{number}{1}
+      \field{title}{Large eddy simulation requirements for the flow over periodic hills}
+      \field{volume}{103}
+      \field{year}{2019}
+      \field{pages}{55\bibrangedash 91}
+      \range{pages}{37}
+    \endentry
+    \entry{breuer}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=02afda96722e2b0e99499fb9cb9f1634}{%
+           family={Breuer},
+           familyi={B\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=58f1e88ac41d917dab498fc1346afa92}{%
+           family={Peller},
+           familyi={P\bibinitperiod},
+           given={Nikolaus},
+           giveni={N\bibinitperiod}}}%
+        {{hash=8605bd5496016f4f260a4ffdde3d09c1}{%
+           family={Rapp},
+           familyi={R\bibinitperiod},
+           given={Ch},
+           giveni={C\bibinitperiod}}}%
+        {{hash=e96648d1e0dc2863f24f6200e3037eb5}{%
+           family={Manhart},
+           familyi={M\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{5232c1453d254d336bc970f355c4b6c3}
+      \strng{fullhash}{24f2cc435b01a68722836d15b141116f}
+      \strng{fullhashraw}{24f2cc435b01a68722836d15b141116f}
+      \strng{bibnamehash}{5232c1453d254d336bc970f355c4b6c3}
+      \strng{authorbibnamehash}{5232c1453d254d336bc970f355c4b6c3}
+      \strng{authornamehash}{5232c1453d254d336bc970f355c4b6c3}
+      \strng{authorfullhash}{24f2cc435b01a68722836d15b141116f}
+      \strng{authorfullhashraw}{24f2cc435b01a68722836d15b141116f}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Computers \& Fluids}
+      \field{number}{2}
+      \field{title}{Flow over periodic hills--numerical and experimental study in a wide range of Reynolds numbers}
+      \field{volume}{38}
+      \field{year}{2009}
+      \field{pages}{433\bibrangedash 457}
+      \range{pages}{25}
     \endentry
   \enddatalist
 \endrefsection
