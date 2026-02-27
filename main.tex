@@ -262,15 +262,30 @@ In the current work, the implementation of an adaptive wall modeling approach is
 	$C_S$                                        & Tuning constant for Smagorinsky model                                        \\
 	$\mathcal{S}_{ij}$                           & Traceless symmetric part of the square of the velocity gradient tensor       \\
 	$C_W$                                        & Tuning constant for WALE model                                               \\
+	$C$, $B_1$, $B_2$                            & Tuning constants for Reichardt wall model                                               \\
 
 	% Numerical framework
 	\addlinespace
 	$\mathcal{AD}$, $\mathcal{AD}_k$			 & Advective/diffusive term (at sub-step $k$)\\
 	$\bm{u}_n$, $\bm{u}_k$						 & Velocity field at step $n$, at sub-step $k$\\
 	$\alpha_k$, $\beta_k$, $\gamma_k$			 & Coefficients for the low storage Runge-Kutta scheme\\
-	$\bm{u}^*$ 								 & Prediction velocity field\\
+	$\bm{u}^*$ 								 	 & Prediction velocity field\\
 	$p^*$										 & Correction pressure field\\
+	$\Delta x$, $\Delta y$, $\Delta z$			 & Cell dimension along Cartesian axes\\
+	$\Omega$									 & Integration control volume\\
+	$\bm{S_f}$								 & Integration surface vector\\
+	$F_{i,f}^{\, conv}$, $F_{i,f}^{\, visc}$	 & Convective and viscous flux densities in direction $i$, at face $f$\\
+	$u_{MP}$, $u_{MP \, \parallel}$				 & Resolved velocity at the matching (sampling) point and its interface-parallel projection.\\
 
+	% Result analysis
+	\addlinespace
+	$h_H$										 & Periodic hills height\\
+	$L_x$, $L_y$, $L_z$							 & Physical domain dimensions\\
+	$N_x$, $N_y$, $N_z$							 & Grid size\\
+	$U_b$										 & Bulk velocity\\
+	$C_f$										 & Friction coefficient\\
+	$y_{MP}$									 & Matching point $y$-coordinate\\
+	$t_{FT}$									 & Flow-through time\\
 
 	% Acronyms
 	\addlinespace
@@ -611,6 +626,7 @@ The ratio between the two characteristic length scales can be defined as the fri
 \end{equation}
 
 \subsubsection{Wall laws}
+\label{sec:wall-laws}
 Despite the previous separate definition of the two regions, the mean behavior of the flow varies with continuity moving away from the wall and so do the mathematical laws that describe the velocity profile:
 \begin{itemize}
 	\item \textbf{Viscous sub-layer:} Inside the inner layer, in the close proximity of the wall, the flow is dominated by viscous effects. The linear relation is considered well verified:
@@ -1405,12 +1421,36 @@ At this point, the near-interface fluid control volumes collect the overall wall
 \chapter{Result analysis}
 
 \section{Periodic hills benchmark}
-The case analyzed in this section is the flow in a channel with streamwise-periodic constrictions, commonly known as the ERCOFTAC periodic hills benchmark. In the present study, this configuration is used to assess the solver performance in the prediction of turbulent flows that exhibit complex dynamics. The benchmark is considered particularly challenging, since it involves separation and reattachment from a curved boundary, the formation of an unsteady shear layer and a large separation bubble, strong accelerations of the fluid on the convergent region of the channel, intense fluctuating pressure gradients, the turbulence recycling due to periodic boundaries and a bottom wall always far from equilibrium conditions \cite{cinnella}.
+The case analyzed in this section is the flow in a channel with streamwise-periodic constrictions, commonly known as the ERCOFTAC periodic hills benchmark. In the present study, this configuration is used to assess the solver performance in the prediction of turbulent flows that exhibit complex dynamics. The benchmark is considered particularly challenging, since it involves separation and reattachment from a curved boundary, the formation of an unsteady shear layer and a large separation bubble, strong accelerations of the fluid in the convergent region of the channel, intense fluctuating pressure gradients, the turbulence recycling due to periodic boundaries and a bottom wall always far from equilibrium conditions \cite{cinnella}.
 
-For its demanding test geometry and the widely available predicted results, the benchmark is particularly useful for the assessment of meshing strategies, SGS and wall models and numerical methods. The configuration also became well established in the CFD community and chosen by several associations, workshop and projects such as ERCOFTAC (European Research Community on Flow, Turbulence and Combustion), IAHR (International Association for Hydro-Environment Engineering and Research), DESIDER (Detached Eddy Simulation for Industrial Aerodynamics), ATAAC (Advanced Turbulence Simulation for Aerodynamic Application Challenges) and more \cite{breuer} \cite{cinnella}.
+For its demanding test geometry and the widely available predicted results, the benchmark is particularly useful for the assessment of meshing strategies, SGS and wall models and numerical methods. The configuration also became well established in the CFD community and chosen by several associations, workshops and projects such as ERCOFTAC (European Research Community on Flow, Turbulence and Combustion), IAHR (International Association for Hydro-Environment Engineering and Research), DESIDER (Detached Eddy Simulation for Industrial Aerodynamics), ATAAC (Advanced Turbulence Simulation for Aerodynamic Application Challenges) and more \cite{breuer} \cite{cinnella}.
 
 \subsection{Simulation setup}
-The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h=1$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h$, a spanwise width $L_y = 4.5 \, h$, and a channel height $L_z = 3.035 \, h$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the vertical direction, resulting in a domain height of $L_z = 3.135 \, h$. However this doesn't affect the channel geometry, that maintain its height of $3.035 \, h$.
+The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h_H=1 \text{ m}$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h_H$, a spanwise width $L_y = 3.035 \, h_H$, and a channel height $L_z = 4.5 \, h_H$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the vertical direction, resulting in a height of $3.135 \, h_H$. However this doesn't affect the channel geometry, which maintain its height of $3.035 \, h_H$.
+
+\textit{Note that although the solver operates with non-dimensional units, in this Chapter the variables will be expressed in standard units for clarity.}
+
+In terms of boundary conditions, periodicity is applied in both the streamwise and spanwise directions. The periodicity allows the flow to naturally develop and recycle turbulent structures within the computational domain. Since periodic conditions are imposed in the streamwise direction, the flow would naturally dissipate its kinetic energy. To counteract this and maintain a constant mass-flow rate, the bulk forcing function is enabled with a bulk velocity target of $U_b = 1 \text{ m/s}$. The simulation is performed at a bulk Reynolds number of $37000$, which is defined as:
+\begin{equation}
+	Re = \dfrac{U_b \, h_H}{\nu}
+\end{equation}
+The domain grid was discretized with $128 \times 80 \times 80$ cells. The choice of a coarse mesh ensures that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretization deliberately avoids this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the average value of friction coefficient $C_f \approx 0.005$ reported by Gloerfelt and Cinnella \cite{cinnella}:
+\begin{equation}
+	\tau_W = \dfrac{1}{2} \, \rho \, U_b^2 \, C_f \qquad \implies \qquad u_\tau = \sqrt{\dfrac{\tau_W}{\rho}} = U_b \, \sqrt{\dfrac{C_f}{2}} \approx 0.05 \text{ m/s}
+\end{equation}
+Based on the wall laws introduced in Section \ref{sec:wall-laws}, the first cell position can be expressed in wall units as:
+\begin{equation}
+	\Delta y^+ = \dfrac{\Delta y \, u_\tau}{\nu} = \dfrac{((L_y + 0.1)/N_y) \, u_\tau}{\nu} \approx \dfrac{0.03919 \cdot 0.05}{\nu} = 72.50
+\end{equation}
+To obtain a first estimation of the sampling position for the wall model, considering it is sampled at a distance of 3 cells (projected in the wall-normal direction) from the interface:
+\begin{equation}
+	y_{MP}^+ = \dfrac{y_{MP} \, u_\tau}{\nu} = \dfrac{(3 \cdot \Delta y) \, u_\tau}{\nu} \approx \dfrac{(3 \cdot 0.03919) \cdot 0.05}{\nu} = 217.5
+\end{equation}
+To ensure the numerical stability during the temporal integration, the maximum allowable Courant-Friedrichs-Lewy (CFL) number is conservatively set to $0.5$. An adaptive time-stepping strategy is employed, dynamically adjusting the time step $\Delta t$ based on the local CFL constraint throughout the domain. The choice of the physical simulation time is based on the definition of the flow-through time $t_{FT}$, which approximate the time necessary for a fluid particle to cross the domain streamwise length:
+\begin{equation}
+	t_{FT} = \frac{L_x}{U_b} = 9 \text{ s}
+\end{equation}
+Following the methodology established in the reference literature \cite{cinnella}, an initial "washout" phase is simulated to discard the startup transient effects. The flow is allowed to develop for $(23 \cdot t_{FT})$ to ensure that a fully developed, statistically steady turbulent regime is reached. The simulation is carried out up to a maximum physical time of $(50 \cdot t_{FT})$.
 
 \backmatter
 
