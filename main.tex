@@ -1418,7 +1418,7 @@ At this point, the near-interface fluid control volumes collect the overall wall
 	\label{fig:ibm-forcing-cut-cell}
 \end{figure}
 
-\chapter{Result analysis}
+\chapter{Test cases and result analysis}
 
 \section{Periodic hills benchmark}
 The case analyzed in this section is the flow in a channel with streamwise-periodic constrictions, commonly known as the ERCOFTAC periodic hills benchmark. In the present study, this configuration is used to assess the solver performance in the prediction of turbulent flows that exhibit complex dynamics. The benchmark is considered particularly challenging, since it involves separation and reattachment from a curved boundary, the formation of an unsteady shear layer and a large separation bubble, strong accelerations of the fluid in the convergent region of the channel, intense fluctuating pressure gradients, the turbulence recycling due to periodic boundaries and a bottom wall always far from equilibrium conditions \cite{cinnella}.
@@ -1426,7 +1426,7 @@ The case analyzed in this section is the flow in a channel with streamwise-perio
 For its demanding test geometry and the widely available predicted results, the benchmark is particularly useful for the assessment of meshing strategies, SGS and wall models and numerical methods. The configuration also became well established in the CFD community and chosen by several associations, workshops and projects such as ERCOFTAC (European Research Community on Flow, Turbulence and Combustion), IAHR (International Association for Hydro-Environment Engineering and Research), DESIDER (Detached Eddy Simulation for Industrial Aerodynamics), ATAAC (Advanced Turbulence Simulation for Aerodynamic Application Challenges) and more \cite{breuer} \cite{cinnella}.
 
 \subsection{Simulation setup}
-The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h_H=1 \text{ m}$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h_H$, a spanwise width $L_y = 3.035 \, h_H$, and a channel height $L_z = 4.5 \, h_H$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the vertical direction, resulting in a height of $3.135 \, h_H$. However this doesn't affect the channel geometry, which maintain its height of $3.035 \, h_H$.
+The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h_H=1 \text{ m}$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h_H$, a channel height $L_y = 3.035 \, h_H$, and a spanwise width $L_z = 4.5 \, h_H$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the $y$-direction, resulting in a height of $3.135 \, h_H$. However this doesn't affect the channel geometry, which maintain its height of $3.035 \, h_H$.
 
 \textit{Note that although the solver operates with non-dimensional units, in this Chapter the variables will be expressed in standard units for clarity.}
 
@@ -1434,23 +1434,79 @@ In terms of boundary conditions, periodicity is applied in both the streamwise a
 \begin{equation}
 	Re = \dfrac{U_b \, h_H}{\nu}
 \end{equation}
-The domain grid was discretized with $128 \times 80 \times 80$ cells. The choice of a coarse mesh ensures that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretization deliberately avoids this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the average value of friction coefficient $C_f \approx 0.005$ reported by Gloerfelt and Cinnella \cite{cinnella}:
+In order to evaluate the mesh independence and the solver sensitivity to spatial resolution, two grids were selected for the discretization, with different cell counts ($N_x \times N_y \times N_z$) and aspect ratios, labeled as follows:
+\begin{itemize}
+	\item \texttt{PH-R1:} A coarser grid consisting of $128 \times 80 \times 80$ cells.
+	\item \texttt{PH-R2:} A refined grid consisting of $256 \times 96 \times 128$ cells.
+\end{itemize}
+The choice of the mesh must ensure that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretizations deliberately avoid this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the average value of friction coefficient $C_f \approx 0.005$ reported by Gloerfelt and Cinnella \cite{cinnella}:
 \begin{equation}
 	\tau_W = \dfrac{1}{2} \, \rho \, U_b^2 \, C_f \qquad \implies \qquad u_\tau = \sqrt{\dfrac{\tau_W}{\rho}} = U_b \, \sqrt{\dfrac{C_f}{2}} \approx 0.05 \text{ m/s}
 \end{equation}
 Based on the wall laws introduced in Section \ref{sec:wall-laws}, the first cell position can be expressed in wall units as:
 \begin{equation}
-	\Delta y^+ = \dfrac{\Delta y \, u_\tau}{\nu} = \dfrac{((L_y + 0.1)/N_y) \, u_\tau}{\nu} \approx \dfrac{0.03919 \cdot 0.05}{\nu} = 72.50
+	\Delta y^+ = \dfrac{\Delta y \, u_\tau}{\nu} = \dfrac{((L_y + 0.1)/N_y) \, u_\tau}{\nu} 
 \end{equation}
 To obtain a first estimation of the sampling position for the wall model, considering it is sampled at a distance of 3 cells (projected in the wall-normal direction) from the interface:
 \begin{equation}
-	y_{MP}^+ = \dfrac{y_{MP} \, u_\tau}{\nu} = \dfrac{(3 \cdot \Delta y) \, u_\tau}{\nu} \approx \dfrac{(3 \cdot 0.03919) \cdot 0.05}{\nu} = 217.5
+	y_{MP}^+ = \dfrac{y_{MP} \, u_\tau}{\nu} = \dfrac{(3 \cdot \Delta y) \, u_\tau}{\nu} 
 \end{equation}
-To ensure the numerical stability during the temporal integration, the maximum allowable Courant-Friedrichs-Lewy (CFL) number is conservatively set to $0.5$. An adaptive time-stepping strategy is employed, dynamically adjusting the time step $\Delta t$ based on the local CFL constraint throughout the domain. The choice of the physical simulation time is based on the definition of the flow-through time $t_{FT}$, which approximate the time necessary for a fluid particle to cross the domain streamwise length:
+The resulting values for both grids are summarized in Table \ref{tab:grid-wall-units}.
+\begin{table}[h]
+	\centering
+	\renewcommand{\arraystretch}{1.2}
+	\setlength{\tabcolsep}{15pt}
+	\begin{tabular}{lcccc}
+		\hline
+		\textbf{Grid} & \textbf{Resolution} & $\Delta y$ \text{[m]} & $\Delta y^+$ & $y_{MP}^+$ \\
+		\hline
+		\texttt{PH-R1} & $128 \times 80 \times 80$   & $0.03919$ & $72.50$ & $217.5$ \\
+		\texttt{PH-R2} & $256 \times 96 \times 128$  & $0.03266$ & $60.42$ & $181.3$ \\
+		\hline
+	\end{tabular}
+	\caption{Near-wall spatial resolution and matching point positions in wall units for the two computational grids.}
+	\label{tab:grid-wall-units}
+\end{table}
+As demonstrated by the values in Table \ref{tab:grid-wall-units}, the wall-normal resolution for both grids ensures that the first fluid cell completely bypasses the viscous sub-layer. Furthermore, the sampling positions for the wall model consistently fall within the fully turbulent logarithmic region (typically valid for $y^+ > 30$). This confirms that the chosen spatial discretizations comply with the WM-LES assumptions.
+
+To ensure the numerical stability during the temporal integration, the maximum allowable Courant-Friedrichs-Lewy (CFL) number is conservatively set to $0.5$. An adaptive time-stepping strategy is employed, dynamically adjusting the time step $\Delta t$ based on the local CFL constraint throughout the domain. The choice of the physical simulation time is based on the definition of the flow-through time $t_{FT}$, which approximates the time necessary for a fluid particle to cross the domain streamwise length:
 \begin{equation}
 	t_{FT} = \frac{L_x}{U_b} = 9 \text{ s}
 \end{equation}
-Following the methodology established in the reference literature \cite{cinnella}, an initial "washout" phase is simulated to discard the startup transient effects. The flow is allowed to develop for $(23 \cdot t_{FT})$ to ensure that a fully developed, statistically steady turbulent regime is reached. The simulation is carried out up to a maximum physical time of $(50 \cdot t_{FT})$.
+The simulation is carried out up to a maximum physical time of $(50 \cdot t_{FT})$.
+
+\subsection{Startup transient}
+Following the methodology established in the reference literature \cite{cinnella}, an initial washout phase is simulated to discard the startup transient effects. The flow is allowed to develop for $(23 \cdot t_{FT})$ to ensure that a fully developed, statistically steady turbulent regime is reached. 
+
+As illustrated in the instantaneous velocity magnitude contours, in Figure \ref{fig:PH-R2-startup}, the flow shows a clear transition from the initial development phase to a fully chaotic turbulent state.
+\begin{figure}[p]
+    \centering
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R2/startup/velocity-t18.jpg}
+        \caption{$t = 2\cdot t_{FT}$}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R2/startup/velocity-t90.jpg}
+        \caption{$t = 10\cdot t_{FT}$}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R2/startup/velocity-t207.jpg}
+        \caption{$t = 23\cdot t_{FT}$}
+    \end{subfigure}
+
+    \caption{Istantaneous velocity fields during the flow startup transient at $2\, t_{FT}$, $10\, t_{FT}$ and $23\, t_{FT}$ for simulation \texttt{PH-R2}}
+    \label{fig:PH-R2-startup}
+\end{figure}
 
 \backmatter
 
