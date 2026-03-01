@@ -1476,9 +1476,10 @@ To ensure the numerical stability during the temporal integration, the maximum a
 The simulation is carried out up to a maximum physical time of $(50 \cdot t_{FT})$.
 
 \subsection{Startup transient}
-Following the methodology established in the reference literature \cite{cinnella}, an initial washout phase is simulated to discard the startup transient effects. The flow is allowed to develop for $(23 \cdot t_{FT})$ to ensure that a fully developed, statistically steady turbulent regime is reached. 
+Following the methodology established in the reference literature \cite{cinnella}, an initial washout phase is simulated to discard the startup transient effects. The flow is allowed to develop for $(23 \cdot t_{FT})$ to ensure that a fully developed, statistically steady turbulent regime is reached before starting the data sampling. 
 
-As illustrated in the instantaneous velocity magnitude contours, in Figure \ref{fig:PH-R2-startup}, the flow shows a clear transition from the initial development phase to a fully chaotic turbulent state.
+As illustrated in the instantaneous velocity magnitude contours, in Figure \ref{fig:PH-R2-startup}, at $t = 2 \cdot t_{FT}$ the fluid domain is prevalently in a laminar regime, with vortical structures detaching from the hill crest. As the time progresses to $t = 9 \cdot t_{FT}$, the macroscopic topology of the flow is already visible. However, the upper region of the channel presents large undulations. At $t = 23 \cdot t_{FT}$ a fully chaotic turbulent state is reached, where fine turbulent structures populate the entire fluid domain.
+
 \begin{figure}[p]
     \centering
 
@@ -1492,8 +1493,8 @@ As illustrated in the instantaneous velocity magnitude contours, in Figure \ref{
 
     \begin{subfigure}{\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{img/PH-R2/startup/velocity-t90.jpg}
-        \caption{$t = 10\cdot t_{FT}$}
+        \includegraphics[width=\textwidth]{img/PH-R2/startup/velocity-t81.jpg}
+        \caption{$t = 9\cdot t_{FT}$}
     \end{subfigure}
     
     \vspace{0.5cm}
@@ -1504,9 +1505,91 @@ As illustrated in the instantaneous velocity magnitude contours, in Figure \ref{
         \caption{$t = 23\cdot t_{FT}$}
     \end{subfigure}
 
-    \caption{Istantaneous velocity fields during the flow startup transient at $2\, t_{FT}$, $10\, t_{FT}$ and $23\, t_{FT}$ for simulation \texttt{PH-R2}}
+    \caption{Istantaneous velocity fields during the flow startup transient at $2\, t_{FT}$, $9\, t_{FT}$ and $23\, t_{FT}$ for simulation \texttt{PH-R2}}
     \label{fig:PH-R2-startup}
 \end{figure}
+
+\subsection{Average velocity fields}
+For the irregular and intermittent nature of the examined flow, the identification of its main features its not an easy task. For this reason, the solution is post-processed, computing its average both in its periodic spanwise direction and in time.
+
+The mean velocity fields for the two simulations are reported in Figure \ref{fig:PH-R1-velocity} and \ref{fig:PH-R2-velocity}. It can be observed that, both the \texttt{PH-R1} and \texttt{PH-R2} simulations, show a similar qualitative flow behavior, despite their differences in grid size and cell aspect ratios. In both cases, some properties can be observed:
+\begin{itemize}
+	\item In the upstream side of the hill, the restriction causes an acceleration of the fluid, creating a high velocity region directly above the hill crest.
+	\item The geometry induces a flow separation, with the formation of a free shear layer. The mean streamlines are directed slightly downward, transferring momentum towards the separated region \cite{manhart}. 
+	\item Downstream of the hill, in its wake region a large recirculation bubble is formed.
+	\item Between the hills, on the flat bottom plate, the solution captures the flow reattachment and a post-reattachment recovery region, where the velocity profile is re-energized by the momentum transfer incoming from the region above.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R1/velocity-average.jpg}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R1/velocity-streamlines.jpg}
+    \end{subfigure}
+
+    \caption{Span and time average of the velocity field for simulation \texttt{PH-R1}}
+    \label{fig:PH-R1-velocity}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R2/velocity-average.jpg}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R2/velocity-streamlines.jpg}
+    \end{subfigure}
+
+    \caption{Span and time average of the velocity field for simulation \texttt{PH-R2}}
+    \label{fig:PH-R2-velocity}
+\end{figure}
+
+\subsection{Average velocity profiles}
+The streamwise velocity profiles for simulations \texttt{PH-R1}, \texttt{PH-R2} along with the results available from other LES and experimental studies \cite{cinnella} \cite{manhart} \cite{manhart-profiles-LES}, extracted at various locations along the channel, are presented in Figure \ref{fig:PH-velocity-profiles}.
+
+At the first position downstream the hill crest $x/h = 0.5$, the three profiles depict the start of the flow separation, with a region of negative streamwise velocity near the bottom wall. The backflow is poorly represented in the \texttt{PH-R1} case, due to its coarse discretization, conversely in \texttt{PH-R2}, the separation is even more marked than in the reference results. From that point, a region of negative streamwise velocity is visible near the bottom wall, defining the extent of the recirculation bubble. Moving further downstream, the near-wall velocity gradually recovers as the flow approaches the reattachment point. In the reference data, the profiles indicate that the flow reattaches between $x/h = 4$ and $x/h = 5$, where the velocity near the lower boundary transitions back to positive values. In contrast, both the \texttt{PH-R1} and \texttt{PH-R2} numerical simulations exhibit a longer recirculation region, with the profiles showing negative velocities up to $x/h = 5$ and a reattachment point shifted downstream, between $x/h = 5$ and $x/h = 6$. Past the reattachment point, the flow undergoes a recovery phase over the remaining portion of domain.
+
+\begin{figure}[h]
+    \centering
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R1/velocity-profiles.png}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-R2/velocity-profiles.png}
+    \end{subfigure}
+
+	\vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PH-reference-velocity-profiles.jpg}
+    \end{subfigure}
+
+    \caption{Profiles of the average streamwise velocity $\langle u \rangle$. Respectively \texttt{PH-R1} (top), \texttt{PH-R2} (middle) simulations and reference data (bottom), including: (\textcolor{brown}{\textbf{---}}), (\textcolor{red}{\textbf{- - -}}) WR-LES simulations by Cinnella \cite{cinnella}; (\textcolor{magenta}{$\diamond\diamond$}) experiments by Rapp and Manhart \cite{manhart}; (\textcolor{cyan}{$-\cdot-\cdot$}) LES by Manhart et al. \cite{manhart-profiles-LES}.}
+    \label{fig:PH-velocity-profiles}
+\end{figure}
+
+\subsection{Results analysis}
 
 \backmatter
 
