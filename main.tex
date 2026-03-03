@@ -5,6 +5,7 @@
 \usepackage[style=numeric-comp, backend=biber, sorting=none]{biblatex}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{siunitx}
 \usepackage{geometry}
 \usepackage{setspace}
@@ -1421,7 +1422,16 @@ At this point, the near-interface fluid control volumes collect the overall wall
 \chapter{Test cases and result analysis}
 
 \section{Periodic hills benchmark}
-The case analyzed in this section is the flow in a channel with streamwise-periodic constrictions, commonly known as the ERCOFTAC periodic hills benchmark. In the present study, this configuration is used to assess the solver performance in the prediction of turbulent flows that exhibit complex dynamics. The benchmark is considered particularly challenging, since it involves separation and reattachment from a curved boundary, the formation of an unsteady shear layer and a large separation bubble, strong accelerations of the fluid in the convergent region of the channel, intense fluctuating pressure gradients, the turbulence recycling due to periodic boundaries and a bottom wall always far from equilibrium conditions \cite{cinnella}.
+The case analyzed in this section is the flow in a channel with streamwise-periodic constrictions, commonly known as the ERCOFTAC periodic hills benchmark. In the present study, this configuration is used to assess the solver performance in the prediction of turbulent flows that exhibit complex dynamics. The benchmark is considered particularly challenging, since, as shown in Figure \ref{fig:PH-qualitative}, it involves separation and reattachment from a curved boundary, the formation of an unsteady shear layer and a large separation bubble, strong accelerations of the fluid in the convergent region of the channel, intense fluctuating pressure gradients, the turbulence recycling due to periodic boundaries and a bottom wall always far from equilibrium conditions \cite{cinnella}.
+
+\begin{figure}[htbp]
+	\centering
+	\vspace{0.25cm}
+	\includegraphics[width=0.85\textwidth]{img/PH-qualitative.jpg} 
+	\caption{Experimental PIV data of a $Re = 10600$ periodic hills channel \cite{rapp-manhart-image}}
+	\label{fig:PH-qualitative}
+	\vspace{0.15cm}
+\end{figure}
 
 For its demanding test geometry and the widely available predicted results, the benchmark is particularly useful for the assessment of meshing strategies, SGS and wall models and numerical methods. The configuration also became well established in the CFD community and chosen by several associations, workshops and projects such as ERCOFTAC (European Research Community on Flow, Turbulence and Combustion), IAHR (International Association for Hydro-Environment Engineering and Research), DESIDER (Detached Eddy Simulation for Industrial Aerodynamics), ATAAC (Advanced Turbulence Simulation for Aerodynamic Application Challenges) and more \cite{breuer} \cite{cinnella}.
 
@@ -1475,6 +1485,25 @@ To ensure the numerical stability during the temporal integration, the maximum a
 \end{equation}
 The simulation is carried out up to a maximum physical time of $(50 \cdot t_{FT})$.
 
+\subsection{Bulk forcing}
+Since the periodic streamwise boundary conditions effectively simulate an infinite channel, there is the need to maintain the fluid flow in motion. The solver include a proper bulk forcing function, based on the average velocity of the entire fluid domain. When the computed average velocity diverges from the target value, a proportional contribution vector is directly added to the solution $\bm{u}^*$ at the prediction step of the pressure-correction scheme.
+
+However, the standard periodic hills benchmark requires a different constraint: a constant mass-flow rate measured specifically at the cross-section located on top of the hill crest. In order to enforce and maintain the required flow rate, a dedicated bulk forcing approach was implemented, based on a Proportional-Integral (PI) control law.
+
+At each time step $n$, the instantaneous spatially-averaged streamwise velocity $\langle u \rangle_{\text{inlet}}$ is evaluated at the inlet section through a surface integral. The discrepancy between the target bulk velocity $U_b$ and the measured value defines the instantaneous error: $\varepsilon_n \equiv U_b - \langle u_{\text{inlet}} \rangle_n$. To eliminate both the steady-state offset and transient oscillations, the streamwise volumetric forcing term $f_{f,x}$ is computed using a proportional gain $K_p$ and an integral gain $K_i$. The discrete time-integral of the error is updated at each time step as $\epsilon_n = \epsilon_{n-1} + \varepsilon_n \, \Delta t$, yielding the final driving force:
+$f_{f,x} = K_p \, \varepsilon_n + K_i \, \epsilon_n$.
+
+\begin{figure}[htbp]
+	\centering
+	\vspace{0.3cm}
+	\includegraphics[width=0.95\textwidth]{img/PH-bulk-forcing.jpg} 
+	\caption{Mean inflow mass-flow rate and forcing term applied in simulation \texttt{PH-R2}}
+	\label{fig:PH-bulk-forcing}
+	\vspace{0.15cm}
+\end{figure}
+
+This dynamically adjusted forcing term is then added to the RHS of the discretized momentum equation. The PI controller ensures that the prescribed mass-flow rate at the crest is smoothly maintained throughout the simulation.
+ 
 \subsection{Startup transient}
 Following the methodology established in the reference literature \cite{cinnella}, an initial washout phase is simulated to discard the startup transient effects. The flow is allowed to develop for $(23 \cdot t_{FT})$ to ensure that a fully developed, statistically steady turbulent regime is reached before starting the data sampling. 
 
@@ -1563,7 +1592,7 @@ The streamwise velocity profiles for simulations \texttt{PH-R1}, \texttt{PH-R2} 
 
 At the first position downstream the hill crest $x/h = 0.5$, the three profiles depict the start of the flow separation, with a region of negative streamwise velocity near the bottom wall. The backflow is poorly represented in the \texttt{PH-R1} case, due to its coarse discretization, conversely in \texttt{PH-R2}, the separation is even more marked than in the reference results. From that point, a region of negative streamwise velocity is visible near the bottom wall, defining the extent of the recirculation bubble. Moving further downstream, the near-wall velocity gradually recovers as the flow approaches the reattachment point. In the reference data, the profiles indicate that the flow reattaches between $x/h = 4$ and $x/h = 5$, where the velocity near the lower boundary transitions back to positive values. In contrast, both the \texttt{PH-R1} and \texttt{PH-R2} numerical simulations exhibit a longer recirculation region, with the profiles showing negative velocities up to $x/h = 5$ and a reattachment point shifted downstream, between $x/h = 5$ and $x/h = 6$. Past the reattachment point, the flow undergoes a recovery phase over the remaining portion of domain.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
 
     \begin{subfigure}{\textwidth}
@@ -1585,11 +1614,14 @@ At the first position downstream the hill crest $x/h = 0.5$, the three profiles 
         \includegraphics[width=\textwidth]{img/PH-reference-velocity-profiles.jpg}
     \end{subfigure}
 
-    \caption{Profiles of the average streamwise velocity $\langle u \rangle$. Respectively \texttt{PH-R1} (top), \texttt{PH-R2} (middle) simulations and reference data (bottom), including: (\textcolor{brown}{\textbf{---}}), (\textcolor{red}{\textbf{- - -}}) WR-LES simulations by Cinnella \cite{cinnella}; (\textcolor{magenta}{$\diamond\diamond$}) experiments by Rapp and Manhart \cite{manhart}; (\textcolor{cyan}{$-\cdot-\cdot$}) LES by Manhart et al. \cite{manhart-profiles-LES}.}
+    \caption{Profiles of the average streamwise velocity $\langle u \rangle$. Respectively \texttt{PH-R1} (top), \texttt{PH-R2} (middle) simulations and reference data at $Re = 37000$ (bottom), including: (\textcolor{brown}{\textbf{---}}), (\textcolor{red}{\textbf{- - -}}) WR-LES simulations by Cinnella \cite{cinnella}; (\textcolor{magenta}{$\diamond\diamond$}) experiments by Rapp and Manhart \cite{manhart}; (\textcolor{cyan}{$-\cdot-\cdot$}) LES by Manhart et al. \cite{manhart-profiles-LES}.}
     \label{fig:PH-velocity-profiles}
 \end{figure}
 
 \subsection{Results analysis}
+The qualitative behavior of the flow, and in particular the presence of a reattachment region, represents an important result for the solver. In the complex configuration of the periodic hills, it was demonstrated that the capability of capturing the reattachment phenomenon is strongly influenced by the wall modeling, especially on coarse grids \cite{breuer}. The fact that the numerical setup succeeds in predicting this behavior confirms that the implemented bulk forcing, IBM cut-cell forcing, and the wall model are working correctly and are properly coupled with the Runge-Kutta scheme.
+
+At the same time, the extension of the separation bubble presents a quantitative discrepancy with respect to the reference data. However, such a deviation is largely expected when considering the specific simulation conditions employed. It is well-known that the reattachment point is extremely sensitive to the position of the flow separation point past the hill crest \cite{cinnella, breuer}, and as a consequence, also to the grid resolution, especially in the streamwise direction. At the considered Reynolds number, chosen at the maximum standard value to ensure reference data availability, this conflicts with the requirement of a sufficiently high $\Delta y^+$ to remain in the WM-LES domain. The particularly coarse grids adopted are the result of a trade-off between these aspects and the immersed geometry discretization.
 
 \backmatter
 
