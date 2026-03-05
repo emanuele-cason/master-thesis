@@ -673,6 +673,45 @@
       \field{pages}{55\bibrangedash 91}
       \range{pages}{37}
     \endentry
+    \entry{rapp-manhart-image}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=8605bd5496016f4f260a4ffdde3d09c1}{%
+           family={Rapp},
+           familyi={R\bibinitperiod},
+           given={Ch},
+           giveni={C\bibinitperiod}}}%
+        {{hash=92a28e9becb4ff2d309516fe7fefba7b}{%
+           family={Pfleger},
+           familyi={P\bibinitperiod},
+           given={F},
+           giveni={F\bibinitperiod}}}%
+        {{hash=812a88ac94ce01b5524b87b1530ec80d}{%
+           family={Manhart},
+           familyi={M\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \strng{fullhash}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \strng{fullhashraw}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \strng{bibnamehash}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \strng{authorbibnamehash}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \strng{authornamehash}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \strng{authorfullhash}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \strng{authorfullhashraw}{eb5b4e8d6f76fa2b723c36a05bc6cb56}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Direct and Large-Eddy Simulation VII: Proceedings of the Seventh International ERCOFTAC Workshop on Direct and Large-Eddy Simulation, held at the University of Trieste, September 8-10, 2008}
+      \field{title}{New experimental results for a LES benchmark case}
+      \field{year}{2010}
+      \field{pages}{69\bibrangedash 74}
+      \range{pages}{6}
+    \endentry
     \entry{breuer}{article}{}{}
       \name{author}{4}{}{%
         {{hash=02afda96722e2b0e99499fb9cb9f1634}{%
@@ -718,6 +757,101 @@
       \field{year}{2009}
       \field{pages}{433\bibrangedash 457}
       \range{pages}{25}
+    \endentry
+    \entry{manhart}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=8605bd5496016f4f260a4ffdde3d09c1}{%
+           family={Rapp},
+           familyi={R\bibinitperiod},
+           given={Ch},
+           giveni={C\bibinitperiod}}}%
+        {{hash=812a88ac94ce01b5524b87b1530ec80d}{%
+           family={Manhart},
+           familyi={M\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{205bfb79e78943db3ec0d69f2bc71452}
+      \strng{fullhash}{205bfb79e78943db3ec0d69f2bc71452}
+      \strng{fullhashraw}{205bfb79e78943db3ec0d69f2bc71452}
+      \strng{bibnamehash}{205bfb79e78943db3ec0d69f2bc71452}
+      \strng{authorbibnamehash}{205bfb79e78943db3ec0d69f2bc71452}
+      \strng{authornamehash}{205bfb79e78943db3ec0d69f2bc71452}
+      \strng{authorfullhash}{205bfb79e78943db3ec0d69f2bc71452}
+      \strng{authorfullhashraw}{205bfb79e78943db3ec0d69f2bc71452}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Experiments in fluids}
+      \field{number}{1}
+      \field{title}{Flow over periodic hills: an experimental study}
+      \field{volume}{51}
+      \field{year}{2011}
+      \field{pages}{247\bibrangedash 269}
+      \range{pages}{23}
+    \endentry
+    \entry{manhart-profiles-LES}{incollection}{}{}
+      \name{author}{7}{}{%
+        {{hash=e96648d1e0dc2863f24f6200e3037eb5}{%
+           family={Manhart},
+           familyi={M\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=9ec5f01c7d95856222974750ab4c45d2}{%
+           family={Rapp},
+           familyi={R\bibinitperiod},
+           given={Christoph},
+           giveni={C\bibinitperiod}}}%
+        {{hash=58f1e88ac41d917dab498fc1346afa92}{%
+           family={Peller},
+           familyi={P\bibinitperiod},
+           given={Nikolaus},
+           giveni={N\bibinitperiod}}}%
+        {{hash=02afda96722e2b0e99499fb9cb9f1634}{%
+           family={Breuer},
+           familyi={B\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=ce99cb2cd80d432c06ba931a71a697da}{%
+           family={Aybay},
+           familyi={A\bibinitperiod},
+           given={Orhan},
+           giveni={O\bibinitperiod}}}%
+        {{hash=6c495df7f321696c787e8f731ca565f4}{%
+           family={Denev},
+           familyi={D\bibinitperiod},
+           given={Jordan\bibnamedelima A},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=0727429544927d22b347473b499148ae}{%
+           family={Falconi},
+           familyi={F\bibinitperiod},
+           given={Carlos\bibnamedelima J},
+           giveni={C\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{252b65ab9fe220bd62ad10f6216869f4}
+      \strng{fullhash}{e5745789a953fb585106f4543d82446c}
+      \strng{fullhashraw}{e5745789a953fb585106f4543d82446c}
+      \strng{bibnamehash}{252b65ab9fe220bd62ad10f6216869f4}
+      \strng{authorbibnamehash}{252b65ab9fe220bd62ad10f6216869f4}
+      \strng{authornamehash}{252b65ab9fe220bd62ad10f6216869f4}
+      \strng{authorfullhash}{e5745789a953fb585106f4543d82446c}
+      \strng{authorfullhashraw}{e5745789a953fb585106f4543d82446c}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Quality and Reliability of Large-Eddy Simulations II}
+      \field{title}{Assessment of eddy resolving techniques for the flow over periodically arranged hills up to Re= 37,000}
+      \field{year}{2011}
+      \field{pages}{361\bibrangedash 370}
+      \range{pages}{10}
     \endentry
   \enddatalist
 \endrefsection

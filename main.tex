@@ -1421,6 +1421,40 @@ At this point, the near-interface fluid control volumes collect the overall wall
 
 \chapter{Test cases and result analysis}
 
+\textit{Note that although the solver operates with non-dimensional values, in this Chapter the variables will be expressed in standard units for clarity.}
+
+\section{Periodic channel}
+The first test simulation performed is the canonical turbulent channel flow. The main purpose of this test case is to assess the correct implementation of the implemented cut-cell forcing and the proper functioning of the numerical framework in general. Despite its simple geometric configuration, the turbulent channel flow represents a fundamental benchmark to verify that the near-wall physics and the mean flow behavior are correctly captured by the numerical solver.
+
+\subsection{Simulation setup}
+\label{sec:periodic-channel-setup}
+The geometry for the turbulent channel flow is defined with a streamwise lenght $L_x = 5 \text{ m}$, a channel height $L_y = 1 \text{ m}$ and a spanwise width $L_z = 2 \text{ m}$. The computational domain dimensions coincide with those of the geometry, except for the $y$-direction that is exteneded to $1.1 \text{ m}$ to include a portion of the walls and allow their detection by the IBM solver.
+
+In the streamwise and spanwise directions, periodic boundary conditions are applied, with a syntethic noise generator to anticipate the laminar-to-turbulent transition at the beginning of the simulation. Since periodic conditions are imposed in the streamwise direction, the flow would naturally dissipate its kinetic energy. To counteract this momentum decay and maintain a constant mass-flow rate, the bulk forcing function is enabled with a bulk velocity target of $U_b = 1 \text{ m/s}$. The fluid viscosity is set in order to result in a bulk Reynolds number of $Re = 80000$.
+
+A grid with resolution of $256 \times 96 \times 96$ is considered. The choice of the mesh must ensure that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretizations deliberately avoid this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the Dean correlation \cite{dean-correlation}, to estimate the channel friction coefficient $C_f$:
+\begin{equation}
+	C_f = 0.073 \cdot Re^{-0.25} = 4.341 \cdot 10^{-3}
+\end{equation}
+The wall stress can be calculated as:
+\begin{equation}
+	\tau_W = \dfrac{1}{2} \, \rho \, U_b^2 \, C_f =  2.170 \cdot 10^{-3} \text{ Pa}
+\end{equation}
+Consequently, the friction velocity result in:
+\begin{equation}
+	u_\tau = \sqrt{\dfrac{\tau_W}{\rho}} = U_b \, \sqrt{\dfrac{C_f}{2}} = 0.04659 \text{ m/s}
+\end{equation}
+Based on the wall laws introduced in Section \ref{sec:wall-laws}, the first cell position can be expressed in wall units as:
+\begin{equation}
+	\Delta y^+ = \dfrac{\Delta y \, u_\tau}{\nu} = \dfrac{((L_y + 0.1)/N_y) \, u_\tau}{\nu} = 42.70
+\end{equation}
+To obtain a first estimation of the sampling position for the wall model, considering it is sampled at a distance of 3 cells (projected in the wall-normal direction) from the interface:
+\begin{equation}
+	y_{MP}^+ = \dfrac{y_{MP} \, u_\tau}{\nu} = \dfrac{(3 \cdot \Delta y) \, u_\tau}{\nu} = 128.1
+\end{equation}
+This ensures that the first cell position, and the sampling location, fall well above the viscous sub-layer.
+
+\newpage
 \section{Periodic hills benchmark}
 The case analyzed in this section is the flow in a channel with streamwise-periodic constrictions, commonly known as the ERCOFTAC periodic hills benchmark. In the present study, this configuration is used to assess the solver performance in the prediction of turbulent flows that exhibit complex dynamics. The benchmark is considered particularly challenging, since, as shown in Figure \ref{fig:PH-qualitative}, it involves separation and reattachment from a curved boundary, the formation of an unsteady shear layer and a large separation bubble, strong accelerations of the fluid in the convergent region of the channel, intense fluctuating pressure gradients, the turbulence recycling due to periodic boundaries and a bottom wall always far from equilibrium conditions \cite{cinnella}.
 
@@ -1438,9 +1472,7 @@ For its demanding test geometry and the widely available predicted results, the 
 \subsection{Simulation setup}
 The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h_H=1 \text{ m}$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h_H$, a channel height $L_y = 3.035 \, h_H$, and a spanwise width $L_z = 4.5 \, h_H$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the $y$-direction, resulting in a height of $3.135 \, h_H$. However this doesn't affect the channel geometry, which maintain its height of $3.035 \, h_H$.
 
-\textit{Note that although the solver operates with non-dimensional units, in this Chapter the variables will be expressed in standard units for clarity.}
-
-In terms of boundary conditions, periodicity is applied in both the streamwise and spanwise directions. The periodicity allows the flow to naturally develop and recycle turbulent structures within the computational domain. Since periodic conditions are imposed in the streamwise direction, the flow would naturally dissipate its kinetic energy. To counteract this and maintain a constant mass-flow rate, the bulk forcing function is enabled with a bulk velocity target of $U_b = 1 \text{ m/s}$. The simulation is performed at a bulk Reynolds number of $37000$, which is defined as:
+In terms of boundary conditions, periodicity is applied in both the streamwise and spanwise directions. The periodicity allows the flow to naturally develop and recycle turbulent structures within the computational domain. A velocity target of $U_b = 1 \text{ m/s}$ is set for the bulk velocity function. The simulation is performed at a bulk Reynolds number of $37000$, which is defined as:
 \begin{equation}
 	Re = \dfrac{U_b \, h_H}{\nu}
 \end{equation}
@@ -1449,19 +1481,8 @@ In order to evaluate the mesh independence and the solver sensitivity to spatial
 	\item \texttt{PH-R1:} A coarser grid consisting of $128 \times 80 \times 80$ cells.
 	\item \texttt{PH-R2:} A refined grid consisting of $256 \times 96 \times 128$ cells.
 \end{itemize}
-The choice of the mesh must ensure that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretizations deliberately avoid this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the average value of friction coefficient $C_f \approx 0.005$ reported by Gloerfelt and Cinnella \cite{cinnella}:
-\begin{equation}
-	\tau_W = \dfrac{1}{2} \, \rho \, U_b^2 \, C_f \qquad \implies \qquad u_\tau = \sqrt{\dfrac{\tau_W}{\rho}} = U_b \, \sqrt{\dfrac{C_f}{2}} \approx 0.05 \text{ m/s}
-\end{equation}
-Based on the wall laws introduced in Section \ref{sec:wall-laws}, the first cell position can be expressed in wall units as:
-\begin{equation}
-	\Delta y^+ = \dfrac{\Delta y \, u_\tau}{\nu} = \dfrac{((L_y + 0.1)/N_y) \, u_\tau}{\nu} 
-\end{equation}
-To obtain a first estimation of the sampling position for the wall model, considering it is sampled at a distance of 3 cells (projected in the wall-normal direction) from the interface:
-\begin{equation}
-	y_{MP}^+ = \dfrac{y_{MP} \, u_\tau}{\nu} = \dfrac{(3 \cdot \Delta y) \, u_\tau}{\nu} 
-\end{equation}
-The resulting values for both grids are summarized in Table \ref{tab:grid-wall-units}.
+%
+Considering the average value of friction coefficient $C_f \approx 0.005$ reported by Gloerfelt and Cinnella \cite{cinnella}, with the same procedure introduced for the channel case in Section \ref{sec:periodic-channel-setup}, the validity of the WM-LES assumption for the selected grids can be assessed.
 \begin{table}[h]
 	\centering
 	\renewcommand{\arraystretch}{1.2}
@@ -1587,6 +1608,7 @@ The mean velocity fields for the two simulations are reported in Figure \ref{fig
     \label{fig:PH-R2-velocity}
 \end{figure}
 
+\newpage
 \subsection{Average velocity profiles}
 The streamwise velocity profiles for simulations \texttt{PH-R1}, \texttt{PH-R2} along with the results available from other LES and experimental studies \cite{cinnella} \cite{manhart} \cite{manhart-profiles-LES}, extracted at various locations along the channel, are presented in Figure \ref{fig:PH-velocity-profiles}.
 
