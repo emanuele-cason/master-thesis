@@ -1435,6 +1435,7 @@ In the streamwise and spanwise directions, periodic boundary conditions are appl
 A grid with resolution of $256 \times 96 \times 96$ is considered. The choice of the mesh must ensure that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretizations deliberately avoid this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the Dean correlation \cite{dean-correlation}, to estimate the channel friction coefficient $C_f$:
 \begin{equation}
 	C_f = 0.073 \cdot Re^{-0.25} = 4.341 \cdot 10^{-3}
+	\label{eq:dean-correlation}
 \end{equation}
 The wall stress can be calculated as:
 \begin{equation}
@@ -1452,7 +1453,57 @@ To obtain a first estimation of the sampling position for the wall model, consid
 \begin{equation}
 	y_{MP}^+ = \dfrac{y_{MP} \, u_\tau}{\nu} = \dfrac{(3 \cdot \Delta y) \, u_\tau}{\nu} = 128.1
 \end{equation}
-This ensures that the first cell position, and the sampling location, fall well above the viscous sub-layer.
+This shows that the first cell position, and the sampling location, fall well above the viscous sub-layer.
+
+The numerical simulation was carried out for a total duration of $350 \text{ s}$. To ensure that the considered data is completely independent of the initial conditions, an initial startup interval was selected and discarted. The selection was done by monitoring the evolution of the mean velocity profile. At approximately $t = 80 \text{ s}$ a statistically steady behavior was observed. However, to introduce a conservative safety margin, the collection of flow statistics was initiated at $t = 150 \text{ s}$. The remaining $200 \text{ s}$ of simulation provided a sufficiently wide temporal window to obtain properly converged mean profiles.
+
+\subsection{Average velocity fields}
+The data post-processing, after the selection of a mean steady state interval, consisted in the first stage in a span and time averaging, as shown in Figure \ref{fig:TC-R1-velocity}.
+
+\begin{figure}[p]
+    \centering
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/TC-R1/velocity-t150.jpg}
+        \caption{Istantaneous velocity field at $t = 150 \text{ s}$}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/TC-R1/velocity-span-avg-t150.jpg}
+        \caption{Span-averaged velocity field}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/TC-R1/velocity-span-time-avg.jpg}
+        \caption{Span and time averaged velocity field}
+    \end{subfigure}
+
+    \caption{Velocity field averaging}
+    \label{fig:TC-R1-velocity}
+\end{figure}
+
+\subsection{Average velocity profile}
+In order to verify the capability of the solver in recovering the correct physical behavior of the flow, a comparison was done between the analytical Reichard law and the obtained mean streamwise velocity data. The wall units coordinate transformation was based on the theorical wall stress calculated with the Dean correlation in equation \eqref{eq:dean-correlation}.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{\textwidth}{!}{%
+        \includegraphics[height=10cm]{img/TC-R2/velocity-profile.png}
+        \hspace{0.75cm}
+        \includegraphics[height=10cm]{img/TC-R2/velocity-profile-comparison.png}
+    }
+    \caption{Mean streamwise velocity profile in standard units (left); and in wall units, compared with the Reichardt law (right).}
+    \label{fig:TC-velocity-profiles}
+\end{figure}
+
+The simulated profile resulted in a maximum relative error of 5.04 \% and in an average error of 1.44 \% with respect to the Reichardt law.
 
 \newpage
 \section{Periodic hills benchmark}
