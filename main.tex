@@ -732,7 +732,7 @@ First-order turbulence closures can be also classified by the number of governin
 \subsubsection{Model \boldmath$k - \mathcal{E}$} The $k - \mathcal{E}$ model is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near-wall behavior \cite{cfd-blazek}.
 \begin{itemize}
 	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y+ \leq 1$) in order to stay valid and resolve the viscous sub-layer.
-	\item By contrast, high Reynolds number turbulence models don't need damping functions, they are less stringent in term of grid resolution (first node inside $10 \leq y+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
+	\item By contrast, high Reynolds number turbulence models don't need damping functions, they are less stringent in terms of grid resolution (first node inside $10 \leq y+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
 \end{itemize}
 Since the method is based on the Boussinesq assumption, it inherits all the limitations related to the linear eddy viscosity modeling already discussed previously.
 A third aspect regards the (non) universality: the model requires \textit{ad hoc} adjustments of its calibration constants based on the nature of the considered flow \cite{turbulent-flows}. It also degrade in performance with adverse pressure gradients.
@@ -864,7 +864,7 @@ The explicit filtering approach involves the application of a distinct mathemati
 	\label{fig:les-filters}
 \end{figure}
 
-This explicit approach allows decouple the filter length and the grid resolution obtaining a better control on which scales are resolved and which are modeled. This has important implications in term of stability control and allows to perform mesh convergence analysis varying the grid resolution alone.
+This explicit approach allows decouple the filter length and the grid resolution obtaining a better control on which scales are resolved and which are modeled. This has important implications in terms of stability control and allows to perform mesh convergence analysis varying the grid resolution alone.
 
 Conversely, the implicit filtering approach relies on the computational grid and the discretization scheme to act as the filter. In this case, the filter width is coupled with the local mesh resolution ($\Delta_F = \Delta$), assuming that the grid itself defines the cutoff frequency without the need for an external mathematical operator. This allows to save a relevant part of the computational cost.
 
@@ -1367,7 +1367,7 @@ At this point the local stress tensor is known at the near-wall nodes and has to
 \end{figure}
 
 \subsubsection{Cut-cell forcing}
-To improve the interface discretization, and obtain higher accuracy during the application of the sampled wall stress, a cut-cell forcing approach was developed. The idea is to pre-compute, for every control volume of the domain, the scalar value of the interface area intersected with the cell. Although this operation might appear computationally expensive, its optimized implementation proved to be almost negligible in term of computational time. This efficiency can be explained at least by two aspects: the algorithm performs an initial pruning of the domain, discarding all the control volumes located too far from the interface. The cells with a non-null wetted area, that can now be considered interface cells by definition, represent only a small percentage of the total domain. The second aspect is that the intersected area is computed only once at the beginning of the simulation and then stored. Since the considered case studies involve static geometries, there is no need to recompute the wetted area at each time step. Nevertheless, the code is already structured to handle geometry updates through a simple call to the \texttt{IBM\_UpdateGeometry} subroutine, thus allowing straightforward extension to moving or deforming boundaries.
+To improve the interface discretization, and obtain higher accuracy during the application of the sampled wall stress, a cut-cell forcing approach was developed. The idea is to pre-compute, for every control volume of the domain, the scalar value of the interface area intersected with the cell. Although this operation might appear computationally expensive, its optimized implementation proved to be almost negligible in terms of computational time. This efficiency can be explained at least by two aspects: the algorithm performs an initial pruning of the domain, discarding all the control volumes located too far from the interface. The cells with a non-null wetted area, that can now be considered interface cells by definition, represent only a small percentage of the total domain. The second aspect is that the intersected area is computed only once at the beginning of the simulation and then stored. Since the considered case studies involve static geometries, there is no need to recompute the wetted area at each time step. Nevertheless, the code is already structured to handle geometry updates through a simple call to the \texttt{IBM\_UpdateGeometry} subroutine, thus allowing straightforward extension to moving or deforming boundaries.
 
 The algorithm for the wetted area computation locally represents the intersected wall as a plane, with a known normal direction and distance from the cell center (obtained from the SDF). Using an analytical approach, the exact positions of each intersection point along the cell edges are determined (they can range from 3 to 6). This procedure allows computing the area of the resulting polygon, as shown in Figure \ref{fig:ibm-forcing-wet-area}. The improved accuracy of the interface representation compared to the previous method (Figure \ref{fig:ibm-forcing-staircase-B}) can be observed in Figure \ref{fig:ibm-forcing-cut-cell-B}, where the exact and the approximated boundaries are almost indistinguishable due to their near-perfect overlap.
 
@@ -1432,7 +1432,7 @@ The geometry for the turbulent channel flow is defined with a streamwise lenght 
 
 In the streamwise and spanwise directions, periodic boundary conditions are applied, with a syntethic noise generator to anticipate the laminar-to-turbulent transition at the beginning of the simulation. Since periodic conditions are imposed in the streamwise direction, the flow would naturally dissipate its kinetic energy. To counteract this momentum decay and maintain a constant mass-flow rate, the bulk forcing function is enabled with a bulk velocity target of $U_b = 1 \text{ m/s}$. The fluid viscosity is set in order to result in a bulk Reynolds number of $Re = 80000$.
 
-A grid with resolution of $256 \times 96 \times 96$ is considered. The choice of the mesh must ensure that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretizations deliberately avoid this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the Dean correlation \cite{dean-correlation}, to estimate the channel friction coefficient $C_f$:
+A grid with resolution of $256 \times 96 \times 96$ is considered. The choice of the mesh must ensure that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretizations deliberately avoid this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the Dean correlation \cite{dean-correlation}, based on empirical experimental data, to estimate the channel friction coefficient $C_f$:
 \begin{equation}
 	C_f = 0.073 \cdot Re^{-0.25} = 4.341 \cdot 10^{-3}
 	\label{eq:dean-correlation}
@@ -1460,7 +1460,7 @@ The numerical simulation was carried out for a total duration of $350 \text{ s}$
 \subsection{Average velocity fields}
 The data post-processing, after the selection of a mean steady state interval, consisted in the first stage in a span and time averaging, as shown in Figure \ref{fig:TC-R1-velocity}.
 
-\begin{figure}[p]
+\begin{figure}[!htbp]
     \centering
 
     \begin{subfigure}{\textwidth}
@@ -1492,7 +1492,7 @@ The data post-processing, after the selection of a mean steady state interval, c
 \subsection{Average velocity profile}
 In order to verify the capability of the solver in recovering the correct physical behavior of the flow, a comparison was done between the analytical Reichard law and the obtained mean streamwise velocity data. The wall units coordinate transformation was based on the theorical wall stress calculated with the Dean correlation in equation \eqref{eq:dean-correlation}.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \resizebox{\textwidth}{!}{%
         \includegraphics[height=10cm]{img/TC-R2/velocity-profile.png}
@@ -1504,6 +1504,19 @@ In order to verify the capability of the solver in recovering the correct physic
 \end{figure}
 
 The simulated profile resulted in a maximum relative error of 5.04 \% and in an average error of 1.44 \% with respect to the Reichardt law.
+
+\subsection{Average wall stress}
+The mean wall stress value considered so far is the theoretical one, calculated with equation \eqref{eq:dean-correlation}. However, the same variable can be obtained from the simulation output data computed by the implemented cut-cell algorithm. In particular, for each time-step the summation of all the friction drag contributions across the interface, divided by the total wetted surface, results in a time evolution of the mean wall stress value, as shown in Figure \ref{fig:TC-wall-stress-evolution}.
+\begin{figure}[H]
+	\centering
+	\vspace{0.15cm}
+	\includegraphics[width=0.95\textwidth]{img/TC-R1/wall-stress-evolution.png} 
+	\caption{Mean wall stress evolution compared with the theoretical value.}
+	\label{fig:TC-wall-stress-evolution}
+\end{figure}
+The temporal and spatial average of the wall shear stress $\tau_W$, in the steady-state interval, computed by the IBM forcing is $2.006 \cdot 10^{-3}$ Pa. Compared to the analytical estimation value of $2.170 \cdot 10^{-3}$ Pa, the solver exhibits a slight underprediction of approximately 7.5 \%.
+
+As a primary evaluation, the wall stress data obtained from the solver can be considered reasonable and in fair agreement with the analytical prediction. In terms of relative error, multiple aspects should be considered: First, while the Dean correlation is a standard choice for the primary assessment of the wall stress, its limitations must be acknowledged. As observed by Schultz and Flack \cite{schultz-flack}, at $Re \geq 62\,000$ the skin friction is better described by a logarithmic law. For $Re \leq 150\,000$ the error of power laws similar to that employed is on the order of $\pm 2.5\%$. Taking into account the additional error contributions introduced by the numerical framework, contextualizes the total relative error found.
 
 \newpage
 \section{Periodic hills benchmark}
@@ -1558,6 +1571,7 @@ To ensure the numerical stability during the temporal integration, the maximum a
 The simulation is carried out up to a maximum physical time of $(50 \cdot t_{FT})$.
 
 \subsection{Bulk forcing}
+\label{sec:bulk-forcing}
 Since the periodic streamwise boundary conditions effectively simulate an infinite channel, there is the need to maintain the fluid flow in motion. The solver include a proper bulk forcing function, based on the average velocity of the entire fluid domain. When the computed average velocity diverges from the target value, a proportional contribution vector is directly added to the solution $\bm{u}^*$ at the prediction step of the pressure-correction scheme.
 
 However, the standard periodic hills benchmark requires a different constraint: a constant mass-flow rate measured specifically at the cross-section located on top of the hill crest. In order to enforce and maintain the required flow rate, a dedicated bulk forcing approach was implemented, based on a Proportional-Integral (PI) control law.
@@ -1659,12 +1673,6 @@ The mean velocity fields for the two simulations are reported in Figure \ref{fig
     \label{fig:PH-R2-velocity}
 \end{figure}
 
-\newpage
-\subsection{Average velocity profiles}
-The streamwise velocity profiles for simulations \texttt{PH-R1}, \texttt{PH-R2} along with the results available from other LES and experimental studies \cite{cinnella} \cite{manhart} \cite{manhart-profiles-LES}, extracted at various locations along the channel, are presented in Figure \ref{fig:PH-velocity-profiles}.
-
-At the first position downstream the hill crest $x/h = 0.5$, the three profiles depict the start of the flow separation, with a region of negative streamwise velocity near the bottom wall. The backflow is poorly represented in the \texttt{PH-R1} case, due to its coarse discretization, conversely in \texttt{PH-R2}, the separation is even more marked than in the reference results. From that point, a region of negative streamwise velocity is visible near the bottom wall, defining the extent of the recirculation bubble. Moving further downstream, the near-wall velocity gradually recovers as the flow approaches the reattachment point. In the reference data, the profiles indicate that the flow reattaches between $x/h = 4$ and $x/h = 5$, where the velocity near the lower boundary transitions back to positive values. In contrast, both the \texttt{PH-R1} and \texttt{PH-R2} numerical simulations exhibit a longer recirculation region, with the profiles showing negative velocities up to $x/h = 5$ and a reattachment point shifted downstream, between $x/h = 5$ and $x/h = 6$. Past the reattachment point, the flow undergoes a recovery phase over the remaining portion of domain.
-
 \begin{figure}[H]
     \centering
 
@@ -1690,6 +1698,12 @@ At the first position downstream the hill crest $x/h = 0.5$, the three profiles 
     \caption{Profiles of the average streamwise velocity $\langle u \rangle$. Respectively \texttt{PH-R1} (top), \texttt{PH-R2} (middle) simulations and reference data at $Re = 37000$ (bottom), including: (\textcolor{brown}{\textbf{---}}), (\textcolor{red}{\textbf{- - -}}) WR-LES simulations by Cinnella \cite{cinnella}; (\textcolor{magenta}{$\diamond\diamond$}) experiments by Rapp and Manhart \cite{manhart}; (\textcolor{cyan}{$-\cdot-\cdot$}) LES by Manhart et al. \cite{manhart-profiles-LES}.}
     \label{fig:PH-velocity-profiles}
 \end{figure}
+
+\newpage
+\subsection{Average velocity profiles}
+The streamwise velocity profiles for simulations \texttt{PH-R1}, \texttt{PH-R2} along with the results available from other LES and experimental studies \cite{cinnella} \cite{manhart} \cite{manhart-profiles-LES}, extracted at various locations along the channel, are presented in Figure \ref{fig:PH-velocity-profiles}.
+
+At the first position downstream the hill crest $x/h = 0.5$, the three profiles depict the start of the flow separation, with a region of negative streamwise velocity near the bottom wall. The backflow is poorly represented in the \texttt{PH-R1} case, due to its coarse discretization, conversely in \texttt{PH-R2}, the separation is even more marked than in the reference results. From that point, a region of negative streamwise velocity is visible near the bottom wall, defining the extent of the recirculation bubble. Moving further downstream, the near-wall velocity gradually recovers as the flow approaches the reattachment point. In the reference data, the profiles indicate that the flow reattaches between $x/h = 4$ and $x/h = 5$, where the velocity near the lower boundary transitions back to positive values. In contrast, both the \texttt{PH-R1} and \texttt{PH-R2} numerical simulations exhibit a longer recirculation region, with the profiles showing negative velocities up to $x/h = 5$ and a reattachment point shifted downstream, between $x/h = 5$ and $x/h = 6$. Past the reattachment point, the flow undergoes a recovery phase over the remaining portion of domain.
 
 \subsection{Results analysis}
 The qualitative behavior of the flow, and in particular the presence of a reattachment region, represents an important result for the solver. In the complex configuration of the periodic hills, it was demonstrated that the capability of capturing the reattachment phenomenon is strongly influenced by the wall modeling, especially on coarse grids \cite{breuer}. The fact that the numerical setup succeeds in predicting this behavior confirms that the implemented bulk forcing, IBM cut-cell forcing, and the wall model are working correctly and are properly coupled with the Runge-Kutta scheme.
