@@ -239,9 +239,9 @@ In the current work, the implementation of an adaptive wall modeling approach is
 	% Wall bounded flows
 	\addlinespace
 	$\tau$                                       & Total shear stress \\
-	$\tau_W$                                     & Wall shear stress \\
-    $P_E$		                                 & Mean free-stream pressure \\
-    $P_W$                                        & Mean wall pressure \\
+	$\tau_w$                                     & Wall shear stress \\
+    $P_e$		                                 & Mean free-stream pressure \\
+    $P_w$                                        & Mean wall pressure \\
 	$h$                                          & Channel half-height \\
     $U_C$                                        & Centerline mean velocity \\
     $u_\tau$                                     & Friction velocity \\
@@ -479,13 +479,13 @@ In summary, the energy input associated with the mean velocity field (for exampl
 \subsection{Inertial momentum balance}
 In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction.
 % Removed because non general for the channel case and unused.
-% Since the incompressible case is considered, the Bernoulli principle relate the mean free-stream pressure $P_E(x)$ with the mean velocity $U_E(x)$ so that:
+% Since the incompressible case is considered, the Bernoulli principle relate the mean free-stream pressure $P_e(x)$ with the mean velocity $U_e(x)$ so that:
 % \begin{equation}
-% 	P_E \, (x) + \frac{1}{2} \, \rho \, U_E(x)^2 = \textit{const} 
+% 	P_e \, (x) + \frac{1}{2} \, \rho \, U_e(x)^2 = \textit{const} 
 % 	\qquad \quad
-% 	- \frac{d \, P_E}{dx} = \rho \, U_E \, \frac{d \, U_E}{dx}
+% 	- \frac{d \, P_e}{dx} = \rho \, U_e \, \frac{d \, U_e}{dx}
 % \end{equation} 
-% Considering the definition of $Re_x = U_E \, x / \nu$, after a critical value on the order of $Re_x \approx 10^6$, the transition to turbulent flow starts.
+% Considering the definition of $Re_x = U_e \, x / \nu$, after a critical value on the order of $Re_x \approx 10^6$, the transition to turbulent flow starts.
 
 At this point it is useful to recall the RANS equations \eqref{eq:rans}, developing their momentum $x$ and $y$ component, and neglecting the statistics variations in the $z$ direction:
 \begin{equation}
@@ -546,10 +546,10 @@ Under the same assumptions, equation \eqref{eq:rans-wall-y} can be simplified an
 	P + \rho \, \langle v'^{\, 2} \rangle \right)
 	\label{eq:pressure-tble}
 \end{equation}
-In the particular case of flow over a flat plate considered, since at the wall and in the far free-stream region the term $\langle v'^{\, 2} \rangle$ cancels out, it results that the mean wall pressure $P_W \, (x)$ equals the free-stream pressure $P_E \, (x)$.
+In the particular case of flow over a flat plate considered, since at the wall and in the far free-stream region the term $\langle v'^{\, 2} \rangle$ cancels out, it results that the mean wall pressure $P_w \, (x)$ equals the free-stream pressure $P_e \, (x)$.
 \begin{equation}
 	\left(
-	P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x) = P_E \, (x)
+	P + \rho \, \langle v'^{\, 2} \rangle \right) = P_w \, (x) = P_e \, (x)
 \end{equation}
 Equation \eqref{eq:tble} represents the \textit{Inertial Momentum Balance}. The terms on the left-hand side account for the fluid inertia. These terms include both the unsteady acceleration and the spatial convection.
 Their presence indicates a non-equilibrium state: the pressure gradient and the total shear stress do not simply balance each other, and the local velocity profile is not determined uniquely by the instantaneous force balance, but depends on the flow evolution.
@@ -570,26 +570,26 @@ Consequently, in equation \eqref{eq:tble}, the inertial terms on the left-hand s
 Similarly with what already seen for equation \eqref{eq:pressure-tble}, the term $P + \rho \, \langle v'^{\, 2} \rangle$ is constant along $y$, the term $\langle v'^{\, 2} \rangle$ cancels out at the wall, and its derivative in $x$ is zero for the homogeneity assumptions. Consequently:
 \begin{equation}
 	\left(
-	P + \rho \, \langle v'^{\, 2} \rangle \right) = P_W \, (x)
+	P + \rho \, \langle v'^{\, 2} \rangle \right) = P_w \, (x)
 	\quad
 	\implies
 	\quad
 	\frac{\partial}{\partial x} \left(
-	P + \rho \, \langle v'^{\, 2} \rangle \right) = \frac{\partial P}{\partial x} = \frac{\partial P_W}{\partial x}
+	P + \rho \, \langle v'^{\, 2} \rangle \right) = \frac{\partial P}{\partial x} = \frac{\partial P_w}{\partial x}
 \end{equation}
 And substituting the pressure gradient in equation \eqref{eq:eq-tble-1}:
 \begin{equation}
-	\frac{d P_W}{dx} = \frac{d}{dy} \left[ \mu \frac{dU}{dy} - \rho \langle u'v' \rangle \right] = \frac{d \tau}{dy} = \textit{const}
+	\frac{d P_w}{dx} = \frac{d}{dy} \left[ \mu \frac{dU}{dy} - \rho \langle u'v' \rangle \right] = \frac{d \tau}{dy} = \textit{const}
 	\label{eq:eq-tble-2}
 \end{equation}
 While the pressure is a function of $x$, $\tau$ is a function of $y$ so, in order for the equation \eqref{eq:eq-tble-2} to be verified, their derivatives above must be equal to a constant value. This imply a linear behavior of the total shear stress along the $y$ direction, described by:
 \begin{equation}
-	\tau(y) = \tau_W \left( 1 - \frac{y}{h} \right)
+	\tau(y) = \tau_w \left( 1 - \frac{y}{h} \right)
 	\quad \implies \quad
 	\left\{ \, \,
 	\begin{aligned}
-		 & \tau(y=0)   = \tau_W  \\
-		 & \tau(y=2h)  = -\tau_W
+		 & \tau(y=0)   = \tau_w  \\
+		 & \tau(y=2h)  = -\tau_w
 	\end{aligned}
 	\right.
 	\label{eq:linear-total-shear-stress}
@@ -606,7 +606,7 @@ Observing the data of the contributions, it is possible to identify two regions,
 \begin{itemize}
 	\item \textbf{Inner layer $(y/h \ll 1)$:} near the wall with a prevalence of the viscous effects. At increasing Reynolds number this region becomes progressively thinner. Its characteristic wall friction velocity and viscous length scale are defined as:
 	      \begin{equation}
-		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{\frac{\tau_W}{\rho}}$}
+		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{\frac{\tau_w}{\rho}}$}
 		      \makebox[5.0cm][c]{$\displaystyle \delta_{\nu} = \frac{\nu}{u_\tau}$}
 	      \end{equation}
 	      Using these scales, the wall-normal coordinate and the mean velocity can be expressed in inner variables as:
@@ -614,7 +614,7 @@ Observing the data of the contributions, it is possible to identify two regions,
 		      \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{U}{u_\tau}$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ = \frac{y}{\delta_\nu} = \frac{y \, u_\tau}{\nu}$}
 	      \end{equation}
-	      It can be noticed that, to assume $(y/h \ll 1)$ imply $\tau(y) \approx \tau_W$ and thus $d P_W / d x = d \tau / dy \approx 0$ (see equations \eqref{eq:linear-total-shear-stress} and \eqref{eq:eq-tble-2}). This means that the gradients involved cannot be excessive in order for the formulation to be valid.
+	      It can be noticed that, to assume $(y/h \ll 1)$ imply $\tau(y) \approx \tau_w$ and thus $d P_w / d x = d \tau / dy \approx 0$ (see equations \eqref{eq:linear-total-shear-stress} and \eqref{eq:eq-tble-2}). This means that the gradients involved cannot be excessive in order for the formulation to be valid.
 	\item \textbf{Outer layer $(y/\delta_{\nu} \gg 1)$:} where the turbulent stress component is dominant. The characteristic velocity and length scales are:
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle u_\tau = \sqrt{-\frac{h}{\rho}\, \frac{\partial P}{\partial x}}$}
@@ -1342,9 +1342,35 @@ While the first step is trivial in its implementation, for the interface flux co
 The method originally implemented in this framework, was based on a approximated face-based check for wall intersection and stress computation. In the current work, a more accurate approach was implemented and tested, based instead on the calculation of the exact intersection area between each control volume and the geometry (wetted area or cut-cell method).
 
 \subsubsection{Face-based staircase forcing}
-The first approach employed is represented in Figure \ref{fig:ibm-forcing-staircase} in 2D. At first a near-wall layer of control volumes is identified: this is done by defining, for each node, a distance $d$, consisting on the projection of the related cell along the local wall-normal direction. This allows to obtain a reduced subset of nodes (pruning) to be considered in the actual interface detection. For every node inside this layer, a related matching point is localized at a distance proportional to $d$, along the wall-normal direction, there the 3D external velocity field is sampled by interpolation, obtaining the $u_{MP}$ vector. To estimate the wall-stress, the wall-parallel component of the external velocity $u_{MP \, \parallel}$ is fed as an input for the wall model.
+The first approach employed is represented in Figure \ref{fig:ibm-forcing-staircase} in 2D. The entire process is repeated for each of the staggered grids. At first a near-wall layer of control volumes is identified: this is done by defining, for each node, a distance $d$, consisting of the projection of the related cell along the local wall-normal direction. This allows to obtain a reduced subset of nodes (pruning) to be considered in the actual interface detection. For every node inside this layer, a related matching point is localized at a distance proportional to $d$, along the wall-normal direction, there the 3D external velocity field is sampled by interpolation, obtaining the $\bm{u}_{MP}$ vector. The wall-parallel component of the external velocity $\bm{u}_{MP \, \parallel}$ and the sampling distance are fed as inputs for the wall model, that computes and returns the scalar wall stress value $\tau_w$.
 
-At this point the local stress tensor is known at the near-wall nodes and has to be enforced. The interface is detected by checking whether any of the adjacent cells sharing a face with these nodes lie within the solid domain, which is indicated by a change in the sign of the SDF. If this condition is met, the shared cell face is considered part of the approximated interface. The stress vector acting on this face is then computed by multiplying the local stress tensor with the face area and used to update the viscous term in the momentum balance of the corresponding fluid cell. As shown in Figure \ref{fig:ibm-forcing-staircase-B}, with this approach the approximated interface assumes a staircase shape.
+To construct the wall stress vector and tensor, for each node considered a local orthonormal and geometry-aligned reference system is defined. This frame consists of a wall-normal versor $\bm{\hat{n}}$, alongside with a tangent $\bm{\hat{t}}$ and a binormal $\bm{\hat{b}}$ versors lying on the wall-parallel plane. This allows the decomposition of the scalar wall stress along the $\bm{\hat{t}}$ and $\bm{\hat{b}}$ directions, yielding the components $\tau_{w,t}$ and $\tau_{w,b}$, so that the resulting stress vector is aligned to the sampled external velocity direction:
+\begin{equation}
+	\bm{\tau}_w = \tau_{w,t} \cdot \bm{\hat{t}} + \tau_{w,b} \cdot \bm{\hat{b}}
+\end{equation}
+In order to mathematically represent the three-dimensional stress state that the wall induces in the fluid, the wall stress tensor in the local frame of reference is constructed as follows:
+\begin{equation}
+	\bm{\tau}_{w, \, local} = \begin{bmatrix} 0 & 0 & \tau_{w,t} \\ 0 & 0 & \tau_{w,b} \\ \tau_{w,t} & \tau_{w,b} & 0 \end{bmatrix}
+\end{equation}
+Subsequently, to be correctly applied as a forcing term, the local stress tensor is transformed back into the global Cartesian coordinate system, through a rotation matrix $\bm{R}$:
+\begin{equation}
+	\bm{\tau}_{w, \, global} = \mathbf{R} \, (\bm{\tau}_{w, \, local}) \, \mathbf{R}^T = \begin{bmatrix} t_x & b_x & n_x \\ t_y & b_y & n_y \\ t_z & b_z & n_z \end{bmatrix} \begin{bmatrix} 0 & 0 & \tau_{w,t} \\ 0 & 0 & \tau_{w,b} \\ \tau_{w,t} & \tau_{w,b} & 0 \end{bmatrix} \begin{bmatrix} t_x & t_y & t_z \\ b_x & b_y & b_z \\ n_x & n_y & n_z \end{bmatrix}
+\end{equation}
+The stress tensor in the global frame of reference $\bm{\tau}_{w, \, global}$ contains the components:
+\begin{equation}
+	\bm{\tau}_{w, \, global} = 
+	\begin{bmatrix}
+		\sigma_{xx} & \tau_{xy} & \tau_{xz} \\
+		\tau_{xy} & \sigma_{yy} & \tau_{yz} \\
+		\tau_{xz} & \tau_{yz} & \sigma_{zz}
+	\end{bmatrix}
+\end{equation}
+where the subscripts follow the standard convention to identify the orientation of the surface on which the stress acts and the direction of the stress component. For example, $\sigma_{yy}$ is the normal stress acting on a surface whose normal is aligned with the $y$-axis, and directed along the $y$-axis; while $\tau_{yx}$ is the shear stress acting on a surface whose normal is aligned with the $y$-axis, but directed along the $x$-axis.
+%[commented out]The Cauchy's tetrahedron argument explains how knowing the stress vectors acting on three mutually orthogonal faces of an (infinitesimal) element allow to determine the entire generic stress state \cite{lenci}. In this case the generic stress state is generated by the shear stress vector $\bm{\tau}_w$ in the generic $(\bm{\hat{t}},\, \bm{\hat{b}})$ plane. Moreover, the computed $\bm{\tau}_{w, \, global}$ contains the three stress vectors acting on the three (mutually orthogonal) Cartesian faces. Thus, according to the theorem, it is possible to represent the arbitrarily-oriented wall stress, with a system of normal and shear stresses defined at the Cartesian faces. [commented out]
+
+At this point the stress tensor in the global frame of reference is known at each near-wall node and has to be enforced. The interface is detected by checking whether any of the adjacent cells sharing a face with these nodes lie within the solid domain, which is indicated by a change in the sign of the SDF. If this condition is met, the shared cell face is considered part of the approximated interface. As shown in Figure \ref{fig:ibm-forcing-staircase-B}, with this approach the approximated interface assumes a staircase shape. 
+
+For each face of the staircase interface, the stress component that both acts on this face and is directed along the considered staggered grid direction, is multiplied by the corresponding Cartesian face area. The resulting contribution is then used to update the viscous term in the momentum balance of the corresponding fluid cell. 
 
 \begin{figure}[htbp]
 	\centering
@@ -1362,9 +1388,21 @@ At this point the local stress tensor is known at the near-wall nodes and has to
 		\label{fig:ibm-forcing-staircase-B}
 	\end{subfigure}
 
-	\caption{Face-based staircase forcing: geometry interface (solid red line); interface-layer control volumes (filled in red), within distance $d$ (dashed red line) from the interface; wall-normal direction (dot-dashed black line); matching point (red $\times$ marker); interpolated velocity $u_{MP}$ and its projection $u_{MP \, \parallel}$; velocity profile and stress vector computed by the wall model (light blue); staircase detected interface (dashed black line).}
+	\caption{Face-based staircase forcing: geometry interface (solid red line); interface-layer control volumes (filled in red), within distance $d$ (dashed red line) from the interface; wall-normal direction (dot-dashed black line); matching point (red $\times$ marker); interpolated velocity $\bm{u}_{MP}$ and its projection $\bm{u}_{MP \, \parallel}$; velocity profile and stress vector computed by the wall model (light blue); staircase approximated interface (dashed black line).}
 	\label{fig:ibm-forcing-staircase}
 \end{figure}
+
+The staircase method provides an highly practical solution and a straightforward implementation for the forcing problem. Since the stepped interface averagely follows the real one, the area overestimation related to the staircase approximation is mitigated by the use of the stress tensor. Despite these beneficial aspects, it is necessary to acknowledge the method limitations, that are primarily related to the spatial distibution of the wall stress contributions.
+
+First, the staircase approximation introduces some form of spatial inhomogeneity: as shown in Figure \ref{fig:ibm-forcing-staircase-C} for the $u$-velocity grid, the wall shear stress component $\tau_{yx}$, acting on the horizontal faces, is reasonably distributed. However, the wall-normal stress component $\sigma_{xx}$, which physically should be smoothly distributed along the entire inclined section, is mathematically concentrated entirely on the vertical faces of cell 1 and 5.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\textwidth]{img/ibm-forcing-staircase-C.png} 
+	\caption{Application of the wall stress tensor $\bm{\tau}_{w, \, global}$ components to the approximated interface (dashed black line) for the $u$-velocity grid.}
+	\label{fig:ibm-forcing-staircase-C}
+\end{figure}
+
+Another aspect is the tolopogical mismatch between the exact physical geometry and the numerical boundary where the forcing is actually imposed. This misalignment complicates the post-processing phases, expecially when an integration of flow variables like pressure or friction drag is required.
 
 \subsubsection{Cut-cell forcing}
 To improve the interface discretization, and obtain higher accuracy during the application of the sampled wall stress, a cut-cell forcing approach was developed. The idea is to pre-compute, for every control volume of the domain, the scalar value of the interface area intersected with the cell. Although this operation might appear computationally expensive, its optimized implementation proved to be almost negligible in terms of computational time. This efficiency can be explained at least by two aspects: the algorithm performs an initial pruning of the domain, discarding all the control volumes located too far from the interface. The cells with a non-null wetted area, that can now be considered interface cells by definition, represent only a small percentage of the total domain. The second aspect is that the intersected area is computed only once at the beginning of the simulation and then stored. Since the considered case studies involve static geometries, there is no need to recompute the wetted area at each time step. Nevertheless, the code is already structured to handle geometry updates through a simple call to the \texttt{IBM\_UpdateGeometry} subroutine, thus allowing straightforward extension to moving or deforming boundaries.
@@ -1415,7 +1453,7 @@ At this point, the near-interface fluid control volumes collect the overall wall
 		\label{fig:ibm-forcing-cut-cell-B}
 	\end{subfigure}
 
-	\caption{Cut-cell forcing: geometry interface (solid red line) and overlapped approximated interface (dashed black line); interface-layer control volumes, in the fluid (filled in red) and solid (filled in grey) domains; wall-normal direction (dot-dashed black line); matching point (red $\times$ marker); interpolated velocity $u_{MP}$ and its projection $u_{MP \, \parallel}$; velocity profile (light blue line) and stress contributions of fluid (light blue) and solid (brown) vectors computed by the wall model.}
+	\caption{Cut-cell forcing: geometry interface (solid red line) and overlapped approximated interface (dashed black line); interface-layer control volumes, in the fluid (filled in red) and solid (filled in grey) domains; wall-normal direction (dot-dashed black line); matching point (red $\times$ marker); interpolated velocity $\bm{u}_{MP}$ and its projection $\bm{u}_{MP \, \parallel}$; velocity profile (light blue line) and stress contributions of fluid (light blue) and solid (brown) vectors computed by the wall model.}
 	\label{fig:ibm-forcing-cut-cell}
 \end{figure}
 
@@ -1439,11 +1477,11 @@ A grid with resolution of $256 \times 96 \times 96$ is considered. The choice of
 \end{equation}
 The wall stress can be calculated as:
 \begin{equation}
-	\tau_W = \dfrac{1}{2} \, \rho \, U_b^2 \, C_f =  2.170 \cdot 10^{-3} \text{ Pa}
+	\tau_w = \dfrac{1}{2} \, \rho \, U_b^2 \, C_f =  2.170 \cdot 10^{-3} \text{ Pa}
 \end{equation}
 Consequently, the friction velocity result in:
 \begin{equation}
-	u_\tau = \sqrt{\dfrac{\tau_W}{\rho}} = U_b \, \sqrt{\dfrac{C_f}{2}} = 0.04659 \text{ m/s}
+	u_\tau = \sqrt{\dfrac{\tau_w}{\rho}} = U_b \, \sqrt{\dfrac{C_f}{2}} = 0.04659 \text{ m/s}
 \end{equation}
 Based on the wall laws introduced in Section \ref{sec:wall-laws}, the first cell position can be expressed in wall units as:
 \begin{equation}
@@ -1514,7 +1552,7 @@ The mean wall stress value considered so far is the analytical prediction, calcu
 	\caption{Mean wall stress evolution compared with the analytical prediction.}
 	\label{fig:TC-wall-stress-evolution}
 \end{figure}
-The temporal and spatial average of the wall shear stress $\tau_W$, in the steady-state interval, computed by the IBM forcing is $2.006 \cdot 10^{-3}$ Pa. Compared to the analytical estimation value of $2.170 \cdot 10^{-3}$ Pa, the solver exhibits a slight underprediction of approximately 7.5 \%.
+The temporal and spatial average of the wall shear stress $\tau_w$, in the steady-state interval, computed by the IBM forcing is $2.006 \cdot 10^{-3}$ Pa. Compared to the analytical estimation value of $2.170 \cdot 10^{-3}$ Pa, the solver exhibits a slight underprediction of approximately 7.5 \%.
 
 As a primary evaluation, the wall stress data obtained from the solver can be considered reasonable and in fair agreement with the analytical prediction. In terms of relative error, multiple aspects should be considered: First, while the Dean correlation is a standard choice for the primary assessment of the wall stress, its limitations must be acknowledged. As observed by Schultz and Flack \cite{schultz-flack}, at $Re \geq 62\,000$ the skin friction is better described by a logarithmic law. For $Re \leq 150\,000$ the error of power laws similar to that employed is on the order of $\pm 2.5\%$. Taking into account the additional error contributions introduced by the numerical framework, contextualizes the total relative error found.
 
