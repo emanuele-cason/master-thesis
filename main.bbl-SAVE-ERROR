@@ -637,6 +637,63 @@
       \verb https://github.com/RenderKit/embree
       \endverb
     \endentry
+    \entry{dean-correlation}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=7552c65acc313d840e4fa4dd749c1462}{%
+           family={Dean},
+           familyi={D\bibinitperiod},
+           given={Roger\bibnamedelima Bruce},
+           giveni={R\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \strng{namehash}{7552c65acc313d840e4fa4dd749c1462}
+      \strng{fullhash}{7552c65acc313d840e4fa4dd749c1462}
+      \strng{fullhashraw}{7552c65acc313d840e4fa4dd749c1462}
+      \strng{bibnamehash}{7552c65acc313d840e4fa4dd749c1462}
+      \strng{authorbibnamehash}{7552c65acc313d840e4fa4dd749c1462}
+      \strng{authornamehash}{7552c65acc313d840e4fa4dd749c1462}
+      \strng{authorfullhash}{7552c65acc313d840e4fa4dd749c1462}
+      \strng{authorfullhashraw}{7552c65acc313d840e4fa4dd749c1462}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Reynolds number dependence of skin friction and other bulk flow variables in two-dimensional rectangular duct flow}
+      \field{year}{1978}
+    \endentry
+    \entry{schultz-flack}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=bf49b98eb72633bef2e6b3d9104fad82}{%
+           family={Schultz},
+           familyi={S\bibinitperiod},
+           given={Michael\bibnamedelima P},
+           giveni={M\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=29780387df287f4981c6505429a0ccce}{%
+           family={Flack},
+           familyi={F\bibinitperiod},
+           given={Karen\bibnamedelima A},
+           giveni={K\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {AIP Publishing}%
+      }
+      \strng{namehash}{672449674b44ed65e8323b9e4e50e109}
+      \strng{fullhash}{672449674b44ed65e8323b9e4e50e109}
+      \strng{fullhashraw}{672449674b44ed65e8323b9e4e50e109}
+      \strng{bibnamehash}{672449674b44ed65e8323b9e4e50e109}
+      \strng{authorbibnamehash}{672449674b44ed65e8323b9e4e50e109}
+      \strng{authornamehash}{672449674b44ed65e8323b9e4e50e109}
+      \strng{authorfullhash}{672449674b44ed65e8323b9e4e50e109}
+      \strng{authorfullhashraw}{672449674b44ed65e8323b9e4e50e109}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Physics of Fluids}
+      \field{number}{2}
+      \field{title}{Reynolds-number scaling of turbulent channel flow}
+      \field{volume}{25}
+      \field{year}{2013}
+    \endentry
     \entry{cinnella}{article}{}{}
       \name{author}{2}{}{%
         {{hash=aa263777a8c4cf4206087a5a6be3b266}{%
@@ -782,8 +839,8 @@
       \strng{authornamehash}{205bfb79e78943db3ec0d69f2bc71452}
       \strng{authorfullhash}{205bfb79e78943db3ec0d69f2bc71452}
       \strng{authorfullhashraw}{205bfb79e78943db3ec0d69f2bc71452}
-      \field{sortinit}{5}
-      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Experiments in fluids}

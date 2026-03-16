@@ -27,6 +27,7 @@
 \usepackage{tikz}
 \usepackage[T1]{fontenc}
 \usepackage{zi4}
+\usepackage{fancyhdr}
 
 \tcbuselibrary{skins, breakable}
 
@@ -35,6 +36,18 @@
 \setlength{\parskip}{0.8em plus 2pt minus 2pt}
 
 \setcounter{tocdepth}{3}
+
+% Page header
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+
+% Page numbers and chapter
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\scshape\nouppercase{\leftmark}}
+\fancyhead[LO]{\scshape\nouppercase{\rightmark}}
+
+\renewcommand{\headrulewidth}{0pt}
 
 \definecolor{md-bg}{RGB}{247,247,247}
 \definecolor{md-keyword}{RGB}{33,150,243}
@@ -779,7 +792,7 @@ Unified modeling utilizes the same velocity transport equation in the entire dom
 Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each sub-domain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define sub-domains and involves complex implementation for the coupling across interfaces.
 
 \chapter{Mathematical framework}
-The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modeling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical and numerical framework of the solver, which has been specifically customized and further developed for the purposes of this study. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, while the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) models. Furthermore, the chapter provides a description of the advanced methodologies implemented to handle high-Reynolds number flows and complex geometries, specifically focusing on the Wall-Modeling strategies and the Immersed Boundary Method (IBM).
+The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modeling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical framework of the solver. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, and the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) and wall models.
 
 \section{Filtering operation}
 Filtering is the operation that allows to mathematically separate the turbulent scales of motion. This decomposition is determined by a characteristic arbitrary cutoff width $\Delta_F$. In the spectral domain, this procedure acts as a low-pass filter: it retains the low-frequency, large-scale contributions, while the high-frequency fluctuations associated with spatial scales smaller than $\Delta_F$ are cut off to be modeled. Considering a generic field, this decomposition can be mathematically represented as:
@@ -1348,7 +1361,7 @@ To construct the wall stress vector and tensor, for each node considered a local
 \begin{equation}
 	\bm{\tau}_w = \tau_{w,t} \cdot \bm{\hat{t}} + \tau_{w,b} \cdot \bm{\hat{b}}
 \end{equation}
-In order to mathematically represent the three-dimensional stress state that the wall induces in the fluid, the wall stress tensor in the local frame of reference is constructed as follows:
+In order to mathematically represent the three-dimensional stress state that the wall induces in the fluid, the wall stress tensor in the local frame of reference is constructed as:
 \begin{equation}
 	\bm{\tau}_{w, \, local} = \begin{bmatrix} 0 & 0 & \tau_{w,t} \\ 0 & 0 & \tau_{w,b} \\ \tau_{w,t} & \tau_{w,b} & 0 \end{bmatrix}
 \end{equation}
@@ -1747,6 +1760,65 @@ At the first position downstream the hill crest $x/h = 0.5$, the three profiles 
 The qualitative behavior of the flow, and in particular the presence of a reattachment region, represents an important result for the solver. In the complex configuration of the periodic hills, it was demonstrated that the capability of capturing the reattachment phenomenon is strongly influenced by the wall modeling, especially on coarse grids \cite{breuer}. The fact that the numerical setup succeeds in predicting this behavior confirms that the implemented bulk forcing, IBM cut-cell forcing, and the wall model are working correctly and are properly coupled with the Runge-Kutta scheme.
 
 At the same time, the extension of the separation bubble presents a quantitative discrepancy with respect to the reference data. However, such a deviation is largely expected when considering the specific simulation conditions employed. It is well-known that the reattachment point is extremely sensitive to the position of the flow separation point past the hill crest \cite{cinnella, breuer}, and as a consequence, also to the grid resolution, especially in the streamwise direction. At the considered Reynolds number, chosen at the maximum standard value to ensure reference data availability, this conflicts with the requirement of a sufficiently high $\Delta y^+$ to remain in the WM-LES domain. The particularly coarse grids adopted are the result of a trade-off between these aspects and the immersed geometry discretization.
+
+\chapter{Complex geometries simulation and post-processing}
+As previously mentioned, the primary advantage of the Immersed Boundary Method relies on the capability to simulate flows around complex geometries without the requirement of a body-conformal grid. However, ensuring numerical stability when dealing with highly irregular shapes is not trivial. The presence of sharp edges, high curvature regions, thin gaps and thin geometrical parts can cause several numerical stability issues, especially in the geometry forcing and interpolation modules. Therefore, to properly verify the robustness of the forcing method introduced in this work under particularly stressful conditions, some cases involving highly complex geometries were simulated. 
+
+Instead of the benchmark geometries tested and quantitatively analized in the previous Chapter, in the following the focus is on geometries representative of industrial applications. Such test cases allow to visually assess, in a qualitative way, the framework capability to correctly capture the main flow features and the expected aerodynamic phenomena associated with these configurations.
+
+Furthermore, the implementation of the cut-cell forcing method provided the basis to develop a new post-processing approach, to represent the wall stress field directly on the original input geometry, allowing to visualize the wall stress distribution in a continuous surface rather than a discrete point cloud, with a better definition of the geometrical details.
+
+\section{Wing-pylon-engine assembly}
+The geometry adopted for the numerical simulations is representative of the wing\-/pylon\-/turbofan engine junction of an Airbus A320 commercial aircraft, isolated as a section from the model shown in Figure \ref{fig:A320-geometry-A} and \ref{fig:A320-geometry-B}. In particular, the region where the wing, the pylon, and the nacelle intersect is characterized by intricate geometrical features and narrow gaps. The turbofan engine is modeled in an inoperative condition: the bypass duct is unblocked, and the fan blades are represented in a stationary position, forming multiple flow passage regions through the inter-blade channels and allowing to capture the partial blockage effect characterizing the engine failure condition. 
+
+As previously introduced, the configuration was primarily chosen because it represents an example of a complex interface between multiple aerodynamic components, providing a severe test for the robustness of the IBM forcing and interpolation procedures. Furthermore, from an aerodynamic point of view, the multi-component assembly considered generates a highly complex three-dimensional flow field, characterized by interference phenomena.
+
+\subsection{Simulation setup}
+The computational domain was set with a streamwise length of $L_x = 15$, a height of $L_y = 7.5$, and a spanwise width of $L_z = 7.5$, uniformly discretized with a Cartesian grid resolution of 400 $\times$ 200 $\times$ 200 cells. The immersed geometry, consistently with the real configuration, is characterized by an engine front diameter $D = 2$, which is adopted as the reference length scale for the spatial discretization.
+
+Regarding the boundary conditions, a uniform dimensionless freestream velocity profile $U_{\infty} = 1$ was prescribed at the domain inlet. At the outlet section, a homogeneous Neumann condition was applied for the velocity field to allow the wake to smoothly leave the domain. Finally, to simulate the undisturbed external flow surrounding the aircraft section, the lateral, top, and bottom boundaries were treated as far-field slip walls, explicitly enforcing the freestream velocity components.
+
+In order to perform the test in a fully turbulent flow regime, representative of the physical phenomena involved, a Reynolds number $Re = 2 \times 10^6$ based on the engine diameter was selected, corresponding to a dimensionless kinematic viscosity of $\nu = 10^{-6}$.
+
+The choice of the computational domain size, the grid resolution, the positioning and the scaling of the immersed geometry is the result of a trade-off between the quality of the component representation and the constraints of the available computational resources. Since the primary objective is to evaluate the IBM forcing on complex geometries, accurately resolving the solid boundaries was prioritized over the exact prediction of free-flight performances. Consequently, a solid blockage (or wind tunnel) effect was considered an acceptable compromise.
+
+\begin{figure}[h]
+    \centering
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/front-top-right.png}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/top-front.png}
+    \end{subfigure}
+
+    \caption{Input mesh of the considered geometry, representative of a section of an Airbus A320 wing.}
+    \label{fig:A320-geometry-A}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/front-right.png}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/front.png}
+    \end{subfigure}
+
+    \caption{Input mesh of the considered geometry, representative of a section of an Airbus A320 wing.}
+    \label{fig:A320-geometry-B}
+\end{figure}
 
 \backmatter
 
