@@ -1421,6 +1421,7 @@ First, the staircase approximation introduces some form of spatial inhomogeneity
 Another aspect is the tolopogical mismatch between the exact physical geometry and the numerical boundary where the forcing is actually imposed. This misalignment complicates the post-processing phases, expecially when an integration of flow variables like pressure or friction drag is required.
 
 \subsubsection{Cut-cell forcing}
+\label{sec:cut-cell-forcing}
 To improve the interface discretization, and obtain higher accuracy during the application of the sampled wall stress, a cut-cell forcing approach was developed. The idea is to pre-compute, for every control volume of the domain, the scalar value of the interface area intersected with the cell. Although this operation might appear computationally expensive, its optimized implementation proved to be almost negligible in terms of computational time. This efficiency can be explained at least by two aspects: the algorithm performs an initial pruning of the domain, discarding all the control volumes located too far from the interface. The cells with a non-null wetted area, that can now be considered interface cells by definition, represent only a small percentage of the total domain. The second aspect is that the intersected area is computed only once at the beginning of the simulation and then stored. Since the considered case studies involve static geometries, there is no need to recompute the wetted area at each time step. Nevertheless, the code is already structured to handle geometry updates through a simple call to the \texttt{IBM\_UpdateGeometry} subroutine, thus allowing straightforward extension to moving or deforming boundaries.
 
 The algorithm for the wetted area computation locally represents the intersected wall as a plane, with a known normal direction and distance from the cell center (obtained from the SDF). Using an analytical approach, the exact positions of each intersection point along the cell edges are determined (they can range from 3 to 6). This procedure allows computing the area of the resulting polygon, as shown in Figure \ref{fig:ibm-forcing-wet-area}. The improved accuracy of the interface representation compared to the previous method (Figure \ref{fig:ibm-forcing-staircase-B}) can be observed in Figure \ref{fig:ibm-forcing-cut-cell-B}, where the exact and the approximated boundaries are almost indistinguishable due to their near-perfect overlap.
@@ -1764,7 +1765,7 @@ The qualitative behavior of the flow, and in particular the presence of a reatta
 
 At the same time, the extension of the separation bubble presents a quantitative discrepancy with respect to the reference data. However, such a deviation is largely expected when considering the specific simulation conditions employed. It is well-known that the reattachment point is extremely sensitive to the position of the flow separation point past the hill crest \cite{cinnella, breuer}, and as a consequence, also to the grid resolution, especially in the streamwise direction. At the considered Reynolds number, chosen at the maximum standard value to ensure reference data availability, this conflicts with the requirement of a sufficiently high $\Delta y^+$ to remain in the WM-LES domain. The particularly coarse grids adopted are the result of a trade-off between these aspects and the immersed geometry discretization.
 
-\chapter{Complex geometry simulations and post-processing}
+\chapter{Complex geometry simulation and post-processing}
 As previously mentioned, the primary advantage of the Immersed Boundary Method relies on the capability to simulate flows around complex geometries without the requirement of a body-conformal grid. However, ensuring numerical stability when dealing with highly irregular shapes is not trivial. The presence of sharp edges, high curvature regions, thin gaps and thin geometrical parts can cause several numerical stability issues, especially in the geometry forcing and interpolation modules. Therefore, to properly verify the robustness of the forcing method introduced in this work under particularly stressful conditions, some cases involving highly complex geometries were simulated. 
 
 Instead of the benchmark geometries tested and quantitatively analized in the previous Chapter, in the following the focus is on geometries representative of industrial applications. Such test cases allow to visually assess, in a qualitative way, the framework capability to correctly capture the main flow features and the expected aerodynamic phenomena associated with these configurations.
@@ -1837,7 +1838,7 @@ To enhance the numerical stability, two additional features have been implemente
 
 Both simulations, \texttt{WPE-R1} and \texttt{WPE-R2}, were successfully completed without encountering any numerical instabilities or divergence issues.
 
-\subsection{Instantaneous flow fields}
+\subsection{Flow turbulent structures}
 To qualitatively assess the solver capability to correctly capture the main aerodynamic features and the interference phenomena, the three-dimensional flow was post-processed with the $Q$-criterion vortex identification method.
 
 Such criterion was one of those originally introduced by Hunt \textit{et al.} \cite{hunt}, to provide a generally agreed way to appropriately represent the recurring patterns characterizing the flow field, like eddies, convergence and streaming zones. Among these, eddy regions are of primary interest to properly visualize the flow topology and its turbulent structures. Since eddies are characterized as zones where the irrotational straining is small compared with the vorticity, the resulting mathematical formulation is:
@@ -1847,17 +1848,19 @@ Such criterion was one of those originally introduced by Hunt \textit{et al.} \c
 \end{equation}
 where $\lVert \bm{\omega} \rVert = \sqrt{\omega_{ij} \omega_{ij}}$ and $\lVert \bm{e} \rVert = \sqrt{e_{ij} e_{ij}}$ represent the Frobenius norms of the rotation rate tensor $\bm{\omega}$ and the strain rate tensor $\bm{e}$, respectively. The imposition of a $Q > 0$ condition, effectively filters out the flow regions dominated by pure localized shear, allowing to isolate and visualize the actual vortex cores.
 
-\begin{figure}[p]
+To properly highlight the topology of the turbulent flow, a volume rendering technique was adopted for the $Q$ scalar field, using the open-source software ParaView. In particular, an opacity transfer function was tuned by visual inspection in the range $[5, 50]$, progressively increasing the opacity for higher values. This approach allows to gradually filter out the weaker turbulent structures. The velocity magnitude colorscale was then applied to the rendered volume, to provide a better understanding of the overall flow behavior. The resulting renderings for simulation \texttt{WPE-R2} are reported in Figures \ref{fig:A320-q-criterion-F}, \ref{fig:A320-q-criterion-L} and \ref{fig:A320-q-criterion-B}.
+
+\begin{figure}[ht]
     \centering
     
-    %\vspace{0.5cm}
+    \vspace{0.25cm}
 
     \begin{subfigure}{\textwidth}
         \centering
         \includegraphics[width=\textwidth]{img/A320/q-criterion/front.jpg}
     \end{subfigure}
 
-	\vspace{0.5cm}
+	\vspace{0.25cm}
 
     \caption{Three-dimensional volume rendering of the $Q$ field. Front view.}
     \label{fig:A320-q-criterion-F}
@@ -1875,7 +1878,7 @@ where $\lVert \bm{\omega} \rVert = \sqrt{\omega_{ij} \omega_{ij}}$ and $\lVert \
 
     \begin{subfigure}{\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{img/A320/q-criterion/front-top-right.jpg}
+        \includegraphics[width=\textwidth]{img/A320/q-criterion/front-top-right-v2.jpg}
     \end{subfigure}
 
 	\vspace{0.5cm}
@@ -1904,6 +1907,79 @@ where $\lVert \bm{\omega} \rVert = \sqrt{\omega_{ij} \omega_{ij}}$ and $\lVert \
     \caption{Three-dimensional volume rendering of the $Q$ field, at two successive time instants. Bottom view.}
     \label{fig:A320-q-criterion-B}
 \end{figure}
+\clearpage
+\subsection{Instantaneous velocity field}
+For a more complete visual understanding of the flow velocity field, the stream tracer function was used. This was configured by selecting two spherical source regions, upstream the geometry. Both the sources centers were positioned aligned with the engine rotation axis, to trace the flow deflection around the engine nacelle, junction and wing regions, and the flow ingested by the engine. In the first case, the spherical source was defined with a radius sufficently small to isolate the ingested flow, while in the second case a larger source radius allowed the streamlines rendering of both the internal and external stream.
+
+\begin{figure}[ht]
+    \centering
+    
+    \vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/streamlines/ingested-left.jpg}
+    \end{subfigure}
+
+	\vspace{1.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/streamlines/ingested-top-right.jpg}
+    \end{subfigure}
+
+	\vspace{0.5cm}
+
+    \caption{Velocity streamlines of the ingested flow field.}
+    \label{fig:A320-ingestion-streamlines}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    
+    %\vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/streamlines/top-right.jpg}
+    \end{subfigure}
+
+	\vspace{0.5cm}
+
+    \caption{Velocity streamlines of the flow field investing the engine.}
+    \label{fig:A320-streamlines}
+\end{figure}
+
+\subsection{Wall stress post-processing approach and distribution}
+The implementation of the cut-cell forcing described in Section \ref{sec:cut-cell-forcing} has changed the definition of the interface cell. With this approach, a control volume is considered part of the numerical interface if it contains a non-null wetted area of the immersed geometry surface. Since the wall stress is computed in the cells that contain the geometrical interface, the adoption of this new definition provided the basis, firstly, to export a point cloud of the wall stress vectors at each time step; and secondly, to develop an accurate and computationally efficient post-processing technique to map any flow variable of interest directly onto the geometry surface, in its original STL format.
+
+The idea of mapping any variable directly onto the input geometry has several advantages. Primarily, the original file is not affected by the grid discretization, in particular by its conversion into a Signed Distance Field (SDF) description. This means that the input geometry representation is decoupled from the grid resolution. Using the original STL as a base surface for the data allows for a much more precise data localization and distribution, avoiding the geometric approximations introduced by the staircase representation. However, it is important to highlight that this method does not generate new data from nothing, but instead allows for its positioning on the high-quality geometrical model used as an input.
+
+Typically, mapping flow variables onto the original surface would require an algorithm to project the point cloud data from the interface cells onto the model surface, and an interpolation step to obtain a distribution that uniformly covers the geometry. Such an approach would require a significant computational cost and implementation complexity, and would introduce some sort of modification of the solution data due to the interpolation method.
+
+Conversely, with the method implemented in the present work, a simple re-intersection operation is sufficient. The process consists of repositioning the original STL geometry within the computational grid and assigning to each portion of surface contained on the local interface cell, the flow variable defined in that cell, without the need of projection or interpolation methods.
+
+\begin{figure}[ht]
+	\centering
+
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/post-processing/numerical-interface.png}
+		\caption{Physical variable distribution on the numerical interface.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{img/post-processing/reintersected-interface.png}
+		\caption{Re-intersection with the input model.}
+		\label{fig:ibm-forcing-staircase-B}
+	\end{subfigure}
+
+	\caption{Re-intersection and mapping operation: a generic physical variable (with its distribution represented with the color variation) defined on the numerical interface (colored cells/nodes) is re-mapped by intersection with the original input model (solid line). The solid cells are represented in gray.}
+	\label{fig:re-intersection}
+\end{figure}
+
+Although the post-processing method introduced is general, and can be used to render the distributions of various flow variables, in the context of the present work it is specifically tested to visualize the wall stress magnitude. This was done by developing a dedicated script in Python, accessing the solver wall stress output, in the form of a point cloud, and mapping the data in the model original STL file.
 
 \backmatter
 
