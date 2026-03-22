@@ -1951,16 +1951,18 @@ For a more complete visual understanding of the flow velocity field, the stream 
 \end{figure}
 
 \subsection{Wall stress post-processing approach and distribution}
-The implementation of the cut-cell forcing described in Section \ref{sec:cut-cell-forcing} has changed the definition of the interface cell. With this approach, a control volume is considered part of the numerical interface if it contains a non-null wetted area of the immersed geometry surface. Since the wall stress is computed in the cells that contain the geometrical interface, the adoption of this new definition provided the basis, firstly, to export a point cloud of the wall stress vectors at each time step; and secondly, to develop an accurate and computationally efficient post-processing technique to map any flow variable of interest directly onto the geometry surface, in its original STL format.
+The implementation of the cut-cell forcing described in Section \ref{sec:cut-cell-forcing} has changed the definition of the interface cell. With this approach, a control volume is considered part of the numerical interface if it contains a non-null wetted area, or in other words a portion of the immersed geometry surface. Since the wall stress is computed in the cells that contain the geometrical interface, the adoption of this new definition provided the basis, firstly, to export a point cloud of the wall stress vectors at each time step; and secondly, to develop an accurate and computationally efficient post-processing technique to map any flow variable of interest directly onto the geometry surface, in its original STL format.
 
-The idea of mapping any variable directly onto the input geometry has several advantages. Primarily, the original file is not affected by the grid discretization, in particular by its conversion into a Signed Distance Field (SDF) description. This means that the input geometry representation is decoupled from the grid resolution. Using the original STL as a base surface for the data allows for a much more precise data localization and distribution, avoiding the geometric approximations introduced by the staircase representation. However, it is important to highlight that this method does not generate new data from nothing, but instead allows for its positioning on the high-quality geometrical model used as an input.
+The idea of mapping any variable directly onto the input geometry has several advantages. Primarily, the original file is not affected by the grid discretization, in particular by its conversion into a Signed Distance Field (SDF) description. This means that the model geometry representation is decoupled from the grid resolution. Using the original STL as a base surface for the data, allows for a much more precise data localization and distribution, avoiding the geometric approximations introduced by the staircase representation. However, it is important to highlight that this method does not generate new data from nothing, but instead allows for its positioning on the high-quality geometrical model used as an input.
 
 Typically, mapping flow variables onto the original surface would require an algorithm to project the point cloud data from the interface cells onto the model surface, and an interpolation step to obtain a distribution that uniformly covers the geometry. Such an approach would require a significant computational cost and implementation complexity, and would introduce some sort of modification of the solution data due to the interpolation method.
 
-Conversely, with the method implemented in the present work, a simple re-intersection operation is sufficient. The process consists of repositioning the original STL geometry within the computational grid and assigning to each portion of surface contained on the local interface cell, the flow variable defined in that cell, without the need of projection or interpolation methods.
+Conversely, with the method implemented in the present work, a simple re-intersection operation is sufficient. The process, represented in Figure \ref{fig:re-intersection}, consists of repositioning the original STL geometry within the computational grid and assigning to each portion of surface contained on the local interface cell, the flow variable defined in that cell, without the need of projection or interpolation methods.
 
 \begin{figure}[ht]
 	\centering
+
+	\vspace{0.25cm}
 
 	\begin{subfigure}[t]{0.49\textwidth}
 		\centering
@@ -1972,7 +1974,6 @@ Conversely, with the method implemented in the present work, a simple re-interse
 		\centering
 		\includegraphics[width=\textwidth]{img/post-processing/reintersected-interface.png}
 		\caption{Re-intersection with the input model.}
-		\label{fig:ibm-forcing-staircase-B}
 	\end{subfigure}
 
 	\caption{Re-intersection and mapping operation: a generic physical variable (with its distribution represented with the color variation) defined on the numerical interface (colored cells/nodes) is re-mapped by intersection with the original input model (solid line). The solid cells are represented in gray.}
@@ -1980,6 +1981,30 @@ Conversely, with the method implemented in the present work, a simple re-interse
 \end{figure}
 
 Although the post-processing method introduced is general, and can be used to render the distributions of various flow variables, in the context of the present work it is specifically tested to visualize the wall stress magnitude. This was done by developing a dedicated script in Python, accessing the solver wall stress output, in the form of a point cloud, and mapping the data in the model original STL file.
+
+\begin{figure}[ht]
+    \centering
+    
+    %\vspace{0.5cm}
+
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/wall-stress-2.jpg}
+    \end{subfigure}
+
+	\vspace{1.5cm}
+
+	\begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/A320/wall-stress-1.jpg}
+    \end{subfigure}
+
+	\vspace{0.5cm}
+
+    \caption{Wall stress distribution mapped on the input geometrical model.}
+    \label{fig:A320-wall-stress}
+\end{figure}
+
 
 \backmatter
 
