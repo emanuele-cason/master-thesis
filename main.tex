@@ -1768,12 +1768,12 @@ At the same time, the extension of the separation bubble presents a quantitative
 \chapter{Complex geometry simulation and post-processing}
 As previously mentioned, the primary advantage of the Immersed Boundary Method relies on the capability to simulate flows around complex geometries without the requirement of a body-conformal grid. However, ensuring numerical stability when dealing with highly irregular shapes is not trivial. The presence of sharp edges, high curvature regions, thin gaps and thin geometrical parts can cause several numerical stability issues, especially in the geometry forcing and interpolation modules. Therefore, to properly verify the robustness of the forcing method introduced in this work under particularly stressful conditions, some cases involving highly complex geometries were simulated. 
 
-Instead of the benchmark geometries tested and quantitatively analized in the previous Chapter, in the following the focus is on geometries representative of industrial applications. Such test cases allow to visually assess, in a qualitative way, the framework capability to correctly capture the main flow features and the expected aerodynamic phenomena associated with these configurations.
+Instead of the benchmark geometries tested and quantitatively analized in the previous Chapter, in the following the focus is on a geometry representative of an industrial application. Such test cases allow to visually assess, in a qualitative way, the framework capability to correctly capture the main flow features and the expected aerodynamic phenomena associated with these configurations.
 
 Furthermore, the implementation of the cut-cell forcing method provided the basis to develop a new post-processing approach, to represent the wall stress field directly on the original input geometry, allowing to visualize the wall stress distribution in a continuous surface rather than a discrete point cloud, with a better definition of the geometrical details.
 
 \section{Wing-pylon-engine assembly}
-The geometry adopted for the numerical simulations is representative of the wing\-/pylon\-/turbofan engine junction of an Airbus A320 commercial aircraft, isolated as a section from the model shown in Figure \ref{fig:A320-geometry-A} and \ref{fig:A320-geometry-B}. In particular, the region where the wing, the pylon, and the nacelle intersect is characterized by intricate geometrical features and narrow gaps. The turbofan engine is modeled in an inoperative condition: the bypass duct is unblocked, and the fan blades are represented in a stationary position, forming multiple flow passage regions through the inter-blade channels and allowing to capture the partial blockage effect characterizing the engine failure condition. 
+The geometry adopted for the numerical simulations is representative of the wing\-/pylon\-/turbofan engine junction of an Airbus A320 commercial aircraft, isolated as a section from the model shown in Figure \ref{fig:A320-geometry-A} and \ref{fig:A320-geometry-B}. In particular, the region where the wing, the pylon, and the nacelle intersect is characterized by intricate geometrical features and narrow gaps. The turbofan engine is modeled in an inoperative condition and approximated in its internal parts: the bypass duct is unblocked, and the fan blades are represented in a stationary position, forming multiple flow passage regions through the inter-blade channels and allowing to capture the partial blockage effect characterizing the engine failure condition.
 
 As previously introduced, the configuration was primarily chosen because it represents an example of a complex interface between multiple aerodynamic components, providing a severe test for the robustness of the IBM forcing and interpolation procedures. Furthermore, from an aerodynamic point of view, the multi-component assembly considered generates a highly complex three-dimensional flow field, characterized by interference phenomena.
 
@@ -1784,7 +1784,7 @@ The computational domain was set with a streamwise length of $L_x = 15$, a heigh
 	\item \texttt{WPE-R2}: A refined grid consisting of $600 \times 300 \times 300$ cells.
 \end{itemize} 
 %
-Regarding the boundary conditions, a uniform dimensionless freestream velocity profile $U_{\infty} = 1$ was prescribed at the domain inlet. At the outlet section, a homogeneous Neumann condition was applied for the velocity field to allow the wake to smoothly leave the domain. Finally, to simulate the undisturbed external flow surrounding the aircraft section, the lateral, top, and bottom boundaries were treated as far-field slip walls, explicitly enforcing the freestream velocity components.
+Regarding the boundary conditions, a uniform dimensionless freestream velocity profile $U_{\infty} = 1$ was prescribed at the domain inlet. At the outlet section, a homogeneous Neumann condition was applied. Finally, to simulate the undisturbed external flow surrounding the aircraft section, the lateral, top, and bottom boundaries were treated as far-field, enforcing the freestream velocity components.
 
 In order to perform the test in a fully turbulent flow regime, representative of the physical phenomena involved, a Reynolds number $Re = 2 \times 10^6$ based on the engine diameter was selected, corresponding to a dimensionless kinematic viscosity of $\nu = 10^{-6}$.
 
@@ -1834,9 +1834,9 @@ The choice of the computational domain size, the grid resolution, the positionin
     \label{fig:A320-geometry-B}
 \end{figure}
 
-To enhance the numerical stability, two additional features have been implemented in the solver workflow, which can be enabled from the configuration input file: a velocity ramp-up function and a sponge layer function. The first one smoothly accelerates the inlet velocity from the resting condition to the target value over a prescribed time interval. This mitigates the generation of sudden, unphysical pressure waves that can be caused by the initial impact of the flow on the immersed geometry. The sponge layer, instead, acts at the very end of the streamwise domain, gradually dissipating the outgoing turbulent structures before they leave the computational grid. This approach proved effective in preventing spurious pressure reflections from moving upstream and disturbing the solution. Nevertheless, it is worth noting that these features demonstrated to be not strictly necessary for the solver stability, but were configured active anyway to ensure a cleaner and more physically consistent flow solution.
+In both the simulations the model was oriented with an angle of attack measured at the wing root of 4.5 \textdegree.
 
-Both simulations, \texttt{WPE-R1} and \texttt{WPE-R2}, were successfully completed without encountering any numerical instabilities or divergence issues.
+To enhance the numerical stability, two additional features have been implemented in the solver workflow, which can be enabled from the configuration input file: a velocity ramp-up function and a sponge layer function. The first one smoothly accelerates the inlet velocity from the resting condition to the target value over a prescribed time interval. This mitigates the generation of sudden, unphysical pressure waves that can be caused by the initial impact of the flow on the immersed geometry. The sponge layer, instead, acts at the very end of the streamwise domain, gradually dissipating the outgoing turbulent structures before they leave the computational grid. This approach proved effective in preventing spurious pressure reflections from moving upstream and disturbing the solution. Nevertheless, it is worth noting that these features demonstrated to be not strictly necessary for the solver stability, but were configured active anyway to ensure a cleaner and more physically consistent flow solution.
 
 \subsection{Flow turbulent structures}
 To qualitatively assess the solver capability to correctly capture the main aerodynamic features and the interference phenomena, the three-dimensional flow was post-processed with the $Q$-criterion vortex identification method.
@@ -1930,7 +1930,7 @@ For a more complete visual understanding of the flow velocity field, the stream 
 
 	\vspace{0.5cm}
 
-    \caption{Velocity streamlines of the ingested flow field.}
+    \caption{Velocity streamlines of the ingested flow field. Simulation \texttt{WPE-R2}.}
     \label{fig:A320-ingestion-streamlines}
 \end{figure}
 
@@ -1946,7 +1946,7 @@ For a more complete visual understanding of the flow velocity field, the stream 
 
 	\vspace{0.5cm}
 
-    \caption{Velocity streamlines of the flow field investing the engine.}
+    \caption{Velocity streamlines of the flow field investing the engine. Simulation \texttt{WPE-R2}.}
     \label{fig:A320-streamlines}
 \end{figure}
 
@@ -2001,10 +2001,29 @@ Although the post-processing method introduced is general, and can be used to re
 
 	\vspace{0.5cm}
 
-    \caption{Wall stress distribution mapped on the input geometrical model.}
+    \caption{Wall stress distribution mapped on the input geometrical model. Simulation \texttt{WPE-R1}.}
     \label{fig:A320-wall-stress}
 \end{figure}
 
+\clearpage
+
+\subsection{Result analysis}
+The primary objective of the considered configuration was to provide a severe stress test for the stability of the numerical framework. The successful completion of both \texttt{WPE-R1} and \texttt{WPE-R2}, together with multiple preliminary test simulations with intricate geometries, highlighted the overall robustness of the solver. Specifically, throughout the entire time integration, the maximum divergence of the velocity field consistently remained below the prescribed safety threshold, in the order of $10^{-9}$.
+
+% Upstream the engine, splitting
+From the post-processing results, it is possible to provide a brief qualitative overview of the key flow features characterizing the numerical solution. Firstly, the incoming laminar flow is significantly deflected by the blockage induced by the inoperative engine, in a non-windmilling condition (no rotation), generating a high-pressure zone upstream the inlet cowl. Figures \ref{fig:A320-ingestion-streamlines} and \ref{fig:A320-streamlines} show the flow splitting into two portions: a smaller one ingested by the engine, while the vast majority passes externally. Furthermore, as shown in Figure \ref{fig:A320-wall-stress}, the stagnation points are clearly noticeable on the wing leading edge and on the nacelle lip ring.
+
+% Ingested flow
+The ingested flow undergoes a strong deceleration, a divergence of the streamlines, and a heavily reduced capture area. Reaching the fan disk, the streamlines, and consistently the wall stress distribution, show a sudden re-acceleration across the interblade channels. The fan blade row, operating in a severe off-design condition with massive flow misalignment, induces an extensive boundary layer separation, resulting in wide recirculation zones downstream of the fan. Downstream of the bypass duct, a slight re-acceleration is observed across the bypass nozzle, before the flow mixes again with the external stream.
+
+% External flow
+Due to the severe engine obstruction, a large portion of the freestream approaching the engine inlet is abruptly deflected radially outwards, accelerating over the nacelle lip, in a inlet spillage condition. Downstream of the lip region, the flow decelerates to recover the external freestream conditions, undergoing an adverse pressure gradient. This behavior is consistent with what is observed in terms of a drop in wall shear stress magnitude in the second half of the nacelle.
+
+% Wake
+In terms of wake formation, the flow generates distinct regions downstream of the engine (mixing with the nozzle exit flow), the flap track fairings, and the wing trailing edge. As depicted in Figures \ref{fig:A320-q-criterion-L} and \ref{fig:A320-q-criterion-B}, it is possible to observe that the turbulent structures populating the wake grow and develop during the startup transient.
+
+% Limitations/separation
+Finally, across various simulations, some limitations of the IBM framework were noticed. In particular, difficulties arise when modeling surfaces that should be perfectly smooth in reality. In these cases, a tendency to anticipate boundary layer separation is observed. This behavior is likely due to the numerical roughness introduced by the grid discretization. This hypothesis is supported by the fact that the phenomenon appears to be significantly amplified by very coarse grid resolutions.
 
 \backmatter
 
