@@ -173,6 +173,7 @@
 
 \newpage
 \chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
 High-Reynolds number turbulent flows dominate critical engineering applications, ranging from aircraft and other vehicles to wind turbines and turbomachinery. However, their simulation remains an open challenge: such flows are characterized by a multi-scale nature, requiring an enormous number of degrees of freedom. Wall-Modeled Large Eddy Simulation (WM-LES) addresses this problem by resolving the largest scales of the motion while modeling the smaller ones and the near-wall turbulent structures. In the present work, the Immersed Boundary Method (IBM) provides a flexible framework that avoids the complexity of body-fitted meshes. The presence of the immersed geometry is enforced in the discretized governing equations by a forcing algorithm coupled with the wall model.
 
 The initial approach for the immersed boundary forcing in the solver was based on the identification of the interface through sign changes of the level set across adjacent cell nodes, which led to the application of the forcing to a staircase-approximated wall. To overcome this limitation, a refined forcing approach was developed and integrated, based on the analytical computation of the cut-cell wetted area, coupled with a flux redistribution method. This geometric characterization redefines the numerical interface, allowing the wall-model forcing to be applied directly to the analytically evaluated surface of each control volume. The result is a more uniform and consistent boundary representation that introduces no significant computational overhead.
@@ -324,11 +325,16 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 \chapter{Introduction}
 
 % Large eddy simulation for incompressible flows - an introduction (2006, Springer) - P. Sagaut
-Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced have mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modeling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
+Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced has mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modeling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
 
-One fundamental aspect of fluid simulation regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed later, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows, requiring an enormous amount of degrees of freedom.
+One fundamental aspect of fluid simulation regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed in \ref{sec:turbulent-flows}, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows, requiring an enormous amount of degrees of freedom.
+
+To overcome the prohibitive computational costs associated with resolving all the space-time scales involved, multiple techniques with different levels of approximation can be employed, each one being best suited to specific applications and subject to its own limitations. Among the various techniques overviewed in Chapter \ref{sec:simulation-techniques-overview}, Large Eddy Simulation (LES) represents a highly effective compromise between computational cost and physical accuracy. By resolving the large eddies and modeling only the smaller, more universal scales, LES significantly reduces the computational cost compared to Direct Numerical Simulation (DNS). 
+
+However, for wall-bounded flows at high Reynolds numbers, the resolution requirements for the near-wall turbulent structures in standard LES become once again computationally restrictive. To address the limitation, Wall-Modeled LES (WM-LES) can be adopted. By modeling this region of the flow rather than resolving it, WM-LES drastically reduces the required degrees of freedom, accepting a certain level of approximation in the near-wall dynamics. The mathematical framework governing the filtered Navier-Stokes equations and the specific sub-grid scales model and wall model closures employed in this work are detailed in Chapter \ref{sec:mathematical-framework}.
 
 \chapter{Turbulent flows}
+\label{sec:turbulent-flows}
 
 In most of the engineering applications, flows are prevalently turbulent. Generally this is the case of fluid processed by pumps, compressors or flows around cars, trains, airplanes and many more situations in the everyday surrounding.
 
@@ -674,6 +680,7 @@ Despite the previous relations have been derived with the assumption of a develo
 \end{figure}
 
 \chapter{Simulation techniques overview}
+\label{sec:simulation-techniques-overview}
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
 
 \section{Direct Numerical Simulation}
@@ -788,6 +795,7 @@ Unified modeling utilizes the same velocity transport equation in the entire dom
 Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each sub-domain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define sub-domains and involves complex implementation for the coupling across interfaces.
 
 \chapter{Mathematical framework}
+\label{sec:mathematical-framework}
 The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modeling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical framework of the solver. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, and the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) and wall models.
 
 \section{Filtering operation}
