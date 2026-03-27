@@ -267,6 +267,11 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
     $\kappa$                                     & Von Kármán constant \\
     $B$                                          & Log-law integration constant \\
 
+	% Simulation techniques
+	\addlinespace
+	$\delta_{ij}$								 & Kronecker delta \\
+	$\nu_T$										 & Turbulent eddy viscosity \\
+
 	% LES
 	\addlinespace
 	$G$                                          & Spatial filter kernel function                                               \\
@@ -328,7 +333,7 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 % Large eddy simulation for incompressible flows - an introduction (2006, Springer) - P. Sagaut
 Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced has mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modeling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
 
-One fundamental aspect of fluid simulation regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed in Chapter \ref{sec:turbulent-flows}, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows, requiring an enormous amount of degrees of freedom.
+One fundamental aspect of fluid simulation regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed in Chapter \ref{sec:turbulent-flows}, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows, requiring an enormous number of degrees of freedom.
 
 To overcome the prohibitive computational costs associated with resolving all the space-time scales involved, multiple techniques with different levels of approximation can be employed, each one being best suited to specific applications and subject to its own limitations. Among the various techniques, overviewed in Chapter \ref{sec:simulation-techniques-overview}, Large Eddy Simulation (LES) represents a highly effective compromise between computational cost and physical accuracy. By resolving the large eddies and modeling only the smaller more universal scales, LES significantly reduces the computational cost compared to Direct Numerical Simulation (DNS). 
 
@@ -384,7 +389,7 @@ Conversely, the Reynolds decomposition is defined as:
 \end{equation}
 where $u'$ is the fluctuation component and $U$ is the averaged quantity.
 
-Substituting the Reynolds decomposition into the Navier-Stokes equations \eqref{eq:NS-cons}, neglecting body forces for simplicity, and applying the Reynolds operator yields the Reynolds-Averaged Navier-Stokes (RANS) equations:
+Substituting the Reynolds decomposition into the incompressible Navier-Stokes equations \eqref{eq:NS-cons}, neglecting body forces for simplicity, and applying the Reynolds operator yields the Reynolds-Averaged Navier-Stokes (RANS) equations:
 \begin{equation}
 	\left\{
 	\begin{aligned}
@@ -689,11 +694,11 @@ Although the previous relations were derived under the assumption of a fully dev
 The theoretical framework just introduced, highlights the wide range of scales of motion involved in the turbulent dynamics. In order to describe properly the fluid flow, it is necessary to take into account in the simulation all the space-time scales affecting the phenomena. This can result in an enormous amount of degrees of freedom, especially for high-Reynolds flows.
 
 \section{Direct Numerical Simulation}
-The most direct approach to perform a simulation, is choosing a space (grid) and time discretization able to represent all the space-time scales, included the smaller ones (Kolmogorov scales), in a non-stationary, three dimensional domain.
+The most direct approach to perform a simulation, is choosing a space (grid) and time discretization able to represent all the space-time scales, including the smaller ones (Kolmogorov scales), in a non-stationary, three-dimensional domain.
 
-In terms of accuracy and level of description provided it is unrivalled at the point that these numerical experiments can be considered directly analogous to actual laboratory experiments \cite{cfd-anderson} and does not need validation. However for the number of degrees of freedom involved its cost is extremely high and its applicability is limited to low or moderate Reynolds numbers \cite{turbulent-flows}.
+In terms of accuracy and level of description provided it is unrivalled to the extent that these numerical experiments can be considered directly analogous to actual laboratory experiments \cite{cfd-anderson}. However for the number of degrees of freedom involved its cost is extremely high and its applicability is limited to low or moderate Reynolds numbers \cite{turbulent-flows}.
 
-The scale separation problem can be illustrated assuming to discretize a domain with dimensions $L \sim \ell_0$. To properly resolve the dissipative structures, the grid spacing $\Delta$ must be comparable to the Kolmogorov scale $\eta$. Applying the relations~\eqref{eq:k41-scale-ratios}, the number of grid points required along each axis is on the order of $Re\,^{3/4}$ and in terms of time discretization, the required number of time-steps for a $\tau_0$ interval would be on the order of $Re\,^{1/2}$. Overall, the computational cost of the simulation scales with the Reynolds number, following a $Re\,^{11/4} \approx Re\,^3$ relation.
+The scale separation problem can be illustrated by assuming the discretization of a domain with dimensions $L \sim \ell_0$. To properly resolve the dissipative structures, the grid spacing $\Delta$ must be comparable to the Kolmogorov scale $\eta$. Applying the relations~\eqref{eq:k41-scale-ratios}, the number of grid points required along each axis is on the order of $Re\,^{3/4}$ and in terms of time discretization, the required number of time-steps for a $\tau_0$ interval would be on the order of $Re\,^{1/2}$. Overall, the computational cost of the simulation scales with the Reynolds number, following a $Re\,^{11/4} \approx Re\,^3$ relation.
 
 As a consequence, this type of simulation for large Reynolds number, such as those related to application in the aeronautical field ($Re \sim 10^8$) requires computer resources very much greater than currently available super computer capacities, and is therefore not practicable \cite{les-sagaut}.
 
@@ -701,7 +706,7 @@ As a consequence, this type of simulation for large Reynolds number, such as tho
 \label{sec:rans}
 
 % How it works 
-An approach capable of reducing heavily the number of degrees of freedom to be computed is based on the Reynolds-Averaged Navier Stokes equations \eqref{eq:rans} previously described. In contrast to the direct resolution of all turbulent scales, such method focuses on the determination of the mean flow field. The contribution related to the fluctuation field (transfer of momentum due to turbulent fluctuations) appears in the equations as the Reynolds stress tensor $\langle \bm{u}' \bm{u}' \rangle$ that needs to be determined to close the system of equations.
+An approach capable of reducing heavily the number of degrees of freedom to be computed is based on the Reynolds-Averaged Navier Stokes equations \eqref{eq:rans}, previously described in their incompressible form. In contrast to the direct resolution of all turbulent scales, such method focuses on the determination of the mean flow field. The contribution related to the fluctuation field (transfer of momentum due to turbulent fluctuations) appears in the equations as the Reynolds stress tensor $\langle \bm{u}' \bm{u}' \rangle$ that needs to be determined to close the system of equations.
 
 The structure of the Reynolds stress tensor is:
 \begin{equation}
@@ -713,13 +718,13 @@ The structure of the Reynolds stress tensor is:
 	\end{bmatrix}
 	\label{eq:reynolds-stress-tensor}
 \end{equation}
-it is constituted by nine components, but considering its symmetry, the independent terms are six. Recalling equation \eqref{eq:kinetic-energy} that defines the turbulent kinetic energy, it is possible to observe that the trace of the tensor corresponds to twice the turbulent kinetic energy $k$.
+it consist of nine components, but considering its symmetry, the independent terms are six. Recalling equation \eqref{eq:kinetic-energy} that defines the turbulent kinetic energy, it is possible to observe that the trace of the tensor corresponds to twice the turbulent kinetic energy $k$.
 
 % Advantages
 From a computational perspective, the grid requirements for RANS simulations are significantly less stringent than for DNS. The mesh must only be fine enough to resolve the gradients of the mean flow and the geometry, rather than the smallest Kolmogorov scales. Consequently, the computational cost does not scale theoretically with the Reynolds number as strictly as in DNS, making RANS the industry standard for high-Reynolds number engineering applications \cite{cfd-blazek}, with best performances for attached flows.
 
 % Disadvantages
-However, this reduction in computational effort comes at the cost of physical fidelity. By modeling the entire spectrum of turbulence, RANS simulations rely heavily on empirical constants and assumptions (e.g., isotropy of turbulence) that are not always accurate in complex flow regimes. Another fundamental limitation arises from the time-averaging procedure itself, that filters the entire dynamic content of the flow. Consequently, they are unable to capture transient phenomena, which are critical in many aerodynamic applications. While the mean flow representation is often sufficient for preliminary design, it fails when the physical unsteadiness of the large scales is dominant. To address cases where global flow instabilities must be resolved, the Unsteady RANS (URANS) approach, reviewed in a later section, can be adopted.
+However, this reduction in computational effort comes at the cost of physical fidelity. By modeling the entire spectrum of turbulence, RANS simulations rely heavily on empirical constants and assumptions (e.g., isotropy of turbulence) that are not always accurate in complex flow regimes. Another fundamental limitation arises from the time-averaging procedure itself, that filters the entire dynamic content of the flow. Consequently, RANS methods are unable to capture transient phenomena, which are critical in many aerodynamic applications. While the mean flow representation is often sufficient for preliminary design, it fails when the physical unsteadiness of the large scales is dominant. To address cases where global flow instabilities must be resolved, the Unsteady RANS (URANS) approach, reviewed in a later section, can be adopted.
 
 % Pro vs cons largely depend on the model
 While those characteristics are generally true, it should be noted that the advantages and limitations of RANS simulations are significantly dependent on the turbulence model of choice. To have an overall understanding of their range of applicability, the main properties of those models will be summarized below.
@@ -729,41 +734,41 @@ To resolve the closure problem, varying levels of approximation can be adopted. 
 \subsection{First-order closures}
 \label{sec:first-order-closures}
 % How it works
-The most common and simple class of approaches is represented by first-order closures. In this case the Reynolds stress tensor (that is a second moment), is determined through a relation with the mean flow velocity gradients (first moment). First-order closures can be further classified in linear, mostly based on the Boussinesq hypothesis, and non-linear eddy-viscosity formulations.
+The most common and simple class of approaches is represented by first-order closures. In this case the Reynolds stress tensor (that is a second moment), is determined through a relation with the mean flow velocity gradients (first moment). First-order closures can be further classified into linear, mostly based on the Boussinesq hypothesis, and non-linear eddy-viscosity formulations.
 
 % Linear models <-> Bousinnesq hp
-In linear formulations, the modeling of the Reynolds stress tensor can be split in two contributions: a isotropic one, related to $k$, and a deviatoric one. To model the latter, the Boussinesq hypothesis is introduced. This assumption relies on a direct analogy with a laminar velocity field, assuming that the turbulent shear stresses are linearly proportional to the mean strain rate tensor $E_{ij}$ through a scalar coefficient known as the eddy viscosity, $\nu_T$:
+In linear formulations, the modeling of the Reynolds stress tensor can be split into two contributions: a isotropic one, related to $k$, and a deviatoric one. To model the latter, the Boussinesq hypothesis is introduced. This assumption relies on a direct analogy with a laminar velocity field, assuming that the turbulent shear stresses are linearly proportional to the mean strain rate tensor $E_{ij}$ through a scalar coefficient known as the eddy viscosity, $\nu_T$:
 \begin{equation}
 	-\langle \, u_i' \, u_j' \, \rangle = - \frac{2}{3} \, k \, \delta_{ij} + 2 \, \nu_T \, E_{ij}
 	\label{eq:boussinesq-model}
 \end{equation}
-The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a function of the fluid local state of motion. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek} \cite{tubulence-wilcox}.
+where $\delta_{ij}$ is the Kronecker delta. The fundamental advantage of this hypothesis is the significant reduction in the problem complexity. It transforms the task of computing six independent tensor components into the determination of a single scalar field, $\nu_T$, that represent a function of the fluid local state of motion. However this approach introduces significant limitations. The assumption of local equilibrium between the mean strain tensor $E_{ij}$ and the deviatoric part of the turbulent stress tensor and its consequent independence on fluid rigid rotations is often excessively restrictive for flows characterized by massive separation, strong curvature, or unsteady large-scale structures \cite{cfd-blazek} \cite{tubulence-wilcox}.
 
 % Non-linear models
 With the development of more complex non-linear eddy viscosity models, the limitations discussed above are in part mitigated. They extend the relation between the Reynolds stress tensor and $E_{ij}$, involving the mean flow rotation tensor $\Omega_{ij}$ and including also non-linear quadratic and cubic terms \cite{rans-nl-model-lumley}.
 
 % Number of governing equations
-First-order turbulence closures can be also classified by the number of governing equations used, those with a greater number of equation usually provide a fuller description of turbulence.
+First-order turbulence closures can be also classified by the number of governing equations used; those with a greater number of equation usually provide a fuller description of turbulence.
 \begin{itemize}
 	\item Algebraic or zero-equations models such as the uniform turbulent viscosity one are characterized by extremely limited ranges of applicability.
-	\item One-equation models are also very limited in possible application fields, an example is the Spalart-Allmaras model, designed for aerodynamic flows. The only real advantages of using one-equation model rather than a two-equation model are related with stability and simplicity of the numerical solution \cite{tubulence-wilcox}.
+	\item One-equation models are also very limited in possible application fields; an example is the Spalart-Allmaras model, designed for aerodynamic flows. The only real advantages of using one-equation model rather than a two-equation model are related with stability and simplicity of the numerical solution \cite{tubulence-wilcox}.
 	\item Two-equation models such as $k-\mathcal{E}$, $k-\omega$ and their blended implementations like Shear Stress Transfer (SST) are the most widely employed and for their importance will be further analyzed below.
 \end{itemize}
 
 \subsubsection{Model \boldmath$k - \mathcal{E}$} The $k - \mathcal{E}$ model is based on the evaluation of the turbulent kinetic energy and dissipation rate. One of the main limitations is related to near-wall behavior \cite{cfd-blazek}.
 \begin{itemize}
-	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y+ \leq 1$) in order to stay valid and resolve the viscous sub-layer.
-	\item By contrast, high Reynolds number turbulence models don't need damping functions, they are less stringent in terms of grid resolution (first node inside $10 \leq y+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
+	\item In low Reynolds number turbulence models there is the need of some damping functions to limit $k$ and $\mathcal{E}$ and an high grid resolution (first node at $y^+ \leq 1$) in order to stay valid and resolve the viscous sub-layer.
+	\item By contrast, high Reynolds number turbulence models do not need damping functions, they are less stringent in terms of grid resolution (first node inside $10 \leq y^+ \leq 100$) but require the implementation of wall functions, often based in the logarithmic wall-law, with the consequent loss of accuracy in case of a separated flow.
 \end{itemize}
 Since the method is based on the Boussinesq assumption, it inherits all the limitations related to the linear eddy viscosity modeling already discussed previously.
-A third aspect regards the (non) universality: the model requires \textit{ad hoc} adjustments of its calibration constants based on the nature of the considered flow \cite{turbulent-flows}. It also degrade in performance with adverse pressure gradients.
+A third aspect regards the (non) universality: the model requires \textit{ad hoc} adjustments of its calibration constants based on the nature of the considered flow \cite{turbulent-flows}. It also degrades in performance with adverse pressure gradients.
 
-\subsubsection{Model \boldmath$k - \omega$} The $k - \omega$ model is the second most widely used two-equation model. The term $\omega$ is simply defined as: $\omega = \mathcal{E}/k$. It better performs for boundary layer flows and in presence of moderate adverse pressure gradients. The main drawback instead, is related to its sensibility to the arbitrary choice of $\omega$ boundary condition value \cite{turbulent-flows} \cite{tubulence-wilcox}.
+\subsubsection{Model \boldmath$k - \omega$} The $k - \omega$ model is the second most widely used two-equation model. The term $\omega$ is simply defined as: $\omega = \mathcal{E}/k$. It better performs for boundary layer flows and in presence of moderate adverse pressure gradients. The main drawback, however, is related to its sensitivity to the arbitrary choice of $\omega$ boundary condition value \cite{turbulent-flows} \cite{tubulence-wilcox}.
 
-\subsubsection{Model SST} The Shear Stress Transport (SST) model merges the $k-\omega$ formulation with a high Reynolds number $k-\mathcal{E}$ model, with the intent of combining the advantages of the two. The $k-\omega$ is used in the boundary layer since it doesn't require damping functions and it better performs in presence of adverse pressure gradients, instead $k-\mathcal{E}$ is employed in wake regions of the boundary layer. The switching between the models is ensured by a blending function, dependent on wall proximity.
+\subsubsection{Model SST} The Shear Stress Transport (SST) model merges the $k-\omega$ formulation with a high Reynolds number $k-\mathcal{E}$ model, with the intent of combining the advantages of the two. The $k-\omega$ is used in the boundary layer since it does not require damping functions and it better performs in presence of adverse pressure gradients, instead $k-\mathcal{E}$ is employed in wake regions of the boundary layer. The switching between the models is ensured by a blending function, dependent on wall proximity.
 
 \subsection{Second-order closures}
-Second-order closures, unlike first-order models that rely on the Boussinesq hypothesis represent a more complex and flexible class of approaches to determine the Reynolds stress tensor. Reynolds Stress Transport (RST) models allow to solve individual transport equations for the six independent component of the Reynolds stress tensor. This approach naturally include effects of streamline curvature, sudden changes in strain rate, secondary motions and the history effects \cite{tubulence-wilcox}. With a similar accuracy, but a slightly lower level of description and complexity, the Algebraic Reynolds Stress (ARS) models employ only two transport equations, generally for the turbulent kinetic energy and for the dissipation rate. Despite their increased accuracy both RST and ARS models suffer numerical issues and they are more computationally demanding, so first-order models are more widely used in practice \cite{cfd-blazek}.
+Second-order closures, unlike first-order models that rely on the Boussinesq hypothesis represent a more complex and flexible class of approaches to determine the Reynolds stress tensor. Reynolds Stress Transport (RST) models allow to solve individual transport equations for the six independent components of the Reynolds stress tensor. This approach naturally include effects of streamline curvature, sudden changes in strain rate, secondary motions and the history effects \cite{tubulence-wilcox}. With a similar accuracy, but a slightly lower level of description and complexity, the Algebraic Reynolds Stress (ARS) models employ only two transport equations, generally for the turbulent kinetic energy and for the dissipation rate. Despite their increased accuracy both RST and ARS models suffer numerical issues and they are more computationally demanding, so first-order models are more widely used in practice \cite{cfd-blazek}.
 
 \subsection{Unsteady RANS (URANS)}
 While in the stationary case the mean value can be considered as a time average, in the non-stationary case the ensemble average is used, more similarly to the theoretical description. Also, in such cases, the approach is to apply a RANS model in order to resolve some of the unsteady dynamics of the flow.
@@ -781,23 +786,23 @@ The large-scale structures, often referred to as "eddies", contain the majority 
 This strategy offers significant advantages over RANS approaches. Since the large-scale unsteady motions are resolved directly rather than averaged, LES is capable of capturing transient phenomena and flow instabilities, which are critical in aerodynamic flows involving separation or bluff bodies. The arbitrary aspects are confined only to the small scales, making the simulation less dependent on model calibration compared to RANS, where the entire turbulent spectrum is modeled.
 
 % Disadvantages
-However, these advantages come with a substantial computational cost. In terms of grid resolution requirements, LES places itself in an intermediate position between DNS and RANS, only requiring the resolution of the structures down to the cut-off width $\Delta$. Consequently, the number of degrees of freedom is significantly lower than that of DNS, and substantially higher than RANS, where the mesh is only required to resolve the mean flow gradients. This requirement becomes particularly critical in wall-bounded flows, where the physical size of the energy-carrying eddies decreases proportionally to the distance from the wall \cite{turbulent-flows}. In the so-called Wall-Resolved LES (WR-LES), the need to resolve these inner boundary layer structures leads to a computational cost that scales significantly with the Reynolds number ($Re^{13/7}$) \cite{wrles-re-chapman} \cite{wrles-re-choi2012}, with possible prohibitive costs. To overcome this limitation and apply LES to high-Reynolds number flows of engineering interest, Wall-Modeled LES (WM-LES) approaches are adopted to bypass the strict resolution requirements of the near-wall region.
+However, these advantages come with a substantial computational cost. In terms of grid resolution requirements, LES places itself in an intermediate position between DNS and RANS, only requiring the resolution of the structures down to the cut-off width $\Delta$. Consequently, the number of degrees of freedom is significantly lower than that of DNS, and substantially higher than that of RANS, where the mesh is only required to resolve the mean flow gradients. This requirement becomes particularly critical in wall-bounded flows, where the physical size of the energy-carrying eddies decreases proportionally to the distance from the wall \cite{turbulent-flows}. In the so-called Wall-Resolved LES (WR-LES), the need to resolve these inner boundary layer structures leads to a computational cost that scales significantly with the Reynolds number ($Re^{13/7}$) \cite{wrles-re-chapman} \cite{wrles-re-choi2012}, with possible prohibitive costs. To overcome this limitation and apply LES to high-Reynolds number flows of engineering interest, Wall-Modeled LES (WM-LES) approaches are adopted to bypass the strict resolution requirements of the near-wall region.
 
 % Postpone discussion
 Considering the central role of this methodology in the present work, and specifically the application of Wall-Modeled LES, this topic will be addressed in detail in the following chapter.
 
 \section{Hybrid RANS/LES Simulation}
 % Basic idea = main advantage
-Another possible approach to drastically reduce the computational cost of simulating turbulent flows is to is to couple LES with the RANS models. The fundamental idea behind this strategy is to perform LES only in those regions where it is strictly necessary, typically where the flow is dominated by large-scale structures or massive separation. Conversely, the RANS approach is employed in the remainder of the domain, such as in the boundary layer regions, where it is known to be reliable and computationally efficient.
+Another possible approach to drastically reduce the computational cost of simulating turbulent flows is to couple LES with the RANS models. The fundamental idea behind this strategy is to perform LES only in those regions where it is strictly necessary, typically where the flow is dominated by large-scale structures or massive separation. Conversely, the RANS approach is employed in the remainder of the domain, such as in the boundary layer regions, where it is known to be reliable and computationally efficient.
 
 % Classification
-Following the classification proposed by Fröhlich and von Terzi \cite{urans-hybrid}, these techniques are categorized into \textit{unified} and \textit{segregated} modeling.
+Following the classification proposed by Fröhlich and von Terzi \cite{urans-hybrid}, these techniques are categorized into unified and segregated modeling.
 
 % Unified = blending (pro/con) + interfacing (pro/con)
-Unified modeling utilizes the same velocity transport equation in the entire domain, while the transition between RANS and LES models is managed locally. The switching between different models can be performed with a \textit{blending} function approach or by using a pure LES model in one part of the domain and a pure RANS model in the other, with the so called \textit{interfacing} approach, this is the case for instance of Detached Eddy Simulations (DES). While this approach is user-friendly as it avoids explicit zonal boundaries, it suffers from the potential existence of a "gray area" at the interface.
+Unified modeling utilizes the same velocity transport equation in the entire domain, while the transition between RANS and LES models is managed locally. The switching between different models can be performed with a blending function approach or by using a pure LES model in one part of the domain and a pure RANS model in the other, with the so called interfacing approach, this is the case for instance of Detached Eddy Simulations (DES). While this approach is user-friendly as it avoids explicit zonal boundaries, it suffers from the potential existence of a "gray area" at the interface.
 
 % Segregated (pro/con)
-Segregated modeling instead require the \textit{a priori} decomposition of the domain into distinct regions. In each sub-domain an almost stand-alone RANS or LES computation are performed and they are coupled via boundary conditions at the interfaces. This allow each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define sub-domains and involves complex implementation for the coupling across interfaces.
+Segregated modeling, instead, requires the \textit{a priori} decomposition of the domain into distinct regions. In each sub-domain, an almost stand-alone RANS or LES computation is performed, and they are coupled via boundary conditions at the interfaces. This allows each model to operate in its regime of validity, where it better performs. However, this method requires prior knowledge of the flow physics to define sub-domains and involves complex implementation for the coupling across interfaces.
 
 \chapter{Mathematical framework}
 \label{sec:mathematical-framework}
@@ -818,7 +823,7 @@ where:
 	\item $\phi$ represents the generic flow variable.
 	\item $\widetilde{\phi}$ is the filtered generic flow variable.
 	\item $\phi''$ is the residual/sub-grid component.
-	\item The double integral represent a temporal (one dimensional) and spatial (three dimensional) "scan" of the entire domain.
+	\item The double integral represent a temporal (one dimensional) and spatial (three-dimensional) "scan" of the entire domain.
 	\item $G$ is the filter kernel, dependent on the choice of $\Delta_F$.
 \end{itemize}
 Formally, this expression represents a convolution product between the physical quantity and the filter function. In simpler terms, this is a sort of weighted average operation of the values assumed by the field in the proximity of the considered point.
