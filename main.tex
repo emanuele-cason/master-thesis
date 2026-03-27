@@ -211,11 +211,11 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	\endlastfoot
 
 	% Navier-Stokes
-	$x_i$, $x$                                   & Spatial component                                                            \\
+	$x_i$                                        & Spatial component                                                            \\
 	$t$                                          & Time                                                                         \\
 	$p$                                          & Pressure                                                                     \\
-	$\bm{e}_{ij}$                                     & Strain rate tensor                                                           \\
-	$\bm{\omega}_{ij}$                                & Rotation rate tensor                                                         \\
+	$\bm{e}$                                     & Strain rate tensor                                                           \\
+	$\bm{\omega}$                                & Rotation rate tensor                                                         \\
 	$\mu$                                        & Dynamic viscosity                                                            \\
 	$\nu$                                        & Kinematic viscosity                                                          \\
 	$\rho$                                       & Fluid density                                                                \\
@@ -224,6 +224,7 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 
 	% RANS/LES decompositions
 	\addlinespace
+	$\bm{u}$                                   & Instantaneous velocity vector                                             \\
 	$u_i$, $u$                                   & Instantaneous velocity component                                             \\
 	$U$, $\langle u \rangle$                     & Mean flow velocity, Reynolds Averaged                                        \\
 	$u'$                                         & Velocity fluctuation, Reynolds decomposition                                 \\
@@ -360,7 +361,7 @@ or recasting the system in its \textit{conservative form}:
     \dfrac{\partial \bm{u}}{\partial t} + \nabla \cdot (\bm{u} \otimes \bm{u}) = -\dfrac{\nabla p}{\rho} + \nabla \cdot (2\nu \bm{e}) + \bm{f}
 \end{cases}
 \end{equation}
-where $\bm{f}$ represents the body forces.
+where $\bm{e}$ is the strain-rate tensor, and $\bm{f}$ represents the body forces.
 
 The flow regime is described by the Reynolds number, a non-dimensional value representing the ratio between inertial and viscous forces, and defined as:
 \begin{equation}
@@ -373,17 +374,17 @@ Considering the chaotic nature of the turbulence, a deterministic and instantane
 \section{Reynolds-Averaged Navier-Stokes equations}
 
 To analytically formalize the idea of considering the average fields and the turbulent one separately, the Reynolds averaging operator and the Reynolds decomposition are here introduced. The former consists of an ensemble average over a number of realizations. In more practical terms this implies repeating the same experiment $N$ times, under identical conditions, and averaging the flow variables at the exact same location and time instant across all the independent measures.
-Considering to apply the Reynolds operator for the velocity component $u$:
+Applying the Reynolds operator to the velocity component $u$ yields:
 \begin{equation}
 	\langle u(\bm{x}, t) \rangle = U(\bm{x}, t) = \frac{1}{N} \, \sum_{k=1}^{N \gg 1} u_{(k)} (\bm{x}, t)
 \end{equation}
-Instead for what concerns the Reynolds decomposition, it can be defined as:
+Conversely, the Reynolds decomposition is defined as:
 \begin{equation}
 	u(\bm{x}, t) = U(\bm{x}, t) + u'(\bm{x}, t)
 \end{equation}
 where $u'$ is the fluctuation component and $U$ is the averaged quantity.
 
-By substituting in the Navier-Stokes equations \eqref{eq:NS-cons}, neglecting body forces for simplicity, the Reynolds decomposition and applying the Reynolds operator the Reynolds-Averaged Navier-Stokes (RANS) equations are obtained:
+Substituting the Reynolds decomposition into the Navier-Stokes equations \eqref{eq:NS-cons}, neglecting body forces for simplicity, and applying the Reynolds operator yields the Reynolds-Averaged Navier-Stokes (RANS) equations:
 \begin{equation}
 	\left\{
 	\begin{aligned}
@@ -471,7 +472,7 @@ With the Kolmogorov theory, a better characterization of the involved scales in 
 	      \end{equation}
 	      These scales are considered the smallest active scales in the turbulent motion. As a support for this assertion it is possible to observe that the related Reynolds number is unity ($Re_\eta = \eta \cdot u_\eta / \nu = 1$), meaning that viscous forces effectively dominate over inertial forces, allowing the dissipation phenomena.
 
-	      It is possible to evaluate the entity of scales separation, considering the ratios of the smallest to largest scales. These ratios depend on the Reynolds number according to the following relations:
+	      The extent of scale separation can be evaluated by considering the ratios of the smallest to largest scales. These ratios depend on the Reynolds number according to the following relations:
 	      \begin{equation}
 		      \frac{\ell_0}{\eta} \sim Re\,^{3/4} \, \qquad
 		      \frac{u_0}{u_\eta} \sim Re\,^{1/4} \, \qquad
@@ -586,7 +587,7 @@ Consequently, in equation \eqref{eq:tble}, the inertial terms on the left-hand s
 	0 = -\frac{1}{\rho} \frac{\partial P}{\partial x} + \frac{1}{\rho} \, \frac{\partial}{\partial y} \left[ \mu \frac{\partial U}{\partial y} - \rho \, \langle u'v' \rangle \right]
 	\label{eq:eq-tble-1}
 \end{equation}
-Similarly with what already seen for equation \eqref{eq:pressure-tble}, the term $P + \rho \, \langle v'^{\, 2} \rangle$ is constant along $y$, the term $\langle v'^{\, 2} \rangle$ cancels out at the wall, and its derivative in $x$ is zero for the homogeneity assumptions. Consequently:
+Similarly to what was observed for equation \eqref{eq:pressure-tble}, the term $P + \rho \, \langle v'^{\, 2} \rangle$ is constant along $y$, the term $\langle v'^{\, 2} \rangle$ cancels out at the wall, and its derivative in $x$ is zero for the homogeneity assumptions. Consequently:
 \begin{equation}
 	\left(
 	P + \rho \, \langle v'^{\, 2} \rangle \right) = P_w \, (x)
@@ -642,7 +643,7 @@ Observing the data of the contributions, it is possible to identify two regions,
 \end{itemize}
 The ratio between the two characteristic length scales can be defined as the friction Reynolds number:
 \begin{equation}
-	\frac{h}{\delta_{\nu}} = \frac{u_{\tau}}{\nu} = Re_{\tau}
+	\frac{h}{\delta_{\nu}} = \frac{u_{\tau} \, h}{\nu} = Re_{\tau}
 \end{equation}
 
 \subsubsection{Wall laws}
@@ -655,20 +656,20 @@ Despite the previous separate definition of the two regions, the mean behavior o
 		      \makebox[5.0cm][c]{$\displaystyle y^+ < 5$}
 	      \end{equation}
 	\item \textbf{Buffer layer:} In the transition region ($5 < y^+ < 30$), neither the linear or the logarithmic law provides an accurate description, as viscous and turbulent stresses are of comparable magnitude. Consequently, the velocity profile is described by semi-empirical functions (such as Van Driest damping or Spalding's law) that smoothly connect the viscous sub-layer to the logarithmic region.
-	\item \textbf{Overlap region:} Moving towards the outer layer, the mean flow is described by the logarithmic law, still dependent on: the $y^+$ coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant ($B \approx 5.2$).
+	\item \textbf{Log-law region:} Moving towards the outer layer, in the region ($30 < y^+, \text{ and } y/h < 0.3$), a common behavior arises from the overlap between the inner and outer scalings. In the inner layer	the mean flow is described by the logarithmic law, still dependent on: the $y^+$ coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant ($B \approx 5.2$).
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle U^+ = \frac{1}{\kappa} \, \text{ln} \, y^+ + B$}
 		      \makebox[5.0cm][c]{$\displaystyle y^+ > 30$}
 	      \end{equation}
-	      It can be demonstrated that this law asymptotically transition to the defect law while approaching the outer layer. Then, the flow description is provided as a velocity defect with respect to the centerline velocity $U_C$. The defect law is dependent on: the $y/h$ normalized coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant $B_1$, specific for the type of flow.
+	      In the outer layer, the flow is described by a velocity defect with respect to the centerline velocity $U_C$. The defect law is dependent on: the $y/h$ normalized coordinate; the Von Karman constant ($\kappa = 0.41$); the integration constant $B_1$, specific for the type of flow. Such defect law in the overlap zone also assumes a logarithmic formulation:
 	      \begin{equation}
 		      \makebox[5.0cm][c]{$\displaystyle \frac{U_C - U}{u_\tau} = - \, \frac{1}{\kappa} \, \text{ln} \, \frac{y}{h} + B_1$}
 		      \makebox[5.0cm][c]{$\displaystyle y/h < 0.3$}
 	      \end{equation}
 \end{itemize}
-The various layer just introduced are resumed in Figure \ref{fig:inner-outer-layers}.
+The various layers just introduced are summarized in Figure \ref{fig:inner-outer-layers}.
 
-Despite the previous relations have been derived with the assumption of a developed channel flow, multiple experiments verified the universality of such laws also for pipe flows and other equilibrium boundary layers, and as shown in Figure \ref{fig:wall-laws-vs-experiment} they recover very accurately the experimental data
+Although the previous relations were derived under the assumption of a fully developed channel flow, multiple experiments have verified the universality of these laws also for pipe flows and other equilibrium boundary layers, and as shown in Figure \ref{fig:wall-laws-vs-experiment} they recover very accurately the experimental data
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.75\textwidth]{img/inner-outer-layers.jpg}
