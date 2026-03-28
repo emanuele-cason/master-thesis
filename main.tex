@@ -297,6 +297,8 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	$\bm{S_f}$								 & Integration surface vector\\
 	$F_{i,f}^{\, conv}$, $F_{i,f}^{\, visc}$	 & Convective and viscous flux densities in direction $i$, at face $f$\\
 	$u_{MP}$, $u_{MP \, \parallel}$				 & Resolved velocity at the matching (sampling) point and its interface-parallel projection.\\
+	$\bm{\hat{n}}, \bm{\hat{t}}, \bm{\hat{b}}$   & Normal, tangent, binormal unit vectors of the local wall reference frame.\\
+	$\bm{\tau}_{w, \, local}$, $\bm{\tau}_{w, \, global}$ & Wall stress tensors in the local and global frame of reference\\
 
 	% Test cases and result analysis
 	\addlinespace
@@ -326,6 +328,18 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	WALE										 & Wall-Adapting Local Eddy-viscosity \\
 	ERCOFTAC 									 & European Research Community On Flow, Turbulence and Combustion \\
 	WM										     & Wall Model \\
+	RK3											 & Three-stages Runge-Kutta scheme \\
+	FFT											 & Fast Fourier Transform\\
+	FVM											 & Finite Volume Method\\
+	CS2											 & Centered Second order\\
+	SDF											 & Signed Distance Field\\
+	STL 									  	 & STereoLithography\\
+	GUI											 & Graphical User Interface\\
+	BVH											 & Bounding Volume Hierarchy\\
+	MPI											 & Message Passing Interface\\
+	VTK 										 & Visualization ToolKit\\
+	MP											 & Matching Point\\
+
 
 \end{longtable}
 
@@ -1038,7 +1052,7 @@ The numerical framework used is based on \textit{CaNS (Canonical Navier-Stokes)}
 The algorithm solves the governing filtered Navier-Stokes equations presented in equation \eqref{eq:les-mom-equation} with unit density. To describe the time-integration scheme, it is convenient to recast the momentum equation by grouping the convective (or advective) and diffusive terms into a single operator, denoted here as $\mathcal{AD}(\bm{\widetilde{u}})$:
 \begin{equation}
     \label{eq:AD-def}
-    \mathcal{AD}(\bm{\widetilde{u}}) = - \nabla \left( \bm{\widetilde{u}} \, \bm{\widetilde{u}} \right)+ \nabla \cdot \left[ (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \right]
+    \mathcal{AD}(\bm{\widetilde{u}}) = - \nabla \cdot \left( \bm{\widetilde{u}} \, \bm{\widetilde{u}} \right)+ \nabla \cdot \left[ (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \right]
 \end{equation}
 Using this notation, the system of equations solved by the algorithm simplifies to:
 \begin{equation}
@@ -1143,21 +1157,21 @@ To obtain the integral form of the governing equations, the Gauss's Divergence T
 \begin{equation}
     \int_{\Omega} \left( \nabla \cdot \bm{\widetilde{u}} \right) \, d\Omega 
     = 
-    \int_{S} \bm{\widetilde{u}} \cdot \, d \bm{S}
+    \int_{S} \bm{\widetilde{u}} \cdot d \bm{S}
     \quad \implies \quad
-    \sum_{f} \bm{u_f} \cdot \bm{S}_{f}
+    \sum_{f} \bm{u}_f \cdot \bm{S}_{f}
     = 
     \sum_{f} \bm{F}_f^{\, vel} \cdot \bm{S}_{f}
 \end{equation}
-where, in this example, $\bm{S}$ is the surface vector, $\left( \bm{u_f} \cdot \bm{S}_{f} \right)$ is the flux contribution across the face $f$, and $\bm{F}_f^{\, vel} \equiv \bm{u_f}$ is the (velocity) flux density again across the face $f$. Note that the pedix $f$ act as the position of evaluation of fluid quantities.
+where, in this example, $\bm{S}$ is the surface vector, $\left( \bm{u_f} \cdot \bm{S}_{f} \right)$ is the flux contribution across the face $f$, and $\bm{F}_f^{\, vel} \equiv \bm{u_f}$ is the (velocity) flux density again across the face $f$. Note that the subscript $f$ act as the position of evaluation of fluid quantities.
 
 Integrating \eqref{eq:LES-AD} in a cell control volume $\Omega$ and applying the divergence theorem:
 \begin{equation}
 	\begin{split}
 		\int_{\Omega} \dfrac{\partial \, \bm{\widetilde{u}}}{\partial t} \, d \Omega =
 		&- \int_S \left( \bm{\widetilde{u}} \, \bm{\widetilde{u}} \right) \cdot \bm{n} \, dS
-		+ \int_S (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \, dS \\
-		&- \int_S \left( \widetilde{p} \, \bm{I} \right) \, dS
+		+ \int_S (\nu + \nu_{R}) \, \left(\nabla \bm{\widetilde{u}} + \left( \nabla \bm{\widetilde{u}} \, \right)^T \right) \cdot \bm{n} \, dS \\
+		&- \int_S \left( \widetilde{p} \, \bm{I} \right) \cdot \bm{n} \, dS
 		+ \int_\Omega \bm{f} \, d \Omega
 	\end{split}
 \end{equation}
@@ -1241,7 +1255,7 @@ The evaluation of first and second derivatives instead, is performed through a C
 \begin{equation}
 	\begin{split}
 		&F_{I, IP}^{\, conv} = \left( \dfrac{u_{pcc} + u_{ccc}}{2} \right)^2 \\[0.5em]
-		&F_{I, JP}^{\, visc} = \left( \nu + \dfrac{s_{ccc}+s_{pcc}+s_{cpc}+s_{ppc}}{4} \right) \left( \dfrac{u_{cpc}-u_{ccc}}{\Delta x} + \dfrac{v_{pcc}-v_{ccc}}{\Delta x} \right)
+		&F_{I, JP}^{\, visc} = \left( \nu + \dfrac{s_{ccc}+s_{pcc}+s_{cpc}+s_{ppc}}{4} \right) \left( \dfrac{u_{cpc}-u_{ccc}}{\Delta y} + \dfrac{v_{pcc}-v_{ccc}}{\Delta x} \right)
 	\end{split}
 \end{equation}
 And the corresponding code implementation for the $\mathcal{AD}$ contribution is the following:
