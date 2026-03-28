@@ -323,6 +323,9 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	URANS                                        & Unsteady RANS                                                                \\
 	WM-LES                                       & Wall-Modeled LES                                                             \\
 	WR-LES                                       & Wall-Resolved LES                                                            \\
+	WALE										 & Wall-Adapting Local Eddy-viscosity \\
+	ERCOFTAC 									 & European Research Community On Flow, Turbulence and Combustion \\
+	WM										     & Wall Model \\
 
 \end{longtable}
 
@@ -502,7 +505,7 @@ In summary, the energy input associated with the mean velocity field (for exampl
 \label{sec:wall-bounded-flows}
 
 \subsection{Inertial momentum balance}
-In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent on the span-wise $z$ direction.
+In the simple case of a uniform laminar flow above a smooth flat plate, the boundary layer develops in the flow direction. Its statistics vary primarily in the wall-normal $y$ direction and they are independent of the span-wise $z$ direction.
 % Removed because non general for the channel case and unused.
 % Since the incompressible case is considered, the Bernoulli principle relate the mean free-stream pressure $P_e(x)$ with the mean velocity $U_e(x)$ so that:
 % \begin{equation}
@@ -809,7 +812,7 @@ Segregated modeling, instead, requires the \textit{a priori} decomposition of th
 The review of simulation techniques presented in the previous chapter highlighted the capabilities and limitations of different turbulence modeling strategies. In the present work, the Large Eddy Simulation (LES) approach is selected to effectively capture the unsteady dynamics of the flow. This chapter details the mathematical framework of the solver. As introduced previously, the LES approach relies on the application of a spatial filtering operation to the Navier-Stokes equations. This represents the starting point for the derivation of the governing equations, where the large scales are explicitly resolved, and the effects of the unresolved scales are modeled using Subgrid-Scale (SGS) and wall models.
 
 \section{Filtering operation}
-Filtering is the operation that allows to mathematically separate the turbulent scales of motion. This decomposition is determined by a characteristic arbitrary cutoff width $\Delta_F$. In the spectral domain, this procedure acts as a low-pass filter: it retains the low-frequency, large-scale contributions, while the high-frequency fluctuations associated with spatial scales smaller than $\Delta_F$ are cut off to be modeled. Considering a generic field, this decomposition can be mathematically represented as:
+Filtering is the operation that allows for the mathematical separation of the turbulent scales of motion. This decomposition is determined by a characteristic arbitrary cutoff width $\Delta_F$. In the spectral domain, this procedure acts as a low-pass filter: it retains the low-frequency, large-scale contributions, while the high-frequency fluctuations associated with spatial scales smaller than $\Delta_F$ are cut off to be modeled. Considering a generic field, this decomposition can be mathematically represented as:
 \begin{equation}
 	\phi \, (\bm{x}, \, t) = \widetilde{\phi} \, (\bm{x}, \, t) + \phi'' \, (\bm{x}, \, t)
 \end{equation}
@@ -823,12 +826,12 @@ where:
 	\item $\phi$ represents the generic flow variable.
 	\item $\widetilde{\phi}$ is the filtered generic flow variable.
 	\item $\phi''$ is the residual/sub-grid component.
-	\item The double integral represent a temporal (one dimensional) and spatial (three-dimensional) "scan" of the entire domain.
+	\item The double integral represents a temporal (one dimensional) and spatial (three-dimensional) "scan" of the entire domain.
 	\item $G$ is the filter kernel, dependent on the choice of $\Delta_F$.
 \end{itemize}
 Formally, this expression represents a convolution product between the physical quantity and the filter function. In simpler terms, this is a sort of weighted average operation of the values assumed by the field in the proximity of the considered point.
 
-It should be noted that, despite the equation \eqref{eq:les-filter-operation} represents a filtering operation in the general case (for both space and time), the imposition of a spatial filtering automatically induces an implicit time filtering, according to the Kolmogorov's relations \eqref{eq:k41-inertial-subrange}, so it is possible to consider sufficient the spatial filtering alone \cite{les-sagaut}.
+It should be noted that, although equation \eqref{eq:les-filter-operation} represents a filtering operation in the general case (for both space and time), the imposition of a spatial filtering automatically induces an implicit time filtering, according to the Kolmogorov's relations \eqref{eq:k41-inertial-subrange}, so it is possible to consider sufficient the spatial filtering alone \cite{les-sagaut}.
 
 \subsection{Properties of the filtering operator}
 
@@ -837,7 +840,7 @@ In order to derive the equations for LES from Navier-Stokes equations, the filte
 \begin{enumerate}
 	\item \textbf{Conservation of constants:} The filter kernel must be normalized, such that the integral over the entire domain equals unity. This ensures that the filtering of a constant value returns the constant itself, preserving the global conservation of physical quantities.
 	      \begin{equation}
-		      \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} G(\bm{x}, \tau) \, d\tau \, d^3\bm{x} = 1
+		      \int_{-\infty}^{+\infty} \! \int_{-\infty}^{+\infty} G(\bm{r}, \tau) \, d\tau \, d^3\bm{r} = 1
 	      \end{equation}
 
 	\item \textbf{Linearity:} The filtering operation is linear, meaning that the filter of a sum is equal to the sum of the filtered quantities.
@@ -847,7 +850,7 @@ In order to derive the equations for LES from Navier-Stokes equations, the filte
 
 	\item \textbf{Commutation with differentiation:} The result is independent of the sequence in which differentiation and filtering are performed.
 	      \begin{equation}
-		      \frac{\partial \widetilde{\phi}}{\partial s} = \widetilde{\frac{\partial \phi}{\partial s}}, \qquad s = \bm{x}, t
+		      \frac{\partial \widetilde{\phi}}{\partial s} = \widetilde{\frac{\partial \phi}{\partial s}}, \qquad s = x_i, t
 	      \end{equation}
 \end{enumerate}
 
@@ -862,7 +865,7 @@ This implies that applying the filter twice produces a result different from a s
 
 It is important to distinguish between explicit and implicit filtering.
 
-The explicit filtering approach involves the application of a distinct mathematical operator to the flow field, with a defined characteristic length $\Delta_F$, independent on the grid resolution $\Delta$. The three most common explicit filters are (Figure \ref{fig:les-filters}):
+The explicit filtering approach involves the application of a distinct mathematical operator to the flow field, with a defined characteristic length $\Delta_F$, independent of the grid resolution $\Delta$. The three most common explicit filters are (Figure \ref{fig:les-filters}):
 \begin{itemize}
 	\item \textbf{Box or top-hat filter:} performs a local spatial average of the flow variables over a defined control volume. Its oscillating transfer function causes the introduction of high wavenumber noise.
 
@@ -891,9 +894,9 @@ The explicit filtering approach involves the application of a distinct mathemati
 	\label{fig:les-filters}
 \end{figure}
 
-This explicit approach allows decouple the filter length and the grid resolution obtaining a better control on which scales are resolved and which are modeled. This has important implications in terms of stability control and allows to perform mesh convergence analysis varying the grid resolution alone.
+This explicit approach allows decoupling the filter length from the grid resolution, obtaining a better control on which scales are resolved and which are modeled. This has important implications in terms of stability control and allows performing mesh convergence analysis varying the grid resolution alone.
 
-Conversely, the implicit filtering approach relies on the computational grid and the discretization scheme to act as the filter. In this case, the filter width is coupled with the local mesh resolution ($\Delta_F = \Delta$), assuming that the grid itself defines the cutoff frequency without the need for an external mathematical operator. This allows to save a relevant part of the computational cost.
+Conversely, the implicit filtering approach relies on the computational grid and the discretization scheme to act as the filter. In this case, the filter width is coupled with the local mesh resolution ($\Delta_F = \Delta$), assuming that the grid itself defines the cutoff frequency without the need for an external mathematical operator. This allows for a significant reduction in computational cost.
 
 \section{Governing equations}
 
@@ -921,18 +924,18 @@ The system consists of only 4 equations (1 continuity and 3 momentum equations),
 \subsection{Sub-Grid Scales modeling}
 The modeling of the coupling term between resolved and sub-grid scales has to be performed on the basis of the resolved scales alone. As explained by Sagaut \cite{les-sagaut} this can be done with two approaches:
 \begin{itemize}
-	\item \textbf{Structural modeling:} Allows for the modeling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scales structures. This is feasible when small scales shows an universal structure or a clear correlation with the structure of the resolved field.
-	\item \textbf{Functional modeling:} Consist in the modeling of the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This require an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
+	\item \textbf{Structural modeling:} Allows for the modeling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scales structures. This is feasible when small scales show an universal structure or a clear correlation with the structure of the resolved field.
+	\item \textbf{Functional modeling:} Consist of modeling the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This requires an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
 \end{itemize}
 
 \subsubsection{Smagorinsky model}
-As most of the strategies for functional modeling, the Smagorinsky approach models the sub-grid scale tensor $\tau_{ij}^R$, splitting it in a isotropic and a deviatoric contribution:
+As most of the strategies for functional modeling, the Smagorinsky approach models the sub-grid scale tensor $\tau_{ij}^R$, splitting it into a isotropic and a deviatoric contribution:
 \begin{equation}
 	- \, \tau_{ij}^R = - \, \frac{2}{3} \, k_R \, \delta_{ij} + 2 \, \nu_R \, \widetilde{e}_{ij}
 \end{equation}
 The first term is related to the sub-grid kinetic energy $k_R$, while the second one is modeled as a term linearly proportional to the deformation tensor of the resolved field $\widetilde{e}_{ij}$ through the sub-grid scale eddy viscosity coefficient $\nu_R$.
 
-Substituting this closure into the filtered momentum equation \eqref{eq:les-equations}, the isotropic part of the residual stress is absorbed into the pressure term. Defining a modified pressure $\widetilde{p}$ (which now includes the trace of the sub-grid stress tensor) and grouping the molecular and eddy viscosities, the governing equation for the large scales becomes:
+Substituting this closure into the filtered momentum equation \eqref{eq:les-equations}, the isotropic part of the residual stress is absorbed into the pressure term. Re-defining $\widetilde{p}$ as a modified pressure (which now includes the trace of the sub-grid stress tensor) and grouping the molecular and eddy viscosities, the governing equation for the large scales becomes:
 \begin{equation}
     \frac{\partial \, \widetilde{u}_i}{\partial \, t} + \widetilde{u}_j \, \frac{\partial \, \widetilde{u}_i}{\partial \, x_j} = - \, \frac{1}{\rho} \, \frac{\partial \, \widetilde{p}}{\partial \, x_i} + \frac{\partial}{\partial x_j} \left[ (\nu + \nu_{R}) \left( \frac{\partial \widetilde{u}_i}{\partial x_j} + \frac{\partial \widetilde{u}_j}{\partial x_i} \right) \right] + f_i
 \end{equation}
@@ -943,9 +946,9 @@ Exploiting the incompressibility constraint ($\nabla \cdot \bm{\widetilde{u}} = 
 \end{equation}
 In the Smagorinsky model the $\nu_R$ scalar is defined as:
 \begin{equation}
-	\nu_R = (C_S \, \Delta_F)^2 \, |\widetilde{e}_{ij}| \qquad \quad |\widetilde{e}_{ij}| := \sqrt{2 \, \widetilde{e}_{ij} \, \widetilde{e}_{ij}}
+	\nu_R = (C_S \, \Delta_F)^2 \, |\bm{\widetilde{e}}| \qquad \quad |\bm{\widetilde{e}}| := \sqrt{2 \, \widetilde{e}_{ij} \, \widetilde{e}_{ij}}
 \end{equation}
-where $\Delta_F$ is the sub-grid characteristic length scale (or filter size), $|\widetilde{e}_{ij}|$ is a characteristic sub-grid velocity (defined above) and $C_S$ is a tuning constant.
+where $\Delta_F$ is the sub-grid characteristic length scale (or filter size), $|\bm{\widetilde{e}}|$ is a characteristic sub-grid velocity (defined above) and $C_S$ is a tuning constant.
 
 The idea behind the definition of the eddy viscosity $\nu_R$ is to emulate the energy transfer between resolved scales and sub-grid ones, by introducing an artificial dissipation at the $\Delta_F$ scale.
 
@@ -968,7 +971,7 @@ While the model satisfies some useful properties, like its independence on coord
 	      \end{itemize}
 	      Since the Smagorinsky formulation takes into account the $\widetilde{e_{ij}}$ term alone, it is sensitive only to convergence zones, and it fails to correctly model regions where vorticity is dominant.
 
-	\item \textbf{Inadequacy for pure shear and transitional flows: } In the case of pure shear flows, the large values of the $|\widetilde{e}_{ij}|$ invariant causes an overestimation of the energy to be virtually dissipated, preventing the growth of instabilities and consequently failing to reproduce the laminar-to-turbulent transition.
+	\item \textbf{Inadequacy for pure shear and transitional flows: } In the case of pure shear flows, the large values of the $|\bm{\widetilde{e}}|$ invariant cause an overestimation of the energy to be virtually dissipated, preventing the growth of instabilities and consequently failing to reproduce the laminar-to-turbulent transition.
 
 	\item \textbf{Incorrect near-wall behavior:} By construction, the Smagorinsky formulation yields a non-zero eddy viscosity $\nu_t$ whenever a velocity gradient exists. However, turbulent fluctuations are naturally damped near solid boundaries, implying that $\nu_t$ should disappear at the wall. A common approach to correct this behavior is the use of Van Driest damping functions. While this approach can improve the results, this is an ad hoc modification that depends on the distance to the wall ($y$), making it difficult to implement for complex geometries. Furthermore, this damping leads to an eddy-viscosity scaling of $O(y^2)$, which is inconsistent with the correct theoretical behavior of $O(y^3)$ \cite{wale}.
 \end{enumerate}
@@ -976,7 +979,7 @@ While the model satisfies some useful properties, like its independence on coord
 \subsubsection{WALE model}
 \label{sec:WALE}
 
-The WALE model addresses the limitations of Smagorinsky one, while maintaining its advantageous properties of independence of coordinate transformations and grid topology choice.
+The WALE model, introduced by Nicoud and Ducros \cite{wale}, addresses the limitations of Smagorinsky one, while maintaining its advantageous properties of independence of coordinate transformations and grid topology choice.
 
 Considering the traceless symmetric part of the square of the velocity gradient tensor:
 \begin{equation}
@@ -1015,7 +1018,7 @@ When the grid is too coarse to capture the intense velocity gradients at the wal
 
 \subsubsection{Reichardt equilibrium wall model}
 
-Among the various algebraic formulations available to model the near-wall velocity profile, the extended law of the wall proposed by Reichardt \cite{reichardt} was selected for this study. Unlike classical wall laws, introduced in Section \ref{sec:equilibrium-momentum-balance}, that are valid only in well-defined sub-layers of the boundary layer, the considered wall model is based on empirical data and attempts to cover the entire flow, from the viscous sub-layer to the bulk/wake region. However, it is important to remark that, despite its extended spatial validity, Reichardt's formulation remains fundamentally an equilibrium wall model, relying on the assumption of a fully developed and attached turbulent boundary layer.
+Among the various algebraic formulations available to model the near-wall velocity profile, the extended law of the wall proposed by Reichardt \cite{reichardt} was selected for this study. Unlike classical wall laws, introduced in Section \ref{sec:equilibrium-momentum-balance}, that are valid only in well-defined sub-layers of the boundary layer, the considered wall model is based on empirical data and attempts to provide a continuous, unified velocity profile for the entire inner region of the boundary layer, blending the viscous sub-layer, the buffer region, and the logarithmic layer. However, it is important to remark that, despite its extended spatial validity, Reichardt's formulation remains fundamentally an equilibrium wall model, relying on the assumption of a fully developed and attached turbulent boundary layer.
 
 The continuous velocity profile is mathematically expressed by the following relationship:
 \begin{equation}
