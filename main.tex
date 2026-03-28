@@ -298,14 +298,18 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	$F_{i,f}^{\, conv}$, $F_{i,f}^{\, visc}$	 & Convective and viscous flux densities in direction $i$, at face $f$\\
 	$u_{MP}$, $u_{MP \, \parallel}$				 & Resolved velocity at the matching (sampling) point and its interface-parallel projection.\\
 	$\bm{\hat{n}}, \bm{\hat{t}}, \bm{\hat{b}}$   & Normal, tangent, binormal unit vectors of the local wall reference frame.\\
-	$\bm{\tau}_{w, \, local}$, $\bm{\tau}_{w, \, global}$ & Wall stress tensors in the local and global frame of reference\\
+	$\bm{\tau}_{w, \, local}$ 					 & Wall stress tensors in the local frame of reference\\
+	$\bm{\tau}_{w, \, global}$					 & Wall stress tensors in the global frame of reference\\
 
 	% Test cases and result analysis
 	\addlinespace
+	$\Delta y^+$								 & Cell dimension in wall-units along the $y$-Cartesian axis\\
 	$h_H$										 & Periodic hills height\\
 	$L_x$, $L_y$, $L_z$							 & Physical domain dimensions\\
 	$N_x$, $N_y$, $N_z$							 & Grid size\\
 	$U_b$										 & Bulk velocity\\
+	$K_p$, $K_i$								 & Proportional and integral gain for the bulk forcing control law\\
+	$f_{f,x}$									 & Bulk forcing term in the streamwise direction\\
 	$C_f$										 & Friction coefficient\\
 	$y_{MP}$									 & Matching point $y$-coordinate\\
 	$t_{FT}$									 & Flow-through time\\
@@ -339,6 +343,10 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	MPI											 & Message Passing Interface\\
 	VTK 										 & Visualization ToolKit\\
 	MP											 & Matching Point\\
+	CFL 										 & Courant-Friedrichs-Lewy\\
+	PI											 & Proportional-Integral\\
+	RHS											 & Right-Hand Side\\
+	PIV											 & Particle Image Velocimetry\\
 
 
 \end{longtable}
@@ -1512,9 +1520,9 @@ The first test simulation performed is the canonical turbulent channel flow. The
 
 \subsection{Simulation setup}
 \label{sec:periodic-channel-setup}
-The geometry for the turbulent channel flow is defined with a streamwise lenght $L_x = 5 \text{ m}$, a channel height $L_y = 1 \text{ m}$ and a spanwise width $L_z = 2 \text{ m}$. The computational domain dimensions coincide with those of the geometry, except for the $y$-direction that is exteneded to $1.1 \text{ m}$ to include a portion of the walls and allow their detection by the IBM solver.
+The geometry for the turbulent channel flow is defined with a streamwise length $L_x = 5 \text{ m}$, a channel height $L_y = 1 \text{ m}$ and a spanwise width $L_z = 2 \text{ m}$. The computational domain dimensions coincide with those of the geometry, except for the $y$-direction that is extended to $1.1 \text{ m}$ to include a portion of the walls and allow their detection by the IBM solver.
 
-In the streamwise and spanwise directions, periodic boundary conditions are applied, with a syntethic noise generator to anticipate the laminar-to-turbulent transition at the beginning of the simulation. Since periodic conditions are imposed in the streamwise direction, the flow would naturally dissipate its kinetic energy. To counteract this momentum decay and maintain a constant mass-flow rate, the bulk forcing function is enabled with a bulk velocity target of $U_b = 1 \text{ m/s}$. The fluid viscosity is set in order to result in a bulk Reynolds number of $Re = 80000$.
+In the streamwise and spanwise directions, periodic boundary conditions are applied, with a synthetic noise generator to anticipate the laminar-to-turbulent transition at the beginning of the simulation. Since periodic conditions are imposed in the streamwise direction, the flow would naturally dissipate its kinetic energy. To counteract this momentum decay and maintain a constant mass-flow rate, the bulk forcing function is enabled with a bulk velocity target of $U_b = 1 \text{ m/s}$. The fluid viscosity is set in order to result in a bulk Reynolds number of $Re = 80000$.
 
 A grid with resolution of $256 \times 96 \times 96$ is considered. The choice of the mesh must ensure that the simulation strictly operates within a Wall-Modeled Large Eddy Simulation (WM-LES) approach, avoiding the direct resolution of the boundary layer characteristic of a Wall-Resolved LES (WR-LES). To verify that the adopted spatial discretizations deliberately avoid this condition, it is necessary to compute an a priori evaluation of the wall units. Considering the Dean correlation \cite{dean-correlation}, based on empirical experimental data, to estimate the channel friction coefficient $C_f$:
 \begin{equation}
@@ -1525,7 +1533,7 @@ The wall stress can be calculated as:
 \begin{equation}
 	\tau_w = \dfrac{1}{2} \, \rho \, U_b^2 \, C_f =  2.170 \cdot 10^{-3} \text{ Pa}
 \end{equation}
-Consequently, the friction velocity result in:
+Consequently, the friction velocity results in:
 \begin{equation}
 	u_\tau = \sqrt{\dfrac{\tau_w}{\rho}} = U_b \, \sqrt{\dfrac{C_f}{2}} = 0.04659 \text{ m/s}
 \end{equation}
@@ -1539,7 +1547,7 @@ To obtain a first estimation of the sampling position for the wall model, consid
 \end{equation}
 This shows that the first cell position, and the sampling location, fall well above the viscous sub-layer.
 
-The numerical simulation was carried out for a total duration of $350 \text{ s}$. To ensure that the considered data is completely independent of the initial conditions, an initial startup interval was selected and discarted. The selection was done by monitoring the evolution of the mean velocity profile. At approximately $t = 80 \text{ s}$ a statistically steady behavior was observed. However, to introduce a conservative safety margin, the collection of flow statistics was initiated at $t = 150 \text{ s}$. The remaining $200 \text{ s}$ of simulation provided a sufficiently wide temporal window to obtain properly converged mean profiles.
+The numerical simulation was carried out for a total duration of $350 \text{ s}$. To ensure that the considered data is completely independent of the initial conditions, an initial startup interval was selected and discarded. The selection was done by monitoring the evolution of the mean velocity profile. At approximately $t = 80 \text{ s}$ a statistically steady behavior was observed. However, to introduce a conservative safety margin, the collection of flow statistics was initiated at $t = 150 \text{ s}$. The remaining $200 \text{ s}$ of simulation provided a sufficiently wide temporal window to obtain properly converged mean profiles.
 
 \subsection{Average velocity fields}
 The data post-processing, after the selection of a mean steady state interval, consisted in the first stage in a span and time averaging, as shown in Figure \ref{fig:TC-R1-velocity}.
@@ -1550,7 +1558,7 @@ The data post-processing, after the selection of a mean steady state interval, c
     \begin{subfigure}{\textwidth}
         \centering
         \includegraphics[width=\textwidth]{img/TC-R1/velocity-t150.jpg}
-        \caption{Istantaneous velocity field at $t = 150 \text{ s}$}
+        \caption{Instantaneous velocity field at $t = 150 \text{ s}$}
     \end{subfigure}
     
     \vspace{0.5cm}
@@ -1574,7 +1582,7 @@ The data post-processing, after the selection of a mean steady state interval, c
 \end{figure}
 
 \subsection{Average velocity profile}
-In order to verify the capability of the solver in recovering the correct physical behavior of the flow, a comparison was done between the analytical Reichard law and the obtained mean streamwise velocity data. The wall units coordinate transformation was based on the theorical wall stress calculated with the Dean correlation in equation \eqref{eq:dean-correlation}.
+In order to verify the capability of the solver in recovering the correct physical behavior of the flow, a comparison was done between the analytical Reichard law and the obtained mean streamwise velocity data. The wall units coordinate transformation was based on the theoretical wall stress calculated with the Dean correlation in equation \eqref{eq:dean-correlation}.
 
 \begin{figure}[H]
     \centering
@@ -1618,7 +1626,7 @@ The case analyzed in this section is the flow in a channel with streamwise-perio
 For its demanding test geometry and the widely available predicted results, the benchmark is particularly useful for the assessment of meshing strategies, SGS and wall models and numerical methods. The configuration also became well established in the CFD community and chosen by several associations, workshops and projects such as ERCOFTAC (European Research Community on Flow, Turbulence and Combustion), IAHR (International Association for Hydro-Environment Engineering and Research), DESIDER (Detached Eddy Simulation for Industrial Aerodynamics), ATAAC (Advanced Turbulence Simulation for Aerodynamic Application Challenges) and more \cite{breuer} \cite{cinnella}.
 
 \subsection{Simulation setup}
-The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h_H=1 \text{ m}$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h_H$, a channel height $L_y = 3.035 \, h_H$, and a spanwise width $L_z = 4.5 \, h_H$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the $y$-direction, resulting in a height of $3.135 \, h_H$. However this doesn't affect the channel geometry, which maintain its height of $3.035 \, h_H$.
+The simulation setup consists of a channel with periodic constrictions at the bottom wall and a planar top wall. The precise shape of the lower boundary is analytically described by a piecewise-defined polynomial function, with a unit hill height $h_H=1 \text{ m}$. The physical domain dimensions were chosen according to the most common setups found in the literature, which assign a streamwise length $L_x = 9 \, h_H$, a channel height $L_y = 3.035 \, h_H$, and a spanwise width $L_z = 4.5 \, h_H$. To properly include the top and bottom walls allowing their detection by the Immersed Boundary Method, the computational domain is slightly extended in the $y$-direction, resulting in a height of $3.135 \, h_H$. However this does not affect the channel geometry, which maintains its height of $3.035 \, h_H$.
 
 In terms of boundary conditions, periodicity is applied in both the streamwise and spanwise directions. The periodicity allows the flow to naturally develop and recycle turbulent structures within the computational domain. A velocity target of $U_b = 1 \text{ m/s}$ is set for the bulk velocity function. The simulation is performed at a bulk Reynolds number of $37000$, which is defined as:
 \begin{equation}
@@ -1656,11 +1664,11 @@ The simulation is carried out up to a maximum physical time of $(50 \cdot t_{FT}
 
 \subsection{Bulk forcing}
 \label{sec:bulk-forcing}
-Since the periodic streamwise boundary conditions effectively simulate an infinite channel, there is the need to maintain the fluid flow in motion. The solver include a proper bulk forcing function, based on the average velocity of the entire fluid domain. When the computed average velocity diverges from the target value, a proportional contribution vector is directly added to the solution $\bm{u}^*$ at the prediction step of the pressure-correction scheme.
+Since the periodic streamwise boundary conditions effectively simulate an infinite channel, there is the need to maintain the fluid flow in motion. The solver includes a proper bulk forcing function, based on the average velocity of the entire fluid domain. When the computed average velocity diverges from the target value, a proportional contribution vector is directly added to the solution $\bm{u}^*$ at the prediction step of the pressure-correction scheme.
 
 However, the standard periodic hills benchmark requires a different constraint: a constant mass-flow rate measured specifically at the cross-section located on top of the hill crest. In order to enforce and maintain the required flow rate, a dedicated bulk forcing approach was implemented, based on a Proportional-Integral (PI) control law.
 
-At each time step $n$, the instantaneous spatially-averaged streamwise velocity $\langle u \rangle_{\text{inlet}}$ is evaluated at the inlet section through a surface integral. The discrepancy between the target bulk velocity $U_b$ and the measured value defines the instantaneous error: $\varepsilon_n \equiv U_b - \langle u_{\text{inlet}} \rangle_n$. To eliminate both the steady-state offset and transient oscillations, the streamwise volumetric forcing term $f_{f,x}$ is computed using a proportional gain $K_p$ and an integral gain $K_i$. The discrete time-integral of the error is updated at each time step as $\epsilon_n = \epsilon_{n-1} + \varepsilon_n \, \Delta t$, yielding the final driving force:
+At each time step $n$, the instantaneous spatially-averaged streamwise velocity $\langle u \rangle_{\text{inlet}}$ is evaluated at the inlet section through a surface integral. The discrepancy between the target bulk velocity $U_b$ and the measured value defines the instantaneous error: $\varepsilon_n \equiv U_b - \langle u \rangle_{\text{inlet, n}}$. To eliminate both the steady-state offset and transient oscillations, the streamwise volumetric forcing term $f_{f,x}$ is computed using a proportional gain $K_p$ and an integral gain $K_i$. The discrete time-integral of the error is updated at each time step as $\epsilon_n = \epsilon_{n-1} + \varepsilon_n \, \Delta t$, yielding the final driving force:
 $f_{f,x} = K_p \, \varepsilon_n + K_i \, \epsilon_n$.
 
 \begin{figure}[htbp]
@@ -1704,12 +1712,12 @@ As illustrated in the instantaneous velocity magnitude contours, in Figure \ref{
         \caption{$t = 23\cdot t_{FT}$}
     \end{subfigure}
 
-    \caption{Istantaneous velocity fields during the flow startup transient at $2\, t_{FT}$, $9\, t_{FT}$ and $23\, t_{FT}$ for simulation \texttt{PH-R2}}
+    \caption{Instantaneous velocity fields during the flow startup transient at $2\, t_{FT}$, $9\, t_{FT}$ and $23\, t_{FT}$ for simulation \texttt{PH-R2}}
     \label{fig:PH-R2-startup}
 \end{figure}
 
 \subsection{Average velocity fields}
-For the irregular and intermittent nature of the examined flow, the identification of its main features its not an easy task. For this reason, the solution is post-processed, computing its average both in its periodic spanwise direction and in time.
+For the irregular and intermittent nature of the examined flow, the identification of its main features is not an easy task. For this reason, the solution is post-processed, computing its average both in its periodic spanwise direction and in time.
 
 The mean velocity fields for the two simulations are reported in Figure \ref{fig:PH-R1-velocity} and \ref{fig:PH-R2-velocity}. It can be observed that, both the \texttt{PH-R1} and \texttt{PH-R2} simulations, show a similar qualitative flow behavior, despite their differences in grid size and cell aspect ratios. In both cases, some properties can be observed:
 \begin{itemize}
