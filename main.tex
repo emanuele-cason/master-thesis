@@ -174,11 +174,11 @@
 \newpage
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-High-Reynolds number turbulent flows dominate critical engineering applications, ranging from aircraft and other vehicles to wind turbines and turbomachinery. However, their simulation remains an open challenge: such flows are characterized by a multi-scale nature, requiring an enormous number of degrees of freedom. Wall-Modeled Large Eddy Simulation (WM-LES) addresses this problem by resolving the largest scales of the motion while modeling the smaller ones and the near-wall turbulent structures. In the present work, the Immersed Boundary Method (IBM) provides a flexible framework that avoids the complexity of body-fitted meshes. The presence of the immersed geometry is enforced in the discretized governing equations by a forcing algorithm coupled with the wall model.
+High Reynolds number turbulent flows dominate critical engineering applications, ranging from aircraft and other vehicles to wind turbines and turbomachinery. However, their simulation remains an open challenge: such flows are characterized by a multi-scale nature, requiring an enormous number of degrees of freedom. Wall-Modeled Large Eddy Simulation (WM-LES) addresses this problem by resolving the largest scales of the motion while modeling the smaller ones and the near-wall turbulent structures. In the present work, the Immersed Boundary Method (IBM) provides a flexible framework that avoids the complexity of body-fitted meshes. The presence of the immersed geometry is enforced in the discretized governing equations by a forcing algorithm coupled with the wall model.
 
-The initial approach for the immersed boundary forcing in the solver was based on the identification of the interface through sign changes of the level set across adjacent cell nodes, resulting in the application of the forcing to a staircase-approximated wall. To improve the approach, a refined forcing technique was developed and integrated, based on the analytical computation of the cut-cell wetted area, coupled with a flux redistribution method. This geometric characterization redefines the numerical interface, allowing the wall-model forcing to be applied directly to the analytically evaluated surface of each control volume. The result is a more uniform and consistent boundary representation that introduces no significant computational overhead.
+The initial approach for the immersed boundary forcing in the solver was based on the identification of the interface through sign changes of the level set across adjacent cell nodes, resulting in the application of the forcing to a staircase-approximated wall. To improve the approach, a refined forcing technique was developed and integrated, based on the analytical computation of the cut-cell wetted area, coupled with a flux redistribution method. This geometric characterization redefines the numerical interface, utilizing the analytically evaluated surface to accurately compute the wall-model forcing, which is then introduced into the governing equations. The result is a more uniform and consistent boundary representation that introduces no significant computational overhead.
 
-The proposed formulation was tested against two benchmarks: a canonical channel flow, demonstrating good agreement with the analytical Reichardt law, and the ERCOFTAC periodic hills, in which the solver successfully captured complex macroscopic flow topologies, including separation from a curved boundary, the formation of a free shear layer, and flow reattachment. To further assess the robustness of the numerical framework, a highly complex Airbus A320 wing-pylon-engine assembly was simulated under a inoperative engine configuration. The solver proved particularly stable under these demanding conditions, qualitatively reproducing several expected aerodynamic phenomena.
+The proposed formulation was tested against two benchmarks: a canonical channel flow, demonstrating good agreement with the analytical Reichardt law, and the ERCOFTAC periodic hills, in which the solver successfully captured complex macroscopic flow topologies, including separation from a curved boundary, the formation of a free shear layer, and flow reattachment. To further assess the robustness of the numerical framework, a highly complex Airbus A320 wing-pylon-engine assembly was simulated under an inoperative engine configuration. The solver proved particularly stable under these demanding conditions, qualitatively reproducing several expected aerodynamic phenomena.
 
 \newpage
 \begingroup
@@ -269,10 +269,12 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 
 	% Simulation techniques
 	\addlinespace
+	\addlinespace
 	$\delta_{ij}$								 & Kronecker delta \\
 	$\nu_T$										 & Turbulent eddy viscosity \\
 
 	% LES
+	\addlinespace
 	\addlinespace
 	$G$                                          & Spatial filter kernel function                                               \\
 	$\Delta$                                     & Grid spatial resolution                                                      \\
@@ -286,6 +288,7 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	$C$, $B_1$, $B_2$                            & Tuning constants for Reichardt wall model                                               \\
 
 	% Numerical framework
+	\addlinespace
 	\addlinespace
 	$\mathcal{AD}$, $\mathcal{AD}_k$			 & Advective/diffusive term (at sub-step $k$)\\
 	$\bm{u}_n$, $\bm{u}_k$						 & Velocity field at step $n$, at sub-step $k$\\
@@ -303,6 +306,7 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 
 	% Test cases and result analysis
 	\addlinespace
+	\addlinespace
 	$\Delta y^+$								 & Cell dimension in wall-units along the $y$-Cartesian axis\\
 	$h_H$										 & Periodic hills height\\
 	$L_x$, $L_y$, $L_z$							 & Physical domain dimensions\\
@@ -315,39 +319,46 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 	$t_{FT}$									 & Flow-through time\\
 
 	% Complex geometry simulations and post-processing
+	\addlinespace
+	\addlinespace
 	$Q$											 & Second invariant of the velocity gradient tensor \\
 	$D$											 & Engine inlet diameter\\
 
 	% Acronyms
+    \addlinespace
 	\addlinespace
-	CFD                                          & Computational Fluid Dynamics                                                 \\
-	DNS                                          & Direct Numerical Simulation                                                  \\
-	IBM                                          & Immersed Boundary Method                                                     \\
-	LES                                          & Large Eddy Simulation                                                        \\
-	RANS                                         & Reynolds-Averaged Navier-Stokes                                              \\
-	SGS                                          & Sub-Grid Scale                                                               \\
-	SST                                          & Shear Stress Transport                                                       \\
-	URANS                                        & Unsteady RANS                                                                \\
-	WM-LES                                       & Wall-Modeled LES                                                             \\
-	WR-LES                                       & Wall-Resolved LES                                                            \\
-	WALE										 & Wall-Adapting Local Eddy-viscosity \\
-	ERCOFTAC 									 & European Research Community On Flow, Turbulence and Combustion \\
-	WM										     & Wall Model \\
-	RK3											 & Three-stages Runge-Kutta scheme \\
-	FFT											 & Fast Fourier Transform\\
-	FVM											 & Finite Volume Method\\
-	CS2											 & Centered Second order\\
-	SDF											 & Signed Distance Field\\
-	STL 									  	 & STereoLithography\\
-	GUI											 & Graphical User Interface\\
-	BVH											 & Bounding Volume Hierarchy\\
-	MPI											 & Message Passing Interface\\
-	VTK 										 & Visualization ToolKit\\
-	MP											 & Matching Point\\
-	CFL 										 & Courant-Friedrichs-Lewy\\
-	PI											 & Proportional-Integral\\
-	RHS											 & Right-Hand Side\\
-	PIV											 & Particle Image Velocimetry\\
+	ARS											 & Algebraic Reynolds Stress\\
+    BVH                                          & Bounding Volume Hierarchy\\
+	CaNS										 & Canonical Navier-Stokes\\
+    CFD                                          & Computational Fluid Dynamics                                          \\
+    CFL                                          & Courant-Friedrichs-Lewy\\
+    CS2                                          & Centered Second-order\\
+	DES											 & Detached Eddy Simulations\\
+    DNS                                          & Direct Numerical Simulation                                           \\
+    ERCOFTAC                                     & European Research Community On Flow, Turbulence and Combustion \\
+    FFT                                          & Fast Fourier Transform\\
+    FVM                                          & Finite Volume Method\\
+    GUI                                          & Graphical User Interface\\
+    IBM                                          & Immersed Boundary Method                                              \\
+    LES                                          & Large Eddy Simulation                                                 \\
+    MP                                           & Matching Point\\
+    MPI                                          & Message Passing Interface\\
+    PI                                           & Proportional-Integral\\
+    PIV                                          & Particle Image Velocimetry\\
+    RANS                                         & Reynolds-Averaged Navier-Stokes                                       \\
+    RHS                                          & Right-Hand Side\\
+    RK3                                          & Three-stage Runge-Kutta scheme \\
+	RST											 & Reynolds Stress Transport\\
+    SDF                                          & Signed Distance Field\\
+    SGS                                          & Sub-Grid Scale                                                        \\
+    SST                                          & Shear Stress Transport                                                \\
+    STL                                          & STereoLithography\\
+    URANS                                        & Unsteady RANS                                                         \\
+    VTK                                          & Visualization ToolKit\\
+    WALE                                         & Wall-Adapting Local Eddy-viscosity \\
+    WM                                           & Wall Model \\
+    WM-LES                                       & Wall-Modeled LES                                                      \\
+    WR-LES                                       & Wall-Resolved LES                                                     \\
 
 
 \end{longtable}
@@ -357,15 +368,15 @@ The proposed formulation was tested against two benchmarks: a canonical channel 
 \chapter{Introduction}
 
 % Large eddy simulation for incompressible flows - an introduction (2006, Springer) - P. Sagaut
-Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced has mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modeling and control of such mechanisms. In the engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
+Computational Fluid Dynamics (CFD) is the study of fluids through a numerical computer-based approach, using algorithms to find solutions to the equations that describe the fluid behavior. The information produced has mainly two purposes: in the field of research, it allows a better understanding of the physical mechanisms governing the fluid motion, and the consequent modeling and control of such mechanisms. In engineering analyses, fluid simulation is used as a prediction tool, especially during the product design phase, to assess flow characteristics and physical parameters, such as lift and drag forces generated, propagation of acoustic waves or convective heat transfer.
 
 One fundamental aspect of fluid simulation regards the scale separation problem, in particular the spatial and temporal resolution of choice. To obtain a description of maximum quality, all the space-time scales of the solution must be taken into account while solving the unsteady Navier-Stokes equations. As will be discussed in Chapter \ref{sec:turbulent-flows}, it turns out that such a solution criterion is extremely restrictive for multi-scale phenomena, like in the case of turbulent flows, requiring an enormous number of degrees of freedom.
 
 To overcome the prohibitive computational costs associated with resolving all the space-time scales involved, multiple techniques with different levels of approximation can be employed, each one being best suited to specific applications and subject to its own limitations. Among the various techniques, overviewed in Chapter \ref{sec:simulation-techniques-overview}, Large Eddy Simulation (LES) represents a highly effective compromise between computational cost and physical accuracy. By resolving the large eddies and modeling only the smaller more universal scales, LES significantly reduces the computational cost compared to Direct Numerical Simulation (DNS). 
 
-However, for wall-bounded flows at high Reynolds numbers, the resolution requirements for the near-wall turbulent structures in standard LES become once again computationally restrictive. To address the limitation, Wall-Modeled LES (WM-LES) can be adopted. By modeling this region of the flow rather than resolving it, WM-LES drastically reduces the required degrees of freedom, accepting a certain level of approximation in the near-wall dynamics. The mathematical framework governing the filtered Navier-Stokes equations and the specific sub-grid scales model and wall model closures employed in this work are detailed in Chapter \ref{sec:mathematical-framework}.
+However, for wall-bounded flows at high Reynolds numbers, the resolution requirements for the near-wall turbulent structures in standard LES become once again computationally restrictive. To address the limitation, Wall-Modeled LES (WM-LES) can be adopted. By modeling this region of the flow rather than resolving it, WM-LES drastically reduces the required degrees of freedom, accepting a certain level of approximation in the near-wall dynamics. The mathematical framework governing the filtered Navier-Stokes equations and the specific sub-grid scale model and wall model closures employed in this work are detailed in Chapter \ref{sec:mathematical-framework}.
 
-Another problematic aspect arises when complex geometries, such as industrial components, need to be simulated within the fluid domain. The traditional computational approach relies on the definition of body-fitted meshes. However, their generation is notoriously difficult, time-consuming, and computationally expensive, especially for intricate configurations. In this work, the Immersed Boundary Method (IBM) provides a flexible alternative to this issue by employing a simple background Cartesian grid in which the geometric model is numerically immersed. As explained in Chapter \ref{sec:numerical-framework}, the presence of the immersed body is enforced in the discretized governing equations through a localized forcing term. The evaluation of the forcing term in the original architecture of the solver relied on identifying the solid interface through sign changes of a level set function across adjacent cell nodes. This led to the application of the forcing term to a staircase-approximated wall. In this work, a refined method for the application of the forcing term, based on the analytical evaluation of the cut-cell wetted area and flux redistribution technique, was developed, integrated and tested.
+Another problematic aspect arises when complex geometries, such as industrial components, need to be simulated within the fluid domain. The traditional computational approach relies on the definition of body-fitted meshes. However, their generation is notoriously difficult, time-consuming, and computationally expensive, especially for intricate configurations. In this work, the Immersed Boundary Method (IBM) provides a flexible alternative to this issue by employing a simple background Cartesian grid in which the geometric model is numerically immersed. As explained in Chapter \ref{sec:numerical-framework}, the presence of the immersed body is enforced in the discretized governing equations through a localized forcing term. The evaluation of the forcing term in the original architecture of the solver relied on identifying the solid interface through sign changes of a level set function across adjacent cell nodes. This led to the application of the forcing term to a staircase-approximated wall. In this work, a refined method for the application of the forcing term, based on the analytical evaluation of the cut-cell wetted area and on a flux redistribution technique, was developed, integrated and tested.
 
 To assess the accuracy and robustness of this new formulation, the solver was first tested against two benchmarks, presenting increasingly difficult flow topologies, as detailed in Chapter \ref{sec:test-cases}. These include a turbulent channel flow and the ERCOFTAC periodic hills, characterized by boundary layer separation and flow reattachment. Finally, to test the stability of the numerical framework to handle highly demanding geometric constraints, Chapter \ref{sec:complex-geometry-simulation} presents the application of the method to a representative industrial case, specifically an Airbus A320 wing-pylon-engine assembly under inoperative engine conditions.
 
@@ -944,10 +955,10 @@ The residual stress tensor $\tau_{ij}^R$ represents the effect of the unresolved
 
 The system consists of only 4 equations (1 continuity and 3 momentum equations), while the dependent variables to be determined are 10: the three filtered velocity components $\widetilde{u}_i$, the filtered pressure $\widetilde{p}$, and the six independent components of the residual stress tensor. Since the number of unknowns (10) exceeds the number of available equations (4), the system is mathematically unclosed. Therefore, a closure model is required to express the unknown stresses $\tau_{ij}^R$ in terms of the resolved flow variables.
 
-\subsection{Sub-Grid Scales modeling}
+\subsection{Sub-Grid Scale modeling}
 The modeling of the coupling term between resolved and sub-grid scales has to be performed on the basis of the resolved scales alone. As explained by Sagaut \cite{les-sagaut} this can be done with two approaches:
 \begin{itemize}
-	\item \textbf{Structural modeling:} Allows for the modeling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scales structures. This is feasible when small scales show an universal structure or a clear correlation with the structure of the resolved field.
+	\item \textbf{Structural modeling:} Allows for the modeling of the entire tensor $\tau_{ij}^R$, from the field $\widetilde{\bm{u}}$, requiring a relevant knowledge of the sub-grid scale structures. This is feasible when small scales show an universal structure or a clear correlation with the structure of the resolved field.
 	\item \textbf{Functional modeling:} Consist of modeling the action of the tensor $\tau_{ij}^R$, without determining the tensor itself. This requires an understanding of the nature of the interaction and an effect of the small scales on the large universal in character.
 \end{itemize}
 
@@ -2050,7 +2061,7 @@ Although the post-processing method introduced is general, and can be used to re
 The primary objective of the considered configuration was to provide a severe stress test for the stability of the numerical framework. The successful completion of both \texttt{WPE-R1} and \texttt{WPE-R2}, together with multiple preliminary test simulations with intricate geometries, highlighted the overall robustness of the solver. Specifically, throughout the entire time integration, the maximum divergence of the velocity field consistently remained below the prescribed safety threshold, in the order of $10^{-9}$.
 
 % Upstream of the engine, splitting
-From the post-processing results, it is possible to provide a brief qualitative overview of the key flow features characterizing the numerical solution. Firstly, the incoming laminar flow is significantly deflected by the blockage induced by the inoperative engine, in a non-windmilling condition (no rotation), generating a high-pressure zone upstream of the inlet cowl. Figures \ref{fig:A320-ingestion-streamlines} and \ref{fig:A320-streamlines} show the flow splitting into two portions: a smaller one ingested by the engine, while the vast majority passes externally. Furthermore, as shown in Figure \ref{fig:A320-wall-stress}, the stagnation points are clearly noticeable on the wing leading edge and on the nacelle lip ring.
+From the post-processing results, it is possible to provide a brief qualitative overview of the key flow features characterizing the numerical solution. Firstly, the incoming laminar flow is significantly deflected by the blockage induced by the inoperative engine, in a locked rotor condition, generating a high-pressure zone upstream of the inlet cowl. Figures \ref{fig:A320-ingestion-streamlines} and \ref{fig:A320-streamlines} show the flow splitting into two portions: a smaller one ingested by the engine, while the vast majority passes externally. Furthermore, as shown in Figure \ref{fig:A320-wall-stress}, the stagnation points are clearly noticeable on the wing leading edge and on the nacelle lip ring.
 
 % Ingested flow
 The ingested flow undergoes a strong deceleration, a divergence of the streamlines, and a heavily reduced capture area. Reaching the fan disk, the streamlines, and consistently the wall stress distribution, show a sudden re-acceleration across the interblade channels. The fan blade row, operating in a severe off-design condition with massive flow misalignment, induces an extensive separation, resulting in wide recirculation zones downstream of the fan. Downstream of the bypass duct, a slight re-acceleration is observed across the bypass nozzle, before the flow mixes again with the external stream.
@@ -2065,15 +2076,15 @@ In terms of wake formation, the flow generates distinct regions downstream of th
 Finally, across various simulations, some limitations of the IBM framework were noticed. When modeling surfaces that should be perfectly smooth in reality, a tendency to anticipate boundary layer separation is observed. This behavior is likely due to the numerical roughness introduced by the grid discretization. This hypothesis is supported by the fact that the phenomenon appears to be significantly amplified by coarser grid resolutions.
 
 \chapter{Conclusions}
-This thesis detailed the development, integration, testing, and application of a refined immersed boundary forcing approach, based on the analytical computation of the cut-cell wetted area and coupled with a flux redistribution method. The evaluation of the wetted area for each grid cell allowed a reformulation of the numerical interface definition. The initial approach identified the interface through sign changes of the level set function across adjacent cell nodes, resulting in a staircase wall approximation. In contrast, the proposed method defines interface cells as those effectively containing a non-zero wetted area, applying the wall-model forcing term directly to this analytically evaluated surface. This geometric characterization enables a more uniform and consistent application of the immersed boundary forcing term. The algorithm for the wetted area computation for each control volume of the domain was designed, integrated and optimized such that no significant increments on the computational cost were noticed.
+This thesis detailed the development, integration, testing, and application of a refined immersed boundary forcing approach, based on the analytical computation of the cut-cell wetted area and coupled with a flux redistribution method. The evaluation of the wetted area for each grid cell allowed a reformulation of the numerical interface definition. The initial approach identified the interface through sign changes of the level set function across adjacent cell nodes, resulting in a staircase wall approximation. In contrast, the proposed method defines interface cells as those effectively containing a non-zero wetted area, utilizing this analytically evaluated surface to accurately compute and distribute the wall-model forcing term into the governing equations. This geometric characterization enables a more uniform and consistent application of the immersed boundary forcing term. The algorithm for the wetted area computation for each control volume of the domain was designed, integrated and optimized such that no significant increments on the computational cost were noticed.
 
-The proposed formulation was tested against two benchmarks. First, it was applied to the canonical turbulent channel flow at a Reynolds number $Re = 80000$. The solver accurately predicted the mean flow behavior, demonstrating a good agreement with the analytical Reichardt law. Secondly, the solver was tested against the ERCOFTAC periodic hills benchmark at $Re = 37000$. This case presents a significantly more complex flow topology, characterized by flow separation from a curved boundary, a large recirculation bubble, and flow reattachment. The simulations, performed on two different grids, demonstrated the solver's capability to capture the macroscopic features of the flow, including the acceleration over the crest, the formation of the free shear layer, and the flow reattachment. While quantitative deviations in the reattachment point location were observed compared to WR-LES and experimental reference data, these discrepancies were largely expected, considering the overall grid resolution requirements and the use of an equilibrium wall model.
+The proposed formulation was tested against two benchmarks. First, it was applied to the canonical turbulent channel flow at a Reynolds number $Re = 80000$. The solver accurately predicted the mean flow behavior, demonstrating good agreement with the analytical Reichardt law. Secondly, the solver was tested against the ERCOFTAC periodic hills benchmark at $Re = 37000$. This case presents a significantly more complex flow topology, characterized by flow separation from a curved boundary, a large recirculation bubble, and flow reattachment. The simulations, performed on two different grids, demonstrated the solver's capability to capture the macroscopic features of the flow, including the acceleration over the crest, the formation of the free shear layer, and the flow reattachment. While quantitative deviations in the reattachment point location were observed compared to WR-LES and experimental reference data, these discrepancies were largely expected. In particular, they can be attributed to the overall grid resolution requirements and to the use of an equilibrium wall model. Such a model inherently neglects adverse pressure gradients and convective effects, which dominate the near-wall physics in separation and reattachment regions.
 
-Finally, to assess the stability of the numerical framework under demanding conditions, the solver was applied to simulate a highly complex geometry representative of an Airbus A320 wing-pylon-engine assembly. This configuration, featuring an inoperative (non windmilling) turbofan engine, intricate junctions, narrow gaps, and multiple flow passages, provided a severe stress test for the robustness of the IBM forcing and interpolation procedures. The successful completion of the simulations, maintaining the velocity divergence well below the safety threshold throughout the time integration, demonstrated the numerical framework's capability to handle such cases without stability issues. Qualitative flow visualization, achieved through the $Q$-criterion and streamline analysis, indicated that the solver is capable of reproducing several macroscopic aerodynamic features consistent with the expected physical behavior, including the strong flow deflection upstream of the partially blocked nacelle, the inlet spillage, the flow acceleration through the stationary fan blades, and the complex wake development.
+Finally, to assess the stability of the numerical framework under demanding conditions, the solver was applied to simulate a highly complex geometry representative of an Airbus A320 wing-pylon-engine assembly. This configuration, featuring an inoperative (locked rotor) turbofan engine, intricate junctions, narrow gaps, and multiple flow passages, provided a severe stress test for the robustness of the IBM forcing and interpolation procedures. The successful completion of the simulations, maintaining the velocity divergence well below the safety threshold throughout the time integration, demonstrated the numerical framework's capability to handle such cases without stability issues. Qualitative flow visualization, achieved through the $Q$-criterion and streamline analysis, indicated that the solver is capable of reproducing several macroscopic aerodynamic features consistent with the expected physical behavior, including the strong flow deflection upstream of the partially blocked nacelle, the inlet spillage, the flow acceleration through the stationary fan blades, and the complex wake development.
 
 Despite the overall robustness and the advantages offered by the IBM approach, the analysis also highlighted an intrinsic limitation of the current framework. Specifically, when modeling surfaces that should be perfectly smooth in reality, the solver exhibits a tendency to anticipate boundary layer separation. This behavior is likely attributable to the numerical roughness introduced by the grid discretization of the curved boundaries. This hypothesis is further supported by the observation that the premature separation phenomenon is significantly amplified when coarser grid resolutions are employed, indicating a strong sensitivity of the near-wall flow dynamics to the geometric representation.
 
-The re-definition of the numerical interface obtained implementing the wetted area computation introduced in this work, provided the numerical basis for a novel post-processing methodology. It became possible to map, with a simple re-intersection operation, any physical variable (such as pressure, wall shear stress, ...) directly onto the continuous surface of the original STL geometry. This method eliminates the need for complex data projection or interpolation algorithms. The approach, tested with the wall-stress data, produced significantly higher-fidelity renderings, overcoming the visual limitations of discrete point clouds.
+The re-definition of the numerical interface, obtained by implementing the wetted area computation introduced in this work, provided the numerical basis for a novel post-processing methodology. It became possible to map, with a simple re-intersection operation, any physical variable (such as pressure, wall shear stress, ...) directly onto the continuous surface of the original STL geometry. This method eliminates the need for complex data projection or interpolation algorithms. The approach, tested with the wall-stress data, produced significantly higher-fidelity renderings, overcoming the visual limitations of discrete point clouds.
 
 \backmatter
 
