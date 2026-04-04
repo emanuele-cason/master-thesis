@@ -62,7 +62,7 @@
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/"> 
    <dc:format>application/pdf</dc:format> 
-   <dc:title><rdf:Alt><rdf:li xml:lang="x-default">Wall-Modeled Large Eddy Simulation with the Immersed Boundary Method: Implementation of a cut-cell forcing approach for complex turbulent flows</rdf:li></rdf:Alt></dc:title>
+   <dc:title><rdf:Alt><rdf:li xml:lang="x-default">Large Eddy Simulation with the Immersed Boundary Method: Implementation of an adaptive Wall-Modeling approach for complex turbulent flows</rdf:li></rdf:Alt></dc:title>
    <dc:creator><rdf:Seq><rdf:li>Emanuele Cason</rdf:li></rdf:Seq></dc:creator>
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:prism="http://prismstandard.org/namespaces/basic/2.2/"> 
@@ -75,15 +75,15 @@
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/"> 
    <xmp:CreatorTool>LaTeX with hyperref</xmp:CreatorTool> 
-   <xmp:ModifyDate>2026-03-28T14:33:26+01:00</xmp:ModifyDate> 
-   <xmp:CreateDate>2026-03-28T14:33:26+01:00</xmp:CreateDate> 
-   <xmp:MetadataDate>2026-03-28T14:33:26+01:00</xmp:MetadataDate> 
+   <xmp:ModifyDate>2026-04-04T08:37:11+02:00</xmp:ModifyDate> 
+   <xmp:CreateDate>2026-04-04T08:37:11+02:00</xmp:CreateDate> 
+   <xmp:MetadataDate>2026-04-04T08:37:11+02:00</xmp:MetadataDate> 
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmpRights = "http://ns.adobe.com/xap/1.0/rights/"> 
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/"> 
    <xmpMM:DocumentID>uuid:DF005B57-2A06-8753-7167-92D8CE935460</xmpMM:DocumentID> 
-   <xmpMM:InstanceID>uuid:2969DAB9-28AF-CB65-6F2D-E5EED361B3C2</xmpMM:InstanceID> 
+   <xmpMM:InstanceID>uuid:E5884C97-A381-8110-E3F4-81D7D3098138</xmpMM:InstanceID> 
   </rdf:Description> 
  </rdf:RDF> 
 </x:xmpmeta> 
