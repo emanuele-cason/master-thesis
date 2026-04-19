@@ -12,12 +12,10 @@
   [![Official Publication](https://img.shields.io/badge/Thesis-Padua_Research_Archive-lightgrey.svg)](https://thesis.unipd.it/handle/20.500.12608/106470)
 </div>
 
----
-
 ## Available Materials
 
-- [Thesis Document (PDF)](main.pdf)
-- [Presentation (PDF)](presentation/presentation.pdf)
+- [Thesis Document (PDF)](https://raw.githubusercontent.com/emanuele-cason/master-thesis/main/main.pdf)
+- [Presentation (PDF)](https://raw.githubusercontent.com/emanuele-cason/master-thesis/main/presentation/presentation.pdf)
 - [Official Publication on Padua Research Archive](https://thesis.unipd.it/handle/20.500.12608/106470)
 
 ---
@@ -43,5 +41,3 @@ Nel presente lavoro, il *Metodo Immersed Boundary* (IBM) fornisce un framework f
 Per migliorare l'approccio, è stata sviluppata e integrata una tecnica di forzamento raffinata, basata sul calcolo analitico dell'area bagnata della *cut-cell*, accoppiata a un metodo di ridistribuzione dei flussi. Questa caratterizzazione geometrica ridefinisce l'interfaccia numerica, utilizzando la superficie valutata analiticamente per calcolare con precisione il forzamento del modello di parete, che viene poi introdotto nelle equazioni di governo. Il risultato è una rappresentazione del contorno più uniforme e coerente che non introduce alcun sovraccarico computazionale significativo.
 
 La formulazione proposta è stata testata su due benchmark: un flusso in canale canonico, dimostrando un buon accordo con la legge analitica di Reichardt, e le colline periodiche ERCOFTAC, in cui il solutore ha catturato con successo complesse topologie di flusso macroscopiche, tra cui la separazione da un contorno curvo, la formazione di un *free shear layer* e il riattacco del flusso. Per valutare ulteriormente la robustezza del framework numerico, è stato simulato un modello altamente complesso, rappresentativo del gruppo ala-pilone-motore di un Airbus A320 in configurazione di motore inoperativo. Il solutore si è dimostrato particolarmente stabile in queste condizioni severe, riproducendo qualitativamente diversi fenomeni aerodinamici attesi.
-
----
