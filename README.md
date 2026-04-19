@@ -1,6 +1,6 @@
 <div align="center">
   <img src="presentation/img/logo-unipd.png" alt="University of Padua" height="80">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="presentation/img/logo-dii.png" alt="Department of Industrial Engineering" height="80">
 
   # Large Eddy Simulation with the Immersed Boundary Method: Implementation of an adaptive Wall-Modeling approach for complex turbulent flows
